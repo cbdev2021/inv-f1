@@ -11,7 +11,7 @@ const Billing: FunctionComponent = () => {
 
                 <form className={"form"} style={{ width: '100%' }}>
                     <Typography variant="h5" align="center" gutterBottom>
-                        Home
+                        Billing
                     </Typography>
 
                     <div className="form-elements-container">
