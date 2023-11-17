@@ -56,9 +56,19 @@ const Drawer: FunctionComponent<DrawerProps> = ({ open, onClose }) => {
                         </ListItemIcon>
                         <ListItemText primary="Billing" />
                     </ListItem>
+                    <ListItem button onClick={() => handleItemClick('/inventory')}>
+                        <ListItemIcon>
+                            <MailIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Inventory" />
+                    </ListItem>
+                    <ListItem button onClick={() => handleItemClick('/reports')}>
+                        <ListItemIcon>
+                            <MailIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Reports" />
+                    </ListItem>
                 </List>
-
-
             </MUIDrawer>
         </div>
     );
