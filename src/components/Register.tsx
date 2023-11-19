@@ -3,19 +3,36 @@ import { toast } from 'react-toastify';
 import { setCredentials, setToken } from '../slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Typography, TextField, Button, FormControlLabel, Checkbox } from '@mui/material';
-import { useLoginMutation } from "../slices/usersApiSlice";
+import { useRegisterMutation } from "../slices/usersApiSlice";
 import { useNavigate } from 'react-router-dom';
+
+const isValidEmail = (email: string) =>
+  // eslint-disable-next-line no-useless-escape
+  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+    email
+  );
 
 const Register: FunctionComponent = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [cellphone, setCellphone] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userInfo = useSelector((state: any) => state);
+  const dispatch = useDispatch();
 
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  const [registerMutation, { isLoading }] = useRegisterMutation();
+
+  const handleEmailValidation = (email: string) => {
+    console.log("ValidateEmail was called with", email);
+
+    const isValid = isValidEmail(email);
+
+    return isValid;
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       // Verificar si los términos y condiciones han sido aceptados
@@ -24,11 +41,27 @@ const Register: FunctionComponent = () => {
         return;
       }
 
-      // Tu lógica de inicio de sesión aquí...
+      if (!name || !email || !password) {
+        toast.error('Por favor, completa todos los campos.');
+        return;
+      }
+
+      if (!handleEmailValidation(email)) {
+        toast.error('Por favor, ingresa un email válido.');
+        return;
+      }
+
+
+      const userData = await registerMutation({ name, email, password });
+      console.log('Usuario registrado:', userData);
+      //dispatch(setCredentials({ ...userData }));
+      navigate('/login');
+      toast.info('Usuario registrado exitosamente');
 
     } catch (err) {
-      console.error(err);
-      toast.error('Hubo un error al iniciar sesión');
+      console.error('Error de registro:', err);
+      const errorMessage = err as Error;
+      toast.error(errorMessage.message || 'Error de registro');
     }
   };
 
@@ -44,17 +77,17 @@ const Register: FunctionComponent = () => {
     <div className="contenedor" style={{ display: 'flex' }}>
       <div className="mitad-izquierda" style={{ flex: '1' }}>
 
-        <form onSubmit={submitHandler} className={"form"} style={{ width: '100%' }}>
+        <form onSubmit={handleRegister} className={"form"} style={{ width: '100%' }}>
           <Typography variant="h5" align="center" gutterBottom>
             Register
           </Typography>
 
           <div className="form-elements-container">
 
-          <Typography align="center" style={{ lineHeight: '1.5em' }}>
-            <b>Welcome</b>, we want that you use <b>Inv</b> for your business to obtain the best results.
-            To start to use our web app, complete the next register form!            
-          </Typography>
+            <Typography align="center" style={{ lineHeight: '1.5em' }}>
+              <b>Welcome</b>, we want that you use <b>Inv</b> for your business to obtain the best results.
+              To start to use our web app, complete the next register form!
+            </Typography>
 
 
             <TextField
@@ -69,7 +102,7 @@ const Register: FunctionComponent = () => {
               margin="normal"
               fullWidth
               value={name}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               autoFocus
               autoComplete="name"
             />
@@ -84,8 +117,8 @@ const Register: FunctionComponent = () => {
               size="medium"
               margin="normal"
               fullWidth
-              value={name}
-              onChange={(e) => setEmail(e.target.value)}
+              value={cellphone}
+              onChange={(e) => setCellphone(e.target.value)}
               autoFocus
               autoComplete="cellphone"
             />
