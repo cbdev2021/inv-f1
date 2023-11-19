@@ -12,13 +12,35 @@ const Login: FunctionComponent = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [loginMutation, { isLoading }] = useLoginMutation();
+
+  //const { userInfo } = useSelector((state: any) => state.auth);
   const userInfo = useSelector((state: any) => state);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      // Tu lógica de inicio de sesión aquí...
+      const res = await loginMutation({ email, password }).unwrap();
+      // console.log("res");
+      // console.log(res);
 
+      dispatch(setCredentials({
+        userInfo: {
+          _id: res._id,
+          name: res.name,
+          email: res.email,
+          token: res.token
+        },
+        token: res.token
+      }));
+
+      console.log("inicio - userInfo.token:");
+      console.log(userInfo);
+
+      console.log("inicio - res.token:", res.token); // Agregar un console.log aquí                                    
+
+      navigate('/billing');
     } catch (err) {
       console.error(err);
       toast.error('Hubo un error al iniciar sesión');
