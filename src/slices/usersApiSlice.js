@@ -1,6 +1,6 @@
 import { apiSlice } from './apiSlice';
-const USERS_URL = 'http://localhost:10000/api/users';
-//const USERS_URL = 'https://mern-b1-vrcl.vercel.app/api/users';
+//const USERS_URL = 'http://localhost:10000/api/users';
+const USERS_URL = 'https://inv-b1.vercel.app/api/users';
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({

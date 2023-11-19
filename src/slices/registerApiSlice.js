@@ -2,7 +2,7 @@ import { apiSlice } from './apiSlice';
 
 // Reemplaza la URL correcta de tus servicios de registro
 //const REGISTER_URL = 'http://localhost:10000/api/registers'; // Reemplaza con tu URL de registro
-const REGISTER_URL = 'https://mern-b1-vrcl.vercel.app/api/registers';
+const REGISTER_URL = 'https://inv-b1.vercel.app/api/registers';
 
 
 export const registerApiSlice = apiSlice.injectEndpoints({
