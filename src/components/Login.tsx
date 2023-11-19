@@ -40,7 +40,7 @@ const Login: FunctionComponent = () => {
 
       console.log("inicio - res.token:", res.token); // Agregar un console.log aquí                                    
 
-      navigate('/billing');
+      navigate('/home');
     } catch (err) {
       console.error(err);
       toast.error('Hubo un error al iniciar sesión');
