@@ -86,7 +86,9 @@ body {
 
 .yaTienesCuentaContainer {
   position: absolute;
-  top: calc(50% + 100px); /* Ajusta la posición vertical aquí */
+  /* top: calc(50% + 100px);  */
+  top: calc(50% + 300px); 
+
   left: calc(50% - 104px); /* Ajusta la posición horizontal aquí */
   text-align: center;
   display: inline-block;
@@ -97,7 +99,9 @@ body {
 
 .noTienesCuentaContainer {
   position: absolute;
-  top: calc(50% + 100px); /* Ajusta la posición vertical aquí */
+  /* top: calc(50% + 100px); */
+  top: calc(50% + 300px);
+
   left: calc(50% - 104px); /* Ajusta la posición horizontal aquí */
   text-align: center;
   display: inline-block;

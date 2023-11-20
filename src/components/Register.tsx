@@ -4,7 +4,7 @@ import { setCredentials, setToken } from '../slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Typography, TextField, Button, FormControlLabel, Checkbox } from '@mui/material';
 import { useRegisterMutation } from "../slices/usersApiSlice";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const isValidEmail = (email: string) =>
   // eslint-disable-next-line no-useless-escape
@@ -174,6 +174,12 @@ const Register: FunctionComponent = () => {
             >
               Register
             </Button>
+          </div>
+          <div className={"yaTienesCuentaContainer"}>
+            <span>¿Ya tienes cuenta? </span>
+            <Link to="/login" className={"registrate"}>
+              <b className={"registrate"}>Iniciar sesión</b>
+            </Link>
           </div>
         </form>
       </div>

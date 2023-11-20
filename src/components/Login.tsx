@@ -4,7 +4,7 @@ import { setCredentials, setToken } from '../slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Typography, TextField, Button } from '@mui/material';
 import { useLoginMutation } from "../slices/usersApiSlice";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login: FunctionComponent = () => {
   const [email, setEmail] = useState('');
@@ -118,6 +118,13 @@ const Login: FunctionComponent = () => {
               Sing In
             </Button>
           </div>
+
+          <div className={"noTienesCuentaContainer"}>
+            <span>¿No tienes cuenta? </span>
+            <Link to="/register" className={"registrate"}>
+              <b className={"registrate"}>Registro</b>
+            </Link>
+          </div>
         </form>
       </div>
 
@@ -126,6 +133,8 @@ const Login: FunctionComponent = () => {
           Obten un mejor control de tus inventarios,
           inicia sesión para comenzar!!
         </Typography>
+
+
       </div>
     </div>
   );
