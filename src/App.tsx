@@ -10,6 +10,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import PrivateRoute from './components/PrivateRoute';
 import { useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App: FunctionComponent = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -23,6 +25,7 @@ const App: FunctionComponent = () => {
         <div>
             {/* <Header onMenuClick={toggleDrawer} /> */}
             {userInfo && <Header onMenuClick={toggleDrawer} />}
+            <ToastContainer />
             <Drawer open={drawerOpen} onClose={toggleDrawer} />
 
             <Routes>

@@ -41,10 +41,20 @@ const Login: FunctionComponent = () => {
       console.log("inicio - res.token:", res.token); // Agregar un console.log aquí                                    
 
       navigate('/home');
-    } catch (err) {
+      // } catch (err) {
+      //   console.error(err);
+      //   toast.error('Hubo un error al iniciar sesión');
+      // }
+    } catch (err: any) {
       console.error(err);
-      toast.error('Hubo un error al iniciar sesión');
+
+      if (err.data && err.data.message === "Invalid email or password") {
+        toast.error('Correo o contraseña incorrectos');
+      } else {
+        toast.error('Hubo un error al iniciar sesión');
+      }
     }
+
   };
 
   const [isVisible, setIsVisible] = useState(false);
