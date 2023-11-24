@@ -59,7 +59,9 @@ import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { useGetRegistersByCriteriaQuery } from '../slices/registerApiSlice'; // Import the hook
+//import { useGetRegistersByCriteriaQuery } from '../slices/registerApiSlice'; // Import the hook
+import { useGetProductsByUserIdQuery } from '../slices/productApiSlice'; // Import the hook
+
 import { useAddRegisterMutation, useDeleteRegisterMutation } from '../slices/registerApiSlice';
 import { CircularProgress } from "@mui/material";
 
@@ -103,15 +105,27 @@ const Inventory: FunctionComponent = () => {
     // }, [itemToUpdate]);
 
     const userId = useSelector((state: any) => state.auth.userInfo._id);
+
+    
+    // console.log("userId");
+    // console.log(userId);
+
+
+
     const token = useSelector((state: any) => state.auth.token);
     const { data: dataResponse } = useGetTypeValuesByUserIdQuery({
         idUsuario: userId,
         token: token,
     });
 
-    const { data: dataResponseRegisters, isLoading, refetch } = useGetRegistersByCriteriaQuery({
+
+    // console.log("userInfo");
+    // console.log(useSelector((state: any) => state.auth.userInfo._id));
+    
+
+    const { data: dataResponseRegisters, isLoading, refetch } = useGetProductsByUserIdQuery({
         data: {
-            idUsuario: userId,
+            idUsuario: userId
         },
         token: token,
     });
@@ -373,8 +387,8 @@ const Inventory: FunctionComponent = () => {
                             <TableHead>
                                 <TableRow>
                                     {/* <TableCell>ID</TableCell> */}
-                                    <TableCell>Tipo de Registro</TableCell>
-                                    <TableCell>Descripción</TableCell>
+                                    <TableCell>Product ID</TableCell>
+                                    <TableCell>Product Name</TableCell>
                                     <TableCell>Fecha</TableCell>
                                     <TableCell>Monto</TableCell>
                                     <TableCell>Acciones</TableCell>
@@ -387,8 +401,8 @@ const Inventory: FunctionComponent = () => {
                                 {dataResponseRegisters && dataResponseRegisters.length > 0 ? (
                                     dataResponseRegisters.map((row: any) => (
                                         <TableRow key={row._id}>
-                                            <TableCell>{row.tipoRegistro}</TableCell>
-                                            <TableCell>{row.descRegistro}</TableCell>
+                                            <TableCell>{row.correlative}</TableCell>
+                                            <TableCell>{row.product}</TableCell>
                                             <TableCell>{row.fecha}</TableCell>
                                             <TableCell>{row.monto}</TableCell>
                                             <TableCell>
