@@ -62,7 +62,10 @@ import EditIcon from "@mui/icons-material/Edit";
 //import { useGetRegistersByCriteriaQuery } from '../slices/registerApiSlice'; // Import the hook
 import { useGetProductsByUserIdQuery } from '../slices/productApiSlice'; // Import the hook
 
-import { useAddRegisterMutation, useDeleteRegisterMutation } from '../slices/registerApiSlice';
+//import { useAddRegisterMutation, useDeleteRegisterMutation } from '../slices/registerApiSlice';
+import { useAddProductMutation, useDeleteProductMutation } from '../slices/productApiSlice';
+
+
 import { CircularProgress } from "@mui/material";
 
 function filterRecordsByMonthAndYear(records: any[], targetMonth: number, targetYear: number) {
@@ -91,8 +94,8 @@ const Inventory: FunctionComponent = () => {
     const [spentData, setSpentData] = useState([]);
     const [incomeData, setIncomeData] = useState([]);
     const [numericValue, setNumericValue] = useState("");
-    const [addTypeValueMutation] = useAddRegisterMutation();
-    const [deleteTypeValueMutation] = useDeleteRegisterMutation();
+    const [addTypeValueMutation] = useAddProductMutation();
+    const [deleteTypeValueMutation] = useDeleteProductMutation();
     const [rowId, setrowId] = useState("");
     const [dataEdit, setDataEdit] = useState([]);
     const [itemToUpdate, setItemToUpdate] = useState("");
@@ -402,7 +405,7 @@ const Inventory: FunctionComponent = () => {
                                     dataResponseRegisters.map((row: any) => (
                                         <TableRow key={row._id}>
                                             <TableCell>{row.correlative}</TableCell>
-                                            <TableCell>{row.product}</TableCell>
+                                            <TableCell>{row.description}</TableCell>
                                             <TableCell>{row.fecha}</TableCell>
                                             <TableCell>{row.monto}</TableCell>
                                             <TableCell>

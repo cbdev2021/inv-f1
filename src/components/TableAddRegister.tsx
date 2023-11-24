@@ -29,7 +29,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { toast } from "react-toastify";
-import { useUpdateRegisterMutation } from '../slices/registerApiSlice';
+//import { useUpdateRegisterMutation } from '../slices/registerApiSlice';
+import { useUpdateProductMutation } from '../slices/productApiSlice';
 
 
 import dayjs from 'dayjs';
@@ -68,7 +69,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   const [addNewSubtype, setAddNewSubtype] = useState("");
   const [isNumericKeyboardOpen, setIsNumericKeyboardOpen] = useState(true);
   const tableRef = useRef<HTMLTableElement | null>(null);
-  const [updateTypeValue] = useUpdateRegisterMutation();
+  const [updateTypeValue] = useUpdateProductMutation();
 
   useEffect(() => {
     // Este bloque de código se ejecutará cuando itemToUpdate cambie
@@ -77,27 +78,35 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     // Realiza las acciones necesarias basadas en el cambio de itemToUpdate
   }, [itemToUpdate]);
 
+  const [description, setDescription] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.description : ""
+  );
 
-  const [descRegistro, setDescRegistro] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.descRegistro : ""
-  );
-  const [monto, setMonto] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.monto : ""
-  );
-  const [fecha, setFecha] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? formatDate(itemToUpdate.fecha) : ""
-  );
+  // const [descRegistro, setDescRegistro] = useState(
+  //   itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.descRegistro : ""
+  // );
+  // const [monto, setMonto] = useState(
+  //   itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.monto : ""
+  // );
+  // const [fecha, setFecha] = useState(
+  //   itemToUpdate && typevalue === "Edit Register" ? formatDate(itemToUpdate.fecha) : ""
+  // );
 
   useEffect(() => {
     if (itemToUpdate && typevalue === "Edit Register") {
-      setDescRegistro(itemToUpdate.descRegistro);
-      setMonto(itemToUpdate.monto);
-      setFecha(formatDate(itemToUpdate.fecha));
+      setDescription(itemToUpdate.description);
+
+
+      // setDescRegistro(itemToUpdate.descRegistro);
+      // setMonto(itemToUpdate.monto);
+      // setFecha(formatDate(itemToUpdate.fecha));
     } else {
       // En caso de que itemToUpdate sea null u otra condición, puedes establecer los estados en un valor predeterminado
-      setDescRegistro("");
-      setMonto("");
-      setFecha("");
+
+      setDescription("");
+      // setDescRegistro("");
+      // setMonto("");
+      // setFecha("");
     }
   }, [itemToUpdate, typevalue]);
 
@@ -108,7 +117,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
     const day = date.getUTCDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
-   // return `${day}/${month}/${year}`;
+    // return `${day}/${month}/${year}`;
   }
 
   // const handleEdit = (id: string) => {
@@ -121,26 +130,21 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   // };
 
   const handleAdd = async () => {
-    if (!monto || !fecha ) {
-      if (!monto) {
+    if (!description) {
+      if (!description) {
         toast.error("El campo de valor numérico es obligatorio.");
       }
-      if (!fecha) {
-        toast.error("Debes seleccionar una fecha válida.");
-      }
-      // if (!descRegistro) {
-      //   toast.error("Debes seleccionar un tipo.");
-      // }
       return;
     }
 
     try {
       const response = await addTypeValueMutation({
         registro: {
-          tipoRegistro: typevalue, //Mandatory
-          descRegistro: descRegistro,
-          fecha: fecha,
-          monto: monto
+          description: description
+          // tipoRegistro: typevalue, //Mandatory
+          // descRegistro: descRegistro,
+          // fecha: fecha,
+          // monto: monto
         },
         token: token,
       });
@@ -169,9 +173,9 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     setIsNumericKeyboardOpen(false);
   };
 
-  const handleNumericButtonClick = (number: number) => {
-    setMonto((prevValue: string) => prevValue + number.toString());
-  };
+  // const handleNumericButtonClick = (number: number) => {
+  //   setMonto((prevValue: string) => prevValue + number.toString());
+  // };
 
   useEffect(() => {
     if (!editingId) {
@@ -207,16 +211,11 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!monto || !fecha || !descRegistro) {
-      if (!monto) {
+    if (!description) {
+      if (!description) {
         toast.error("El campo de valor numérico es obligatorio.");
       }
-      if (!fecha) {
-        toast.error("Debes seleccionar una fecha válida.");
-      }
-      if (!descRegistro) {
-        toast.error("Debes seleccionar un tipo.");
-      }
+
       return;
     }
 
@@ -228,16 +227,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   };
 
   const handleEdit = async () => {
-
-    // if (editMode) {
-    // Realiza la actualización del registro usando useUpdateRegisterMutation
     try {
-
-      //const id = "6524d7308733a750efb0012b";
-      //const id = rowId;
-
-      //const itemToUpdate = dataRegisters.find((item) => item._id === id);
-
       console.log("itemToUpdate");
       console.log(itemToUpdate);
 
@@ -247,21 +237,15 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
       }
 
       const updatedItem = {
-        tipoRegistro: itemToUpdate.tipoRegistro,
-        descRegistro: descRegistro,
-        fecha: fecha,
-        monto: monto
+        description: description
+        // tipoRegistro: itemToUpdate.tipoRegistro,
+        // descRegistro: descRegistro,
+        // fecha: fecha,
+        // monto: monto
       };
 
-      // useUpdateRegisterMutation(
-      //   {
-      //     datos: {
-      //       id: id,
-      //       registro: updatedItem,
-      //       token: token
-      //     }
-      //   }
-      // );
+      console.log("updatedItem:");
+      console.log(updatedItem);
 
       await updateTypeValue(
         {
@@ -271,9 +255,6 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
         }
       );
 
-      // Realiza las acciones necesarias después de la edición
-
-      //setEditMode(false);
       refetch();
     } catch (error) {
       console.error("Error al editar el registro:", error);
@@ -330,75 +311,29 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
         <Grid container spacing={2}>
           {/* Numeric Value */}
           <Grid item xs={12}>
-            <TextField
+            {/* <TextField
               label="Numeric Value"
               variant="outlined"
               type="text"
-              value={monto || ""}
+              value={product || ""}
               fullWidth
-              onClick={openNumericKeyboard}
-              onKeyPress={handleKeyPress}
+            //onClick={openNumericKeyboard}
+            //onKeyPress={handleKeyPress}
+            /> */}
+
+            <TextField
+              label="Numeric Value"
+              variant="outlined"
+              type="tel" // o type="text"
+              value={description || ""}
+              onChange={(e) => setDescription(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
+              fullWidth
             />
+
+
+
+
           </Grid>
-
-          {/* DatePicker */}
-          <Grid item xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              {/* <DatePicker
-                label="Select Date"
-                value={fecha}
-                onChange={(newValue) => {
-                  if (newValue !== null) {
-                    setFecha(newValue);
-                  }
-                }}
-              /> */}
-              <DatePicker
-                label="Select Date"
-                value={dayjs(fecha)}
-                onChange={(newValue) => {
-                  if (newValue !== null) {
-                    setFecha(newValue.format('MM-DD-YYYY'));
-                    //setFecha(newValue.format('YYYY-MM-DD'));
-                  }
-                }}
-              />
-
-            </LocalizationProvider>
-          </Grid>
-
-          {/* Select Type */}
-          <Grid item xs={12}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel>Type</InputLabel>
-              <Select
-                label="Type"
-                value={descRegistro}
-                onChange={(e) => setDescRegistro(e.target.value as string)}
-              >
-                {data.map((item) => (
-                  <MenuItem key={item._id} value={item.subtype}>
-                    {item.subtype}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          {/* Botón para enviar el formulario */}
-          {/* <Grid item xs={12}>
-            <Button
-              variant="contained"
-              name="iniciar"
-              id="idIniciar"
-              color="primary"
-              onClick={handleAdd}
-              fullWidth
-              sx={{ marginTop: 2 }}
-            >
-              Add
-            </Button>
-          </Grid> */}
 
           <Grid item xs={12}>
             {addButton}
@@ -406,36 +341,6 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
 
         </Grid>
       </div>
-
-      <Dialog open={isNumericKeyboardOpen} onClose={closeNumericKeyboard}>
-        <DialogTitle>New Value</DialogTitle>
-        <DialogContent>
-          <div>
-            <Button onClick={() => handleNumericButtonClick(1)}>1</Button>
-            <Button onClick={() => handleNumericButtonClick(2)}>2</Button>
-            <Button onClick={() => handleNumericButtonClick(3)}>3</Button>
-          </div>
-          <div>
-            <Button onClick={() => handleNumericButtonClick(4)}>4</Button>
-            <Button onClick={() => handleNumericButtonClick(5)}>5</Button>
-            <Button onClick={() => handleNumericButtonClick(6)}>6</Button>
-          </div>
-          <div>
-            <Button onClick={() => handleNumericButtonClick(7)}>7</Button>
-            <Button onClick={() => handleNumericButtonClick(8)}>8</Button>
-            <Button onClick={() => handleNumericButtonClick(9)}>9</Button>
-          </div>
-          <div>
-            <Button></Button>
-            <Button onClick={() => handleNumericButtonClick(0)}>0</Button>
-            <Button></Button>
-          </div>
-          <div>
-            <Button onClick={() => setMonto("")}>Clear</Button>
-            <Button onClick={closeNumericKeyboard}>Close</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </form>
   );
 };

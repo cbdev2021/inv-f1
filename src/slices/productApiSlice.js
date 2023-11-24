@@ -8,9 +8,9 @@ const TYPE_VALUES_URL = 'http://localhost:10000/api/products';
 export const typeValuesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     
-    addTypeValue: builder.mutation({
+    addProduct: builder.mutation({
       query: (object) => ({
-        url: `${TYPE_VALUES_URL}/add-products`,
+        url: `${TYPE_VALUES_URL}/add-product`,
         method: 'POST',
         body: object.registro,
         headers: {
@@ -18,23 +18,45 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
-    updateTypeValue: builder.mutation({
-      query: (object) => ({
-        url: `${TYPE_VALUES_URL}/update-products/${object.data.id}`,
-        method: 'PUT',
-        body: object.data.registro,
-        headers: {
-          Authorization: `Bearer ${object.data.token}`,
+
+    // updateProduct: builder.mutation({    
+    //   query: (object) => ({
+    //     url: `${TYPE_VALUES_URL}/update-product/${object.id}`,
+    //     method: 'PUT',
+    //     body: object.registro,
+    //     headers: {
+    //       Authorization: `Bearer ${object.token}`,
+    //     },
+    //   }),
+    // }),    
+
+    updateProduct: builder.mutation({
+        query: (object) => {
+          const apiUrl = `${TYPE_VALUES_URL}/update-product/${object.id}`;
+          console.log("update object:", object);
+          
+          return {
+            url: apiUrl,
+            method: 'PUT',
+            body: object.registro,
+            headers: {
+              Authorization: `Bearer ${object.token}`,
+            },
+          };
         },
       }),
-    }),    
+      
 
-    deleteTypeValue: builder.mutation({
+
+
+
+
+    deleteProduct: builder.mutation({
       query: (object) => ({
-        url: `${TYPE_VALUES_URL}/delete-products/${object.data.id}`,
+        url: `${TYPE_VALUES_URL}/delete-product/${object.registro.id}`,
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${object.data.token}`,
+          Authorization: `Bearer ${object.token}`,
         },
       }),
     }),
@@ -51,7 +73,7 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
     //1
     getProductsByUserId: builder.query({
       query: (param) => {  //al parecer solo permite OBJETO de entrada!
-        console.log("param:", param); // Agregar un console.log aquí
+        //console.log("param:", param); // Agregar un console.log aquí
         return {
           url: `${TYPE_VALUES_URL}/get-products/${param.data.idUsuario}`,
           headers: {
@@ -64,9 +86,9 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
-  useAddTypeValueMutation,
-  useUpdateTypeValueMutation,
-  useDeleteTypeValueMutation,
+  useAddProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
   useGetTypeValueQuery,
   useGetProductsByUserIdQuery,
 } = typeValuesApiSlice;
