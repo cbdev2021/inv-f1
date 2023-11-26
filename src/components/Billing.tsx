@@ -40,7 +40,8 @@ import {
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PaidIcon from "@mui/icons-material/Paid";
-import { useGetTypeValuesByUserIdQuery } from '../slices/typeValuesApiSlice';
+//import { useGetTypeValuesByUserIdQuery } from '../slices/typeValuesApiSlice';
+import { useGetInvoicesByUserIdQuery } from '../slices/invoicesApiSlice';
 import { useSelector } from "react-redux";
 import TableAddBilling from "./TableAddBilling";
 
@@ -104,12 +105,12 @@ const Billing: FunctionComponent = () => {
 
     const userId = useSelector((state: any) => state.auth.userInfo._id);
     const token = useSelector((state: any) => state.auth.token);
-    const { data: dataResponse } = useGetTypeValuesByUserIdQuery({
+    const { data: dataResponse } = useGetInvoicesByUserIdQuery({
         idUsuario: userId,
         token: token,
     });
 
-    const { data: dataResponseRegisters, isLoading, refetch } = useGetRegistersByCriteriaQuery({
+    const { data: dataResponseRegisters, isLoading, refetch } = useGetInvoicesByUserIdQuery({
         data: {
             idUsuario: userId,
         },
@@ -221,7 +222,7 @@ const Billing: FunctionComponent = () => {
                     [];
 
         // Pasa la función refetch al componente hijo
-       // setDataEdit({ dataEdit, refetchFunction });
+        // setDataEdit({ dataEdit, refetchFunction });
     };
 
     useEffect(() => {
@@ -245,7 +246,7 @@ const Billing: FunctionComponent = () => {
             <CssBaseline />
             <div>
                 <Typography variant="h5" align="center" gutterBottom>
-                Billing
+                    Billing
                 </Typography>
 
                 <form className={"form"}>
@@ -349,10 +350,14 @@ const Billing: FunctionComponent = () => {
                                 {dataResponseRegisters && dataResponseRegisters.length > 0 ? (
                                     dataResponseRegisters.map((row: any) => (
                                         <TableRow key={row._id}>
-                                            <TableCell>{row.tipoRegistro}</TableCell>
+                                            {/* <TableCell>{row.tipoRegistro}</TableCell>
                                             <TableCell>{row.descRegistro}</TableCell>
                                             <TableCell>{row.fecha}</TableCell>
-                                            <TableCell>{row.monto}</TableCell>
+                                            <TableCell>{row.monto}</TableCell> */}
+                                            <TableCell>{row.correlative}</TableCell>
+                                            <TableCell>{row.fechaEmision}</TableCell>
+                                            <TableCell>{row.fechaEmision}</TableCell>
+                                            <TableCell>{row.correlative}</TableCell>
                                             <TableCell>
                                                 <IconButton
                                                     aria-label="edit"
