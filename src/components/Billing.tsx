@@ -1,30 +1,3 @@
-// import React, { FunctionComponent, useEffect, useState } from "react";
-// import { toast } from 'react-toastify';
-// import { Typography, TextField, Button } from '@mui/material';
-
-
-// const Inventory: FunctionComponent = () => {
-
-//     return (
-//         <div className="contenedor" style={{ display: 'flex' }}>
-//             <div className="mitad-izquierda" style={{ flex: '1' }}>
-
-//                 <form className={"form"} style={{ width: '100%' }}>
-//                     <Typography variant="h5" align="center" gutterBottom>
-//                     Inventory
-//                     </Typography>
-
-//                     <div className="form-elements-container">
-
-//                     </div>
-//                 </form>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Inventory;
-
 import React, { FunctionComponent, useState, useEffect } from "react";
 import {
     Container,
@@ -61,7 +34,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useGetRegistersByCriteriaQuery } from '../slices/registerApiSlice'; // Import the hook
-import { useAddRegisterMutation, useDeleteRegisterMutation } from '../slices/registerApiSlice';
+import { useAddRegisterMutation } from '../slices/registerApiSlice';
+import { useDeleteInvoiceMutation } from '../slices/invoicesApiSlice';
 import { CircularProgress } from "@mui/material";
 
 function filterRecordsByMonthAndYear(records: any[], targetMonth: number, targetYear: number) {
@@ -91,7 +65,7 @@ const Billing: FunctionComponent = () => {
     const [incomeData, setIncomeData] = useState([]);
     const [numericValue, setNumericValue] = useState("");
     const [addTypeValueMutation] = useAddRegisterMutation();
-    const [deleteTypeValueMutation] = useDeleteRegisterMutation();
+    const [deleteInvoiceMutation] = useDeleteInvoiceMutation();
     const [rowId, setrowId] = useState("");
     const [dataEdit, setDataEdit] = useState([]);
     const [itemToUpdate, setItemToUpdate] = useState("");
@@ -186,7 +160,7 @@ const Billing: FunctionComponent = () => {
     const handleDelete = async (id: string) => {
         try {
             //await deleteTypeValueMutation(id);
-            await deleteTypeValueMutation(
+            await deleteInvoiceMutation(
                 {
                     registro: {
                         id: id
@@ -336,11 +310,13 @@ const Billing: FunctionComponent = () => {
                             <TableHead>
                                 <TableRow>
                                     {/* <TableCell>ID</TableCell> */}
-                                    <TableCell>Invoice Type</TableCell>
-                                    <TableCell>Descripción</TableCell>
-                                    <TableCell>Fecha</TableCell>
-                                    <TableCell>Monto</TableCell>
-                                    <TableCell>Acciones</TableCell>
+                                    <TableCell>Invoice ID</TableCell>
+                                    <TableCell>invoice Type</TableCell>
+                                    <TableCell>Date</TableCell>                                    
+                                    <TableCell>Customer</TableCell>
+                                    <TableCell>Payment</TableCell>
+                                    <TableCell>Taxes</TableCell>
+                                    <TableCell>Sub-total</TableCell>
                                 </TableRow>
                             </TableHead>
 
@@ -349,15 +325,15 @@ const Billing: FunctionComponent = () => {
                                     filteredRecords.map((row: any) => ( */}
                                 {dataResponseRegisters && dataResponseRegisters.length > 0 ? (
                                     dataResponseRegisters.map((row: any) => (
-                                        <TableRow key={row._id}>
-                                            {/* <TableCell>{row.tipoRegistro}</TableCell>
-                                            <TableCell>{row.descRegistro}</TableCell>
-                                            <TableCell>{row.fecha}</TableCell>
-                                            <TableCell>{row.monto}</TableCell> */}
-                                            <TableCell>{row.correlative}</TableCell>
-                                            <TableCell>{row.fechaEmision}</TableCell>
-                                            <TableCell>{row.fechaEmision}</TableCell>
-                                            <TableCell>{row.correlative}</TableCell>
+                                        <TableRow key={row._id}>                                         
+                                            <TableCell>{row.invoiceType}</TableCell>
+                                            <TableCell>{row.invoiceType}</TableCell>
+                                            {/* <TableCell>{row.dateIssue}</TableCell> */}
+                                            <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
+                                            <TableCell>{row.customer}</TableCell>
+                                            <TableCell>{row.paymentSell}</TableCell>
+                                            <TableCell>{row.taxes}</TableCell>
+                                            <TableCell>{row.subTotal}</TableCell>
                                             <TableCell>
                                                 <IconButton
                                                     aria-label="edit"
