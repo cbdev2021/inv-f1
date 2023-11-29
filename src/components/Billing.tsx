@@ -34,7 +34,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useGetRegistersByCriteriaQuery } from '../slices/registerApiSlice'; // Import the hook
-import { useAddRegisterMutation } from '../slices/registerApiSlice';
+//import { useAddRegisterMutation } from '../slices/registerApiSlice';
+import { useAddInvoiceMutation } from '../slices/invoicesApiSlice';
 import { useDeleteInvoiceMutation } from '../slices/invoicesApiSlice';
 import { CircularProgress } from "@mui/material";
 
@@ -64,7 +65,7 @@ const Billing: FunctionComponent = () => {
     const [spentData, setSpentData] = useState([]);
     const [incomeData, setIncomeData] = useState([]);
     const [numericValue, setNumericValue] = useState("");
-    const [addTypeValueMutation] = useAddRegisterMutation();
+    const [addInvoiceMutation] = useAddInvoiceMutation();
     const [deleteInvoiceMutation] = useDeleteInvoiceMutation();
     const [rowId, setrowId] = useState("");
     const [dataEdit, setDataEdit] = useState([]);
@@ -259,7 +260,7 @@ const Billing: FunctionComponent = () => {
                                     title={dialogTitle}
                                     typevalue="Purchase"
                                     data={spentData}
-                                    addTypeValueMutation={addTypeValueMutation}
+                                    addInvoiceMutation={addInvoiceMutation}
                                     token={token}
                                     updateData={updateData}
                                     refetch={refetch}
@@ -272,7 +273,7 @@ const Billing: FunctionComponent = () => {
                                     title={dialogTitle}
                                     typevalue="Sales"
                                     data={incomeData}
-                                    addTypeValueMutation={addTypeValueMutation}
+                                    addInvoiceMutation={addInvoiceMutation}
                                     token={token}
                                     updateData={updateData}
                                     refetch={refetch}
@@ -287,7 +288,7 @@ const Billing: FunctionComponent = () => {
                                     typevalue="Edit Register"
                                     data={dataEdit || []}
                                     //dataRegisters= {dataResponseRegisters}
-                                    addTypeValueMutation={addTypeValueMutation}
+                                    addInvoiceMutation={addInvoiceMutation}
                                     token={token}
                                     updateData={updateData}
                                     refetch={refetch}
@@ -313,7 +314,7 @@ const Billing: FunctionComponent = () => {
                                     <TableCell>Invoice ID</TableCell>
                                     <TableCell>invoice Type</TableCell>
                                     <TableCell>Date</TableCell>                                    
-                                    <TableCell>Customer</TableCell>
+                                    <TableCell>Provider/Customer</TableCell>
                                     <TableCell>Payment</TableCell>
                                     <TableCell>Taxes</TableCell>
                                     <TableCell>Sub-total</TableCell>
@@ -326,12 +327,17 @@ const Billing: FunctionComponent = () => {
                                 {dataResponseRegisters && dataResponseRegisters.length > 0 ? (
                                     dataResponseRegisters.map((row: any) => (
                                         <TableRow key={row._id}>                                         
-                                            <TableCell>{row.invoiceType}</TableCell>
+                                            <TableCell>{row.invoiceID}</TableCell>
                                             <TableCell>{row.invoiceType}</TableCell>
                                             {/* <TableCell>{row.dateIssue}</TableCell> */}
                                             <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
-                                            <TableCell>{row.customer}</TableCell>
-                                            <TableCell>{row.paymentSell}</TableCell>
+                                            {/* <TableCell>{row.customer}</TableCell> */}
+                                            {/* <TableCell>{row.invoiceType === 'Sales' ? row.provider : row.customer}</TableCell> */}
+                                            <TableCell>{ row.provider? row.provider : row.customer}</TableCell>
+                                            {/* <TableCell>{row.paymentSell}</TableCell> */}
+                                            <TableCell>{ row.paymentSell? row.paymentSell : row.paymentBuy}</TableCell>
+
+
                                             <TableCell>{row.taxes}</TableCell>
                                             <TableCell>{row.subTotal}</TableCell>
                                             <TableCell>

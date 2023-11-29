@@ -43,7 +43,7 @@ interface TableConfigProps {
     subtype: string;
   }[];
   typevalue: string;
-  addTypeValueMutation: any;
+  addInvoiceMutation: any;
   token: string;
   updateData: (newData: any, dataType: string) => void;
   refetch: () => void;
@@ -56,7 +56,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   title,
   data,
   typevalue,
-  addTypeValueMutation,
+  addInvoiceMutation,
   token,
   updateData,
   refetch,
@@ -88,6 +88,36 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     itemToUpdate && typevalue === "Edit Register" ? formatDate(itemToUpdate.fecha) : ""
   );
 
+  const [taxes, setTaxes] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.taxes : ""
+  );
+
+  const [invoiceID, setInvoiceID] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.invoiceID : ""
+  );
+
+  //venta
+  const [customer, setCustomer] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.customer : ""
+  );
+
+  const [paymentSell, setPaymentSell] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.paymentSell : ""
+  );
+
+  //compra
+
+  const [provider, setProvider] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.provider : ""
+  );
+
+  const [paymentBuy, setPaymentBuy] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.paymentBuy : ""
+  );
+
+  const paymentSellOptions = ['efectivo', 'tarjeta de crédito', 'tarjeta de débito', 'cheque', 'pago en línea'];
+
+
   useEffect(() => {
     if (itemToUpdate && typevalue === "Edit Register") {
       setDescRegistro(itemToUpdate.descRegistro);
@@ -108,7 +138,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
     const day = date.getUTCDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
-   // return `${day}/${month}/${year}`;
+    // return `${day}/${month}/${year}`;
   }
 
   // const handleEdit = (id: string) => {
@@ -121,7 +151,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   // };
 
   const handleAdd = async () => {
-    if (!monto || !fecha ) {
+    if (!monto || !fecha) {
       if (!monto) {
         toast.error("El campo de valor numérico es obligatorio.");
       }
@@ -135,12 +165,21 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     }
 
     try {
-      const response = await addTypeValueMutation({
+      const response = await addInvoiceMutation({
         registro: {
-          tipoRegistro: typevalue, //Mandatory
-          descRegistro: descRegistro,
-          fecha: fecha,
-          monto: monto
+          //Mandatory fields
+          invoiceID: invoiceID,
+          invoiceType: typevalue,
+          dateIssue: fecha,
+          subTotal: monto,
+          taxes: taxes,
+
+          //compra
+          customer: customer,
+          paymentSell: paymentSell,
+          //venta
+          provider: provider,
+          paymentBuy: paymentBuy,
         },
         token: token,
       });
@@ -318,6 +357,13 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     );
   }
 
+  const handlePaymentSellChange = (event: { target: { value: any; }; }) => {
+    setPaymentSell(event.target.value);
+  };
+
+  const handlePaymentBuyChange = (event: { target: { value: any; }; }) => {
+    setPaymentBuy(event.target.value);
+  };
 
 
   return (
@@ -331,13 +377,23 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           {/* Numeric Value */}
           <Grid item xs={12}>
             <TextField
-              label="Numeric Value"
+              label="Sub total"
               variant="outlined"
               type="text"
               value={monto || ""}
               fullWidth
-              onClick={openNumericKeyboard}
-              onKeyPress={handleKeyPress}
+              onChange={(e) => setMonto(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Taxes"
+              variant="outlined"
+              type="text"
+              value={taxes || ""}
+              fullWidth
+              onChange={(e) => setTaxes(e.target.value)}
             />
           </Grid>
 
@@ -368,7 +424,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           {/* Select Type */}
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <FormControl variant="outlined" fullWidth>
               <InputLabel>Type</InputLabel>
               <Select
@@ -383,22 +439,75 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                 ))}
               </Select>
             </FormControl>
+          </Grid> */}
+
+          <Grid item xs={12}>
+            {typevalue === 'Purchase' && (
+              <TextField
+                label="Provider"
+                variant="outlined"
+                type="text"
+                value={provider || ""}
+                fullWidth
+                onChange={(e) => setProvider(e.target.value)}
+              />
+            )}
           </Grid>
 
-          {/* Botón para enviar el formulario */}
-          {/* <Grid item xs={12}>
-            <Button
-              variant="contained"
-              name="iniciar"
-              id="idIniciar"
-              color="primary"
-              onClick={handleAdd}
-              fullWidth
-              sx={{ marginTop: 2 }}
-            >
-              Add
-            </Button>
-          </Grid> */}
+          <Grid item xs={12}>
+            {typevalue === 'Sales' && (
+              <TextField
+                label="customer"
+                variant="outlined"
+                type="text"
+                value={customer || ""}
+                fullWidth
+                onChange={(e) => setCustomer(e.target.value)}
+              />
+            )}
+          </Grid>
+
+          <Grid item xs={12}>
+            {typevalue === 'Sales' && (
+              <FormControl fullWidth>
+                <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
+                <Select
+                  labelId="paymentSell-label"
+                  id="paymentSell"
+                  value={paymentSell}
+                  onChange={handlePaymentSellChange}
+                  label="Payment Sell"
+                >
+                  {paymentSellOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </Grid>
+
+          <Grid item xs={12}>
+            {typevalue === 'Purchase' && (
+              <FormControl fullWidth>
+                <InputLabel id="paymentSell-label">Payment Buy</InputLabel>
+                <Select
+                  labelId="paymentSell-label"
+                  id="paymentSell"
+                  value={paymentBuy}
+                  onChange={handlePaymentBuyChange}
+                  label="Payment Buy"
+                >
+                  {paymentSellOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </Grid>
 
           <Grid item xs={12}>
             {addButton}
@@ -406,36 +515,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
         </Grid>
       </div>
-
-      <Dialog open={isNumericKeyboardOpen} onClose={closeNumericKeyboard}>
-        <DialogTitle>New Value</DialogTitle>
-        <DialogContent>
-          <div>
-            <Button onClick={() => handleNumericButtonClick(1)}>1</Button>
-            <Button onClick={() => handleNumericButtonClick(2)}>2</Button>
-            <Button onClick={() => handleNumericButtonClick(3)}>3</Button>
-          </div>
-          <div>
-            <Button onClick={() => handleNumericButtonClick(4)}>4</Button>
-            <Button onClick={() => handleNumericButtonClick(5)}>5</Button>
-            <Button onClick={() => handleNumericButtonClick(6)}>6</Button>
-          </div>
-          <div>
-            <Button onClick={() => handleNumericButtonClick(7)}>7</Button>
-            <Button onClick={() => handleNumericButtonClick(8)}>8</Button>
-            <Button onClick={() => handleNumericButtonClick(9)}>9</Button>
-          </div>
-          <div>
-            <Button></Button>
-            <Button onClick={() => handleNumericButtonClick(0)}>0</Button>
-            <Button></Button>
-          </div>
-          <div>
-            <Button onClick={() => setMonto("")}>Clear</Button>
-            <Button onClick={closeNumericKeyboard}>Close</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </form>
   );
 };
