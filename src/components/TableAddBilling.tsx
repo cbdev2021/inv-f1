@@ -184,11 +184,14 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         token: token,
       });
 
-      const newId = response.data._id;
-      const newItem = { _id: newId, subtype: addNewSubtype, typevalue: typevalue };
-      const updatedData = [...data, newItem];
-      setAddNewSubtype("");
-      updateData(updatedData, typevalue);
+      console.log("data:");
+      console.log(data);
+
+      // const newId = response.data._id;
+      // const newItem = { _id: newId, subtype: addNewSubtype, typevalue: typevalue };
+      // const updatedData = [...data, newItem];
+      // setAddNewSubtype("");
+      // updateData(updatedData, typevalue);
       refetch();
     } catch (error) {
       console.error("Error al agregar el nuevo valor:", error);
