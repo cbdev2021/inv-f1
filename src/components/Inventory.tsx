@@ -391,8 +391,8 @@ const Inventory: FunctionComponent = () => {
                                 <TableRow>
                                     {/* <TableCell>ID</TableCell> */}
                                     <TableCell>Product ID</TableCell>
-                                    <TableCell>Product Name</TableCell>
-                                    <TableCell>Fecha</TableCell>
+                                    <TableCell>Invoice ID</TableCell>
+                                    <TableCell>Product Name</TableCell>                                    
                                     <TableCell>Monto</TableCell>
                                     <TableCell>Acciones</TableCell>
                                 </TableRow>
@@ -405,8 +405,8 @@ const Inventory: FunctionComponent = () => {
                                     dataResponseRegisters.map((row: any) => (
                                         <TableRow key={row._id}>
                                             <TableCell>{row.correlative}</TableCell>
-                                            <TableCell>{row.description}</TableCell>
                                             <TableCell>{row.fecha}</TableCell>
+                                            <TableCell>{row.description}</TableCell>                                            
                                             <TableCell>{row.monto}</TableCell>
                                             <TableCell>
                                                 <IconButton
