@@ -83,11 +83,11 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const [descRegistro, setDescRegistro] = useState(
     itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.descRegistro : ""
   );
-  const [monto, setMonto] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.monto : ""
+  const [subTotal, setSubTotal] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.subTotal : ""
   );
-  const [fecha, setFecha] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? formatDate(itemToUpdate.fecha) : ""
+  const [dateIssue, setDateIssue] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? formatDate(itemToUpdate.dateIssue) : ""
   );
 
   const [taxes, setTaxes] = useState(
@@ -123,13 +123,13 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   useEffect(() => {
     if (itemToUpdate && typevalue === "Edit Register") {
       setDescRegistro(itemToUpdate.descRegistro);
-      setMonto(itemToUpdate.monto);
-      setFecha(formatDate(itemToUpdate.fecha));
+      setSubTotal(itemToUpdate.subTotal);
+      setDateIssue(formatDate(itemToUpdate.dateIssue));
     } else {
       // En caso de que itemToUpdate sea null u otra condición, puedes establecer los estados en un valor predeterminado
       setDescRegistro("");
-      setMonto("");
-      setFecha("");
+      setSubTotal("");
+      setDateIssue("");
     }
   }, [itemToUpdate, typevalue]);
 
@@ -153,12 +153,12 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   // };
 
   const handleAdd = async () => {
-    if (!monto || !fecha) {
-      if (!monto) {
+    if (!subTotal || !dateIssue) {
+      if (!subTotal) {
         toast.error("El campo de valor numérico es obligatorio.");
       }
-      if (!fecha) {
-        toast.error("Debes seleccionar una fecha válida.");
+      if (!dateIssue) {
+        toast.error("Debes seleccionar una dateIssue válida.");
       }
       // if (!descRegistro) {
       //   toast.error("Debes seleccionar un tipo.");
@@ -172,8 +172,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           //Mandatory fields
           invoiceID: invoiceID,
           invoiceType: typevalue,
-          dateIssue: fecha,
-          subTotal: monto,
+          dateIssue: dateIssue,
+          subTotal: subTotal,
           taxes: taxes,
 
           //compra
@@ -214,7 +214,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   };
 
   const handleNumericButtonClick = (number: number) => {
-    setMonto((prevValue: string) => prevValue + number.toString());
+    setSubTotal((prevValue: string) => prevValue + number.toString());
   };
 
   useEffect(() => {
@@ -251,12 +251,12 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!monto || !fecha || !descRegistro) {
-      if (!monto) {
+    if (!subTotal || !dateIssue || !descRegistro) {
+      if (!subTotal) {
         toast.error("El campo de valor numérico es obligatorio.");
       }
-      if (!fecha) {
-        toast.error("Debes seleccionar una fecha válida.");
+      if (!dateIssue) {
+        toast.error("Debes seleccionar una dateIssue válida.");
       }
       if (!descRegistro) {
         toast.error("Debes seleccionar un tipo.");
@@ -280,16 +280,11 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         return;
       }
       const updatedItem = {
-        // tipoRegistro: itemToUpdate.tipoRegistro,
-        // descRegistro: descRegistro,
-        // fecha: fecha,
-        // monto: monto
-
         invoiceID: invoiceID,
         invoiceType: typevalue,
-        dateIssue: fecha,
+        dateIssue: dateIssue,
         //idUsuario: idUsuario,
-        subTotal: monto,
+        subTotal: subTotal,
         taxes: taxes,
 
         customer: customer,
@@ -368,9 +363,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               label="Sub total"
               variant="outlined"
               type="text"
-              value={monto || ""}
+              value={subTotal || ""}
               fullWidth
-              onChange={(e) => setMonto(e.target.value)}
+              onChange={(e) => setSubTotal(e.target.value)}
             />
           </Grid>
 
@@ -388,21 +383,12 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           {/* DatePicker */}
           <Grid item xs={12}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              {/* <DatePicker
-                label="Select Date"
-                value={fecha}
-                onChange={(newValue) => {
-                  if (newValue !== null) {
-                    setFecha(newValue);
-                  }
-                }}
-              /> */}
               <DatePicker
                 label="Select Date"
-                value={dayjs(fecha)}
+                value={dayjs(dateIssue)}
                 onChange={(newValue) => {
                   if (newValue !== null) {
-                    setFecha(newValue.format('MM-DD-YYYY'));
+                    setDateIssue(newValue.format('MM-DD-YYYY'));
                     //setFecha(newValue.format('YYYY-MM-DD'));
                   }
                 }}
@@ -430,7 +416,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid> */}
 
           <Grid item xs={12}>
-            {(typevalue === 'Purchase' || itemToUpdate.invoiceType === 'Purchase') && (
+            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' || itemToUpdate.invoiceType === 'Purchase'))) && (
+
               <TextField
                 label="Provider"
                 variant="outlined"
@@ -443,7 +430,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {(typevalue === 'Sales' || itemToUpdate.invoiceType === 'Sales') && (
+            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' || itemToUpdate.invoiceType === 'Sales'))) && (
+
               <TextField
                 label="customer"
                 variant="outlined"
@@ -456,7 +444,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {(typevalue === 'Sales' || itemToUpdate.invoiceType === 'Sales') && (
+            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' || itemToUpdate.invoiceType === 'Sales'))) && (
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
                 <Select
@@ -477,7 +465,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {(typevalue === 'Purchase' || itemToUpdate.invoiceType === 'Purchase') && (
+            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' || itemToUpdate.invoiceType === 'Purchase'))) && (
+
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Buy</InputLabel>
                 <Select
