@@ -185,6 +185,9 @@ const Billing: FunctionComponent = () => {
         const itemToUpdate = dataResponseRegisters.find((item: { _id: string; }) => item._id === rowId);
         setItemToUpdate(itemToUpdate);
 
+        // console.log("itemToUpdate: ");
+        // console.log(itemToUpdate);
+
         // Pasa la función refetch al componente hijo
         const refetchFunction = async () => {
             await refetch();

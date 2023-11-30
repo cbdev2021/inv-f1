@@ -7,7 +7,6 @@ const INVOICES_URL = 'https://inv-b1.vercel.app/api/invoices';
 
 export const invoicesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    
     addInvoice: builder.mutation({
       query: (object) => ({
         url: `${INVOICES_URL}/add-invoice`,
@@ -19,33 +18,32 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    // updateProduct: builder.mutation({    
-    //   query: (object) => ({
-    //     url: `${INVOICES_URL}/update-invoice/${object.id}`,
-    //     method: 'PUT',
-    //     body: object.registro,
-    //     headers: {
-    //       Authorization: `Bearer ${object.token}`,
-    //     },
-    //   }),
-    // }),    
-
     updateInvoice: builder.mutation({
-        query: (object) => {
-          const apiUrl = `${INVOICES_URL}/update-invoice/${object.id}`;
-          console.log("update object:", object);
-          
-          return {
-            url: apiUrl,
-            method: 'PUT',
-            body: object.registro,
-            headers: {
-              Authorization: `Bearer ${object.token}`,
-            },
-          };
+      query: (object) => ({
+        url: `${INVOICES_URL}/update-invoice/${object.id}`,
+        method: 'PUT',
+        body: object.registro,
+        headers: {
+          Authorization: `Bearer ${object.token}`,
         },
       }),
-      
+    }),
+
+    // updateInvoice: builder.mutation({
+    //   query: (object) => {
+    //     const apiUrl = `${INVOICES_URL}/update-invoice/${object.id}`;
+    //     console.log("update object:", object);
+    //     return {
+    //       url: apiUrl,
+    //       method: 'PUT',
+    //       body: object.registro,
+    //       headers: {
+    //         Authorization: `Bearer ${object.token}`,
+    //       },
+    //     };
+    //   },
+    // }),
+
     deleteInvoice: builder.mutation({
       query: (object) => ({
         url: `${INVOICES_URL}/delete-invoice/${object.registro.id}`,
@@ -55,7 +53,7 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
-    
+
     getInvoice: builder.query({
       query: (id, token) => ({
         url: `${INVOICES_URL}/get-invoices/${id}`,
@@ -72,7 +70,7 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
         return {
           url: `${INVOICES_URL}/get-invoices/${param.data.idUsuario}`,
           headers: {
-            Authorization: `Bearer ${param.token}`, 
+            Authorization: `Bearer ${param.token}`,
           },
         };
       },
@@ -82,7 +80,7 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useAddInvoiceMutation,
-  useUpdateInvoicetMutation,
+  useUpdateInvoiceMutation,
   useDeleteInvoiceMutation,
   useGetInvoiceQuery,
   useGetInvoicesByUserIdQuery,
