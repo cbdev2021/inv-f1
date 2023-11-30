@@ -416,7 +416,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid> */}
 
           <Grid item xs={12}>
-            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' || itemToUpdate.invoiceType === 'Purchase'))) && (
+            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Purchase'))) && (
 
               <TextField
                 label="Provider"
@@ -430,7 +430,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' || itemToUpdate.invoiceType === 'Sales'))) && (
+            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Sales'))) && (
 
               <TextField
                 label="customer"
@@ -444,7 +444,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' || itemToUpdate.invoiceType === 'Sales'))) && (
+            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Sales'))) && (
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
                 <Select
@@ -465,7 +465,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' || itemToUpdate.invoiceType === 'Purchase'))) && (
+            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Purchase'))) && (
 
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Buy</InputLabel>
