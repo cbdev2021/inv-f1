@@ -29,7 +29,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { toast } from "react-toastify";
-import { useUpdateRegisterMutation } from '../slices/registerApiSlice';
+import { useUpdateInvoiceMutation } from '../slices/invoicesApiSlice';
+//import { useUpdateRegisterMutation } from '../slices/registerApiSlice';
+
 
 
 import dayjs from 'dayjs';
@@ -68,7 +70,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const [addNewSubtype, setAddNewSubtype] = useState("");
   const [isNumericKeyboardOpen, setIsNumericKeyboardOpen] = useState(true);
   const tableRef = useRef<HTMLTableElement | null>(null);
-  const [updateTypeValue] = useUpdateRegisterMutation();
+  const [updateInvoice] = useUpdateInvoiceMutation();
 
   useEffect(() => {
     // Este bloque de código se ejecutará cuando itemToUpdate cambie
@@ -270,61 +272,44 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   };
 
   const handleEdit = async () => {
-
-    // if (editMode) {
-    // Realiza la actualización del registro usando useUpdateRegisterMutation
     try {
-
-      //const id = "6524d7308733a750efb0012b";
-      //const id = rowId;
-
-      //const itemToUpdate = dataRegisters.find((item) => item._id === id);
-
       console.log("itemToUpdate");
       console.log(itemToUpdate);
-
       if (!itemToUpdate) {
         console.error("Elemento no encontrado para actualizar");
         return;
       }
-
       const updatedItem = {
-        tipoRegistro: itemToUpdate.tipoRegistro,
-        descRegistro: descRegistro,
-        fecha: fecha,
-        monto: monto
+        // tipoRegistro: itemToUpdate.tipoRegistro,
+        // descRegistro: descRegistro,
+        // fecha: fecha,
+        // monto: monto
+
+        invoiceID: invoiceID,
+        invoiceType: typevalue,
+        dateIssue: fecha,
+        //idUsuario: idUsuario,
+        subTotal: monto,
+        taxes: taxes,
+
+        customer: customer,
+        paymentSell: paymentSell,
+        //venta
+        provider: provider,
+        paymentBuy: paymentBuy,
+
       };
-
-      // useUpdateRegisterMutation(
-      //   {
-      //     datos: {
-      //       id: id,
-      //       registro: updatedItem,
-      //       token: token
-      //     }
-      //   }
-      // );
-
-      await updateTypeValue(
+      await updateInvoice(
         {
           id: itemToUpdate._id,
           registro: updatedItem,
           token: token
         }
       );
-
-      // Realiza las acciones necesarias después de la edición
-
-      //setEditMode(false);
       refetch();
     } catch (error) {
       console.error("Error al editar el registro:", error);
     }
-    // } else {
-    //   // Realiza la adición de un nuevo registro
-    //   // Resto del código para agregar un nuevo registro
-    // }
-
   };
 
 
@@ -445,7 +430,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid> */}
 
           <Grid item xs={12}>
-            {typevalue === 'Purchase' && (
+            {(typevalue === 'Purchase' || itemToUpdate.invoiceType === 'Purchase') && (
               <TextField
                 label="Provider"
                 variant="outlined"
@@ -458,7 +443,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {typevalue === 'Sales' && (
+            {(typevalue === 'Sales' || itemToUpdate.invoiceType === 'Sales') && (
               <TextField
                 label="customer"
                 variant="outlined"
@@ -471,7 +456,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {typevalue === 'Sales' && (
+            {(typevalue === 'Sales' || itemToUpdate.invoiceType === 'Sales') && (
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
                 <Select
@@ -492,7 +477,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            {typevalue === 'Purchase' && (
+            {(typevalue === 'Purchase' || itemToUpdate.invoiceType === 'Purchase') && (
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Buy</InputLabel>
                 <Select
