@@ -75,8 +75,14 @@ const Billing: FunctionComponent = () => {
     const [filteredRecords, setFilteredRecords] = useState<Record[]>([]);
 
     // useEffect(() => {
-    //     //console.log("itemToUpdate ha cambiado:", itemToUpdate);  
+    //     console.log("itemToUpdate ha cambiado:", itemToUpdate);  
     // }, [itemToUpdate]);
+
+    useEffect(() => {
+        console.log("itemToUpdate ha cambiado:", itemToUpdate); 
+        setItemToUpdate(itemToUpdate);  
+    }, [itemToUpdate]);
+
 
     const userId = useSelector((state: any) => state.auth.userInfo._id);
     const token = useSelector((state: any) => state.auth.token);
@@ -91,6 +97,7 @@ const Billing: FunctionComponent = () => {
         },
         token: token,
     });
+
 
     useEffect(() => {
         // Este efecto se ejecutará cuando dataResponseRegisters cambie
@@ -130,9 +137,15 @@ const Billing: FunctionComponent = () => {
         setNumericValue("");
     };
 
-    const handleClose = () => {
+    // const handleClose = () => {
+    //     setOpenDialog(false);
+    // };
+
+    const handleClose = async () => {
+        //await refetch();
         setOpenDialog(false);
     };
+
 
     const updateData = (newData: any, dataType: any) => {
         if (dataType === "Purchase") {
@@ -176,32 +189,74 @@ const Billing: FunctionComponent = () => {
         }
     };
 
+    // const handleEdit = (title: string, rowId: string) => {
+    //     setDialogTitle(title);
+    //     setOpenDialog(true);
+    //     setrowId(rowId);
 
-    const handleEdit = (title: string, rowId: string) => {
+    //     const itemToUpdate = dataResponseRegisters.find((item: { _id: string; }) => item._id === rowId);
+    //     setItemToUpdate(itemToUpdate);
+
+    //     // console.log("itemToUpdate: ");
+    //     // console.log(itemToUpdate);
+
+    //     // Pasa la función refetch al componente hijo
+    //     const refetchFunction = async () => {
+    //         await refetch();
+    //         console.log("Data refetched successfully.");
+    //     };
+
+    //     const dataEdit =
+    //         itemToUpdate.tipoRegistro === "Purchase" ? spentData :
+    //             itemToUpdate.tipoRegistro === "Sales" ? incomeData :
+    //                 [];
+
+    //     // Pasa la función refetch al componente hijo
+    //     // setDataEdit({ dataEdit, refetchFunction });
+    // };
+
+    // const handleEdit = async (title: string, rowId: string) => {
+    //     setDialogTitle(title);
+    //     setOpenDialog(true);
+    //     setrowId(rowId);
+    //     const itemToUpdate = dataResponseRegisters.find((item: { _id: string; }) => item._id === rowId);
+    //     setItemToUpdate(itemToUpdate);
+    //     const refetchFunction = async () => {
+    //         await refetch();
+    //         console.log("Data refetched successfully.");
+    //     };
+    //     await refetch();
+    // };
+
+    // const handleEdit = async (title: string, rowId: string) => {
+    //     setDialogTitle(title);
+    //     setOpenDialog(true);
+    //     setrowId(rowId);
+    
+    //     const itemToUpdate = dataResponseRegisters.find((item: { _id: string; }) => item._id === rowId);
+    //     setItemToUpdate(itemToUpdate);
+    
+    //     await refetch();  // Forzar la actualización antes de abrir el diálogo
+    // };
+
+
+    const handleEdit = async (title: string, rowId: string) => {
         setDialogTitle(title);
         setOpenDialog(true);
         setrowId(rowId);
-
+      
         const itemToUpdate = dataResponseRegisters.find((item: { _id: string; }) => item._id === rowId);
         setItemToUpdate(itemToUpdate);
+      
+        // Esperar a que refetch se complete antes de abrir el diálogo
+        await refetch();
+      
+        // Resto del código
+      };
+      
 
-        // console.log("itemToUpdate: ");
-        // console.log(itemToUpdate);
 
-        // Pasa la función refetch al componente hijo
-        const refetchFunction = async () => {
-            await refetch();
-            console.log("Data refetched successfully.");
-        };
 
-        const dataEdit =
-            itemToUpdate.tipoRegistro === "Purchase" ? spentData :
-                itemToUpdate.tipoRegistro === "Sales" ? incomeData :
-                    [];
-
-        // Pasa la función refetch al componente hijo
-        // setDataEdit({ dataEdit, refetchFunction });
-    };
 
     useEffect(() => {
         if (dataResponseRegisters) {
