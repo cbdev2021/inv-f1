@@ -119,17 +119,43 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
   const paymentSellOptions = ['efectivo', 'tarjeta de crédito', 'tarjeta de débito', 'cheque', 'pago en línea'];
 
+  // useEffect(() => {
+  //   if (itemToUpdate && typevalue === "Edit Register") {
+  //     setDescRegistro(itemToUpdate.descRegistro);
+  //     setSubTotal(itemToUpdate.subTotal);
+  //     setDateIssue(formatDate(itemToUpdate.dateIssue));
+  //   } else {
+  //     // En caso de que itemToUpdate sea null u otra condición, puedes establecer los estados en un valor predeterminado
+  //     setDescRegistro("");
+  //     setSubTotal("");
+  //     setDateIssue("");
+  //   }
+  // }, [itemToUpdate, typevalue]);
 
   useEffect(() => {
     if (itemToUpdate && typevalue === "Edit Register") {
-      setDescRegistro(itemToUpdate.descRegistro);
-      setSubTotal(itemToUpdate.subTotal);
-      setDateIssue(formatDate(itemToUpdate.dateIssue));
+      const { descRegistro, subTotal, dateIssue, taxes, invoiceID, customer, paymentSell, provider, paymentBuy } = itemToUpdate;
+  
+      setDescRegistro(descRegistro || "");
+      setSubTotal(subTotal || "");
+      setDateIssue(formatDate(dateIssue) || "");
+      setTaxes(taxes || "");
+      setInvoiceID(invoiceID || "");
+      setCustomer(customer || "");
+      setPaymentSell(paymentSell || "");
+      setProvider(provider || "");
+      setPaymentBuy(paymentBuy || "");
     } else {
-      // En caso de que itemToUpdate sea null u otra condición, puedes establecer los estados en un valor predeterminado
+      // Establecer valores predeterminados si itemToUpdate es null o la operación no es de edición
       setDescRegistro("");
       setSubTotal("");
       setDateIssue("");
+      setTaxes("");
+      setInvoiceID("");
+      setCustomer("");
+      setPaymentSell("");
+      setProvider("");
+      setPaymentBuy("");
     }
   }, [itemToUpdate, typevalue]);
 
