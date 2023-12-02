@@ -307,7 +307,8 @@ const Billing: FunctionComponent = () => {
                         TransitionComponent={Slide}
                         keepMounted
                         onClose={handleClose}
-                        maxWidth="xs"
+                        //maxWidth="xs"
+                        maxWidth="md"
                         fullWidth
                     >
                         <DialogTitle>{dialogTitle}</DialogTitle>
