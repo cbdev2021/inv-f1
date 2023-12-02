@@ -18,6 +18,9 @@ import {
   InputLabel,
   Button,
   Grid,
+  Autocomplete,
+  IconButton,
+  DialogActions,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -31,6 +34,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { toast } from "react-toastify";
 import { useUpdateInvoiceMutation } from '../slices/invoicesApiSlice';
 //import { useUpdateRegisterMutation } from '../slices/registerApiSlice';
+import { useGetProductsByUserIdQuery } from '../slices/productApiSlice'; // Import the hook
 
 
 
@@ -135,7 +139,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   useEffect(() => {
     if (itemToUpdate && typevalue === "Edit Register") {
       const { descRegistro, subTotal, dateIssue, taxes, invoiceID, customer, paymentSell, provider, paymentBuy } = itemToUpdate;
-  
+
       setDescRegistro(descRegistro || "");
       setSubTotal(subTotal || "");
       setDateIssue(formatDate(dateIssue) || "");
@@ -177,6 +181,29 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   //     setOriginalSubtype(currentItem.subtype);
   //   }
   // };
+
+  const { data: dataResponseRegisters, isLoading } = useGetProductsByUserIdQuery({
+    data: {
+      idUsuario: userId
+    },
+    token: token,
+  });
+
+  useEffect(() => {
+    // Este efecto se ejecutará cuando dataResponseRegisters cambie
+    // Aquí puedes realizar acciones adicionales si es necesario
+    // Puedes acceder a dataResponseRegisters directamente
+
+    console.log("dataResponseRegisters");
+    console.log(dataResponseRegisters)
+
+
+
+    if (dataResponseRegisters) {
+      // Realizar acciones adicionales si es necesario
+      // Por ejemplo, actualizar algún estado o realizar operaciones con los datos
+    }
+  }, [dataResponseRegisters]);
 
   const handleAdd = async () => {
     if (!subTotal || !dateIssue) {
@@ -374,74 +401,85 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setPaymentBuy(event.target.value);
   };
 
+  //search
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState<Array<{ productId: string; name: string }>>([]);
+  const [selectedProduct, setSelectedProduct] = useState<{ productId: string; name: string } | null>(null);
+  const [confirmAddDialogOpen, setConfirmAddDialogOpen] = useState(false);
+
+
+  const handleSearch = () => {
+    const filteredResults = dataResponseRegisters.filter(
+      (product: { name: string; productId: string; }) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.productId.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setSearchResults(filteredResults);
+  };
+
+  const handleAddToList = () => {
+    if (selectedProduct) {
+      setConfirmAddDialogOpen(true);
+    }
+  };
+
+  const confirmAddToCart = () => {
+    setSearchResults([...searchResults, selectedProduct!]);
+    setSelectedProduct(null);
+    setSearchTerm('');
+    setConfirmAddDialogOpen(false);
+  };
+
+  const cancelAddToCart = () => {
+    setConfirmAddDialogOpen(false);
+  };
+
+  // const handleDeleteFromList = (productIdToDelete: string) => {
+  //   const updatedList = searchResults.filter((product) => product.productId !== productIdToDelete);
+  //   setSearchResults(updatedList);
+  // };
+
+  // const handleDeleteFromList = (productIdToDelete: string) => {
+  //   setSearchResults((prevResults) =>
+  //     prevResults.filter((product) => product.productId !== productIdToDelete)
+  //   );
+  // };
+
+  // const handleDeleteFromList = (productIdToDelete: string) => {
+  //   console.log('Deleting product with ID:', productIdToDelete);
+  //   setSearchResults((prevResults) => {
+  //     const newResults = prevResults.filter((product) => product.productId !== productIdToDelete);
+  //     console.log('New results:', newResults);
+  //     return newResults;
+  //   });
+  // };
+
+  const handleDeleteFromList = (productIdToDelete: string) => {
+    console.log('Deleting product with ID:', productIdToDelete);
+    console.log('Previous results:', searchResults);
+  
+    setSearchResults((prevResults) => {
+      const newResults = prevResults.filter((product) => product.productId !== productIdToDelete);
+      console.log('New results:', newResults);
+      return newResults;
+    });
+  };
+  
+
+ 
+  
 
   return (
     <form onSubmit={handleAdd}>
       <div>
         <Typography variant="h6" gutterBottom>
-          Add {title}
+          {/* Add {title} */}
+          {title}
         </Typography>
 
         <Grid container spacing={2}>
-          {/* Numeric Value */}
-          <Grid item xs={12}>
-            <TextField
-              label="Sub total"
-              variant="outlined"
-              type="text"
-              value={subTotal || ""}
-              fullWidth
-              onChange={(e) => setSubTotal(e.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Taxes"
-              variant="outlined"
-              type="text"
-              value={taxes || ""}
-              fullWidth
-              onChange={(e) => setTaxes(e.target.value)}
-            />
-          </Grid>
-
-          {/* DatePicker */}
-          <Grid item xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select Date"
-                value={dayjs(dateIssue)}
-                onChange={(newValue) => {
-                  if (newValue !== null) {
-                    setDateIssue(newValue.format('MM-DD-YYYY'));
-                    //setFecha(newValue.format('YYYY-MM-DD'));
-                  }
-                }}
-              />
-
-            </LocalizationProvider>
-          </Grid>
-
-          {/* Select Type */}
-          {/* <Grid item xs={12}>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel>Type</InputLabel>
-              <Select
-                label="Type"
-                value={descRegistro}
-                onChange={(e) => setDescRegistro(e.target.value as string)}
-              >
-                {data.map((item) => (
-                  <MenuItem key={item._id} value={item.subtype}>
-                    {item.subtype}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid> */}
-
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Purchase'))) && (
 
               <TextField
@@ -455,42 +493,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             )}
           </Grid>
 
-          <Grid item xs={12}>
-            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Sales'))) && (
 
-              <TextField
-                label="customer"
-                variant="outlined"
-                type="text"
-                value={customer || ""}
-                fullWidth
-                onChange={(e) => setCustomer(e.target.value)}
-              />
-            )}
-          </Grid>
-
-          <Grid item xs={12}>
-            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Sales'))) && (
-              <FormControl fullWidth>
-                <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
-                <Select
-                  labelId="paymentSell-label"
-                  id="paymentSell"
-                  value={paymentSell}
-                  onChange={handlePaymentSellChange}
-                  label="Payment Sell"
-                >
-                  {paymentSellOptions.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-          </Grid>
-
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Purchase'))) && (
 
               <FormControl fullWidth>
@@ -512,13 +516,170 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             )}
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={6}>
+            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Sales'))) && (
+
+              <TextField
+                label="Customer"
+                variant="outlined"
+                type="text"
+                value={customer || ""}
+                fullWidth
+                onChange={(e) => setCustomer(e.target.value)}
+              />
+            )}
+          </Grid>
+
+          <Grid item xs={6}>
+            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Sales'))) && (
+              <FormControl fullWidth>
+                <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
+                <Select
+                  labelId="paymentSell-label"
+                  id="paymentSell"
+                  value={paymentSell}
+                  onChange={handlePaymentSellChange}
+                  label="Payment Sell"
+                >
+                  {paymentSellOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </Grid>
+
+          <Grid item xs={6}>
+            <TextField
+              label="Taxes"
+              variant="outlined"
+              type="text"
+              value={taxes || ""}
+              fullWidth
+              onChange={(e) => setTaxes(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={6}>
+            <TextField
+              label="Sub Total"
+              variant="outlined"
+              type="text"
+              value={subTotal || ""}
+              fullWidth
+              onChange={(e) => setSubTotal(e.target.value)}
+            />
+          </Grid>
+
+          {/* DatePicker */}
+          <Grid item xs={6}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Select Date"
+                value={dayjs(dateIssue)}
+                onChange={(newValue) => {
+                  if (newValue !== null) {
+                    setDateIssue(newValue.format('MM-DD-YYYY'));
+                    //setFecha(newValue.format('YYYY-MM-DD'));
+                  }
+                }}
+              />
+
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid item xs={6}>
             {addButton}
           </Grid>
 
         </Grid>
       </div>
+
+      {/* <div>
+        <TextField
+          label="Search by Name or ProductID"
+          variant="outlined"
+          fullWidth
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <Button variant="contained" color="primary" onClick={handleSearch}>
+          Search
+        </Button>
+      </div> */}
+
+      <Autocomplete
+        options={dataResponseRegisters}
+        getOptionLabel={(option) => option.name}
+        value={selectedProduct}
+        onChange={(_, newValue) => setSelectedProduct(newValue)}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search by Name or ProductID"
+            variant="outlined"
+            fullWidth
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        )}
+      />
+      <Button variant="contained" color="primary" onClick={handleSearch}>
+        Search
+      </Button>
+
+      <Button variant="contained" color="primary" onClick={handleAddToList} disabled={!selectedProduct}>
+        Add to List
+      </Button>
+
+      <div style={{ marginTop: '20px' }}>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Product ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {searchResults.map((product) => (
+                <TableRow key={product.productId}>
+                  <TableCell>{product.productId}</TableCell>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleDeleteFromList(product.productId)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+
+      <Dialog open={confirmAddDialogOpen} onClose={cancelAddToCart}>
+        <DialogTitle>Confirm Add to List</DialogTitle>
+        <DialogContent>
+          Are you sure you want to add {selectedProduct?.name} to the list?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelAddToCart} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={confirmAddToCart} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </form>
+
+
+
   );
 };
 
