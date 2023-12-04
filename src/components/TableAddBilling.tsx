@@ -35,7 +35,8 @@ import { toast } from "react-toastify";
 import { useUpdateInvoiceMutation } from '../slices/invoicesApiSlice';
 //import { useUpdateRegisterMutation } from '../slices/registerApiSlice';
 import { useGetProductsByUserIdQuery } from '../slices/productApiSlice'; // Import the hook
-
+//import { useAddProductMutation, useDeleteProductMutation } from '../slices/productApiSlice';
+import { useAddProductInvoiceMutation } from '../slices/productInvoicesApiSlice';
 
 
 import dayjs from 'dayjs';
@@ -75,6 +76,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const [isNumericKeyboardOpen, setIsNumericKeyboardOpen] = useState(true);
   const tableRef = useRef<HTMLTableElement | null>(null);
   const [updateInvoice] = useUpdateInvoiceMutation();
+  const [addProductInvoiceMutation] = useAddProductInvoiceMutation();
+
 
   useEffect(() => {
     // Este bloque de código se ejecutará cuando itemToUpdate cambie
@@ -465,10 +468,32 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       return newResults;
     });
   };
-  
 
- 
-  
+  const handleConfirmAll = async () => {
+    try {
+      // Itera sobre los resultados y realiza la inserción para cada registro
+      for (const product of searchResults) {
+        const response = await addProductInvoiceMutation({
+          registro: product,
+          token: token,
+        });
+
+        // Puedes imprimir en la consola la respuesta si lo necesitas
+        console.log('Respuesta de la inserción:', response);
+      }
+
+      // Limpia la lista después de confirmar todos los productos
+      setSearchResults([]);
+      // Puedes agregar aquí cualquier lógica adicional después de la confirmación de todos los productos
+
+      // Notifica al usuario que todos los productos han sido confirmados
+      toast.success('Todos los productos han sido confirmados exitosamente');
+    } catch (error) {
+      console.error('Error al confirmar los productos:', error);
+      // Maneja el error según sea necesario
+      toast.error('Hubo un error al confirmar los productos');
+    }
+  };  
 
   return (
     <form onSubmit={handleAdd}>
@@ -660,6 +685,17 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Table>
         </TableContainer>
       </div>
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleConfirmAll}
+        fullWidth
+        sx={{ marginTop: 2 }}
+        disabled={searchResults.length === 0} // Deshabilita el botón si no hay productos para confirmar
+      >
+        Confirmar Todo
+      </Button>
 
       <Dialog open={confirmAddDialogOpen} onClose={cancelAddToCart}>
         <DialogTitle>Confirm Add to List</DialogTitle>
