@@ -418,7 +418,8 @@ const Billing: FunctionComponent = () => {
                                             <TableCell>{row.invoiceType}</TableCell>
                                             <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
                                             <TableCell>{row.provider ? row.provider : row.customer}</TableCell>
-                                            <TableCell>{row.provider ? row.paymentSell : row.paymentBuy}</TableCell>
+                                            {/* <TableCell>{row.provider ? row.paymentSell : row.paymentBuy}</TableCell> */}
+                                            <TableCell>{ row.paymentSell? row.paymentSell : row.paymentBuy}</TableCell>                                            
                                             <TableCell>{row.taxes}</TableCell>
                                             <TableCell>{row.subTotal}</TableCell>
                                             <TableCell>
@@ -447,7 +448,8 @@ const Billing: FunctionComponent = () => {
                                             <TableCell>{row.invoiceType}</TableCell>
                                             <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
                                             <TableCell>{row.provider ? row.provider : row.customer}</TableCell>
-                                            <TableCell>{row.provider ? row.paymentSell : row.paymentBuy}</TableCell>
+                                            {/* <TableCell>{row.provider ? row.paymentSell : row.paymentBuy}</TableCell> */}
+                                            <TableCell>{ row.paymentSell? row.paymentSell : row.paymentBuy}</TableCell>
                                             <TableCell>{row.taxes}</TableCell>
                                             <TableCell>{row.subTotal}</TableCell>
                                             <TableCell>
