@@ -79,8 +79,8 @@ const Billing: FunctionComponent = () => {
     // }, [itemToUpdate]);
 
     useEffect(() => {
-        console.log("itemToUpdate ha cambiado:", itemToUpdate); 
-        setItemToUpdate(itemToUpdate);  
+        console.log("itemToUpdate ha cambiado:", itemToUpdate);
+        setItemToUpdate(itemToUpdate);
     }, [itemToUpdate]);
 
 
@@ -232,10 +232,10 @@ const Billing: FunctionComponent = () => {
     //     setDialogTitle(title);
     //     setOpenDialog(true);
     //     setrowId(rowId);
-    
+
     //     const itemToUpdate = dataResponseRegisters.find((item: { _id: string; }) => item._id === rowId);
     //     setItemToUpdate(itemToUpdate);
-    
+
     //     await refetch();  // Forzar la actualización antes de abrir el diálogo
     // };
 
@@ -244,16 +244,16 @@ const Billing: FunctionComponent = () => {
         setDialogTitle(title);
         setOpenDialog(true);
         setrowId(rowId);
-      
+
         const itemToUpdate = dataResponseRegisters.find((item: { _id: string; }) => item._id === rowId);
         setItemToUpdate(itemToUpdate);
-      
+
         // Esperar a que refetch se complete antes de abrir el diálogo
         await refetch();
-      
+
         // Resto del código
-      };
-      
+    };
+
 
 
 
@@ -272,6 +272,31 @@ const Billing: FunctionComponent = () => {
             setIsVisible(true);
         }, 10);
     }, []);
+
+    const [activeTab, setActiveTab] = useState(0);
+
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        setActiveTab(newValue);
+    };
+
+    const [filteredPurchaseData, setFilteredPurchaseData] = useState<Record[]>([]);
+    const [filteredSalesData, setFilteredSalesData] = useState<Record[]>([]);
+
+    useEffect(() => {
+        // Filter data when the active tab changes
+        if (dataResponseRegisters) {
+            const purchaseData = dataResponseRegisters.filter((item: { invoiceType: string; }) => item.invoiceType === 'Purchase');
+            const salesData = dataResponseRegisters.filter((item: { invoiceType: string; }) => item.invoiceType === 'Sales');
+
+            setFilteredPurchaseData(purchaseData);
+            setFilteredSalesData(salesData);
+
+            console.log("purchaseData:");
+            console.log(purchaseData);
+            console.log("salesData:");
+            console.log(salesData);
+        }
+    }, [dataResponseRegisters, currentMonth, currentYear]);
 
     return (
         //<Container component="main" maxWidth="xs" sx={{ marginTop: 10, height: '540.5px' }}>
@@ -301,6 +326,11 @@ const Billing: FunctionComponent = () => {
                             Sales Invoice
                         </Button>
                     </div>
+
+                    <Tabs value={activeTab} onChange={handleTabChange} centered>
+                        <Tab label="Purchase Invoices" />
+                        <Tab label="Sales Invoices" />
+                    </Tabs>
 
                     <Dialog
                         open={openDialog}
@@ -372,7 +402,7 @@ const Billing: FunctionComponent = () => {
                                     {/* <TableCell>ID</TableCell> */}
                                     <TableCell>Invoice ID</TableCell>
                                     <TableCell>invoice Type</TableCell>
-                                    <TableCell>Date</TableCell>                                    
+                                    <TableCell>Date</TableCell>
                                     <TableCell>Provider/Customer</TableCell>
                                     <TableCell>Payment</TableCell>
                                     <TableCell>Taxes</TableCell>
@@ -381,22 +411,43 @@ const Billing: FunctionComponent = () => {
                             </TableHead>
 
                             <TableBody>
-                                {/* {filteredRecords.length > 0 ? (
-                                    filteredRecords.map((row: any) => ( */}
-                                {dataResponseRegisters && dataResponseRegisters.length > 0 ? (
-                                    dataResponseRegisters.map((row: any) => (
-                                        <TableRow key={row._id}>                                         
-                                            <TableCell>{row.invoiceID}</TableCell>
+                                {activeTab === 0 && filteredPurchaseData.length > 0 ? (
+                                    filteredPurchaseData.map((row: any) => (
+                                        <TableRow key={row._id}>
+                                            <TableCell>{row.purchaseId}</TableCell>
                                             <TableCell>{row.invoiceType}</TableCell>
-                                            {/* <TableCell>{row.dateIssue}</TableCell> */}
                                             <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
-                                            {/* <TableCell>{row.customer}</TableCell> */}
-                                            {/* <TableCell>{row.invoiceType === 'Sales' ? row.provider : row.customer}</TableCell> */}
-                                            <TableCell>{ row.provider? row.provider : row.customer}</TableCell>
-                                            {/* <TableCell>{row.paymentSell}</TableCell> */}
-                                            <TableCell>{ row.paymentSell? row.paymentSell : row.paymentBuy}</TableCell>
-
-
+                                            <TableCell>{row.provider ? row.provider : row.customer}</TableCell>
+                                            <TableCell>{row.provider ? row.paymentSell : row.paymentBuy}</TableCell>
+                                            <TableCell>{row.taxes}</TableCell>
+                                            <TableCell>{row.subTotal}</TableCell>
+                                            <TableCell>
+                                                <IconButton
+                                                    aria-label="edit"
+                                                    onClick={() => {
+                                                        handleCloseRegisters();
+                                                        handleEdit("Edit Register", row._id);
+                                                    }}
+                                                >
+                                                    <EditIcon color="primary" />
+                                                </IconButton>
+                                                <IconButton
+                                                    aria-label="delete"
+                                                    onClick={() => handleDelete(row._id)}
+                                                >
+                                                    <DeleteIcon color="secondary" />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : activeTab === 1 && filteredSalesData.length > 0 ? (
+                                    filteredSalesData.map((row: any) => (
+                                        <TableRow key={row._id}>
+                                            <TableCell>{row.saleId}</TableCell>
+                                            <TableCell>{row.invoiceType}</TableCell>
+                                            <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
+                                            <TableCell>{row.provider ? row.provider : row.customer}</TableCell>
+                                            <TableCell>{row.provider ? row.paymentSell : row.paymentBuy}</TableCell>
                                             <TableCell>{row.taxes}</TableCell>
                                             <TableCell>{row.subTotal}</TableCell>
                                             <TableCell>
@@ -433,4 +484,3 @@ const Billing: FunctionComponent = () => {
 };
 
 export default Billing;
-
