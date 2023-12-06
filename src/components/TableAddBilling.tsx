@@ -441,8 +441,22 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
   //search
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<Array<{ productId: string; name: string }>>([]);
-  const [selectedProduct, setSelectedProduct] = useState<{ productId: string; name: string } | null>(null);
+  const [searchResults, setSearchResults] = useState<Array<{
+    invoiceID: number;
+    invoiceType: string;
+    productId: string;
+    name: string;
+    price: string;
+    amount: string;
+  }>>([]);
+  const [selectedProduct, setSelectedProduct] = useState<{
+    invoiceID: number;
+    invoiceType: string;
+    productId: string;
+    name: string;
+    price: string;
+    amount: string;
+  } | null>(null);
   const [confirmAddDialogOpen, setConfirmAddDialogOpen] = useState(false);
 
 
@@ -504,10 +518,46 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     });
   };
 
+  // const handleConfirmAll = async () => {
+  //   try {
+  //     // Itera sobre los resultados y realiza la inserción para cada registro
+  //     for (const product of searchResults) {
+  //       product.invoiceID = generateIdData; 
+  //      product.invoiceType = typevalue;     
+
+  //       const response = await addProductInvoiceMutation({
+  //         registro: product,
+  //         token: token,
+  //       });
+
+  //       // Puedes imprimir en la consola la respuesta si lo necesitas
+  //       console.log('Respuesta de la inserción:', response);
+  //     }
+
+  //     // Limpia la lista después de confirmar todos los productos
+  //     setSearchResults([]);
+  //     // Puedes agregar aquí cualquier lógica adicional después de la confirmación de todos los productos
+
+  //     // Notifica al usuario que todos los productos han sido confirmados
+  //     toast.success('Todos los productos han sido confirmados exitosamente');
+  //   } catch (error) {
+  //     console.error('Error al confirmar los productos:', error);
+  //     // Maneja el error según sea necesario
+  //     toast.error('Hubo un error al confirmar los productos');
+  //   }
+  // };
+
   const handleConfirmAll = async () => {
     try {
       // Itera sobre los resultados y realiza la inserción para cada registro
-      for (const product of searchResults) {
+      for (const originalProduct of searchResults) {
+        // Crea un nuevo objeto extendiendo el original
+        const product = { ...originalProduct };
+
+        // Agrega las propiedades invoiceID e invoiceType
+        product.invoiceID = generateIdData.sequence_value;
+        product.invoiceType = typevalue;
+
         const response = await addProductInvoiceMutation({
           registro: product,
           token: token,
@@ -529,6 +579,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       toast.error('Hubo un error al confirmar los productos');
     }
   };
+
 
   return (
     <form onSubmit={handleAdd}>
@@ -673,9 +724,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             {addButton}
-          </Grid>
+          </Grid> */}
 
         </Grid>
       </div>
@@ -724,6 +775,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               <TableRow>
                 <TableCell>Product ID</TableCell>
                 <TableCell>Name</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Amount</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -732,6 +785,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                 <TableRow key={product.productId}>
                   <TableCell>{product.productId}</TableCell>
                   <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.price}</TableCell>
+                  <TableCell>{product.amount}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleDeleteFromList(product.productId)}>
                       <DeleteIcon />
@@ -744,7 +799,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         </TableContainer>
       </div>
 
-      <Button
+      {/* <Button
         variant="contained"
         color="primary"
         onClick={handleConfirmAll}
@@ -753,6 +808,21 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         disabled={searchResults.length === 0} // Deshabilita el botón si no hay productos para confirmar
       >
         Confirmar Todo
+      </Button> */}
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          handleAdd();
+          //handleAddToList();
+          handleConfirmAll();
+        }}
+        fullWidth
+        sx={{ marginTop: 2 }}
+        //disabled={!selectedProduct}
+      >
+        Generar Factura
       </Button>
 
       <Dialog open={confirmAddDialogOpen} onClose={cancelAddToCart}>
