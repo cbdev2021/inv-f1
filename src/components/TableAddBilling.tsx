@@ -37,6 +37,7 @@ import { useUpdateInvoiceMutation } from '../slices/invoicesApiSlice';
 import { useGetProductsByUserIdQuery } from '../slices/productApiSlice'; // Import the hook
 //import { useAddProductMutation, useDeleteProductMutation } from '../slices/productApiSlice';
 import { useAddProductInvoiceMutation } from '../slices/productInvoicesApiSlice';
+import { useGetGenerateIdInvoiceQuery } from '../slices/invoicesApiSlice';
 
 
 import dayjs from 'dayjs';
@@ -77,6 +78,14 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const tableRef = useRef<HTMLTableElement | null>(null);
   const [updateInvoice] = useUpdateInvoiceMutation();
   const [addProductInvoiceMutation] = useAddProductInvoiceMutation();
+  //const [getGenerateIdInvoice] = useGetGenerateIdInvoiceQuery();
+
+  // const [invoiceId, setInvoiceId] = useState('');
+
+  // // Llamada a la consulta para obtener el ID generado
+  // const { data: generateIdData, error: generateIdError } = useGetGenerateIdInvoiceQuery({
+  //   data: { invoiceId: typevalue },
+  // });
 
 
   useEffect(() => {
@@ -273,6 +282,32 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setSubTotal((prevValue: string) => prevValue + number.toString());
   };
 
+  const [invoiceId, setInvoiceId] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.invoiceID : ""
+  );
+
+  const { data: generateIdData, error: generateIdError } = useGetGenerateIdInvoiceQuery({
+    data: { invoiceId: typevalue },
+    token: token
+  });
+
+  useEffect(() => {
+
+    console.log("generateIdData");
+    console.log(generateIdData);
+
+
+    if (generateIdData) {
+      setInvoiceId(generateIdData.sequence_value);  // Ajusta según la estructura de tu respuesta
+    }
+  }, [generateIdData]);
+
+  // Manejar errores si es necesario
+  if (generateIdError) {
+    console.error('Error obteniendo el ID generado:', generateIdError);
+  }
+
+
   useEffect(() => {
     if (!editingId) {
       setAddNewSubtype("");
@@ -461,7 +496,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const handleDeleteFromList = (productIdToDelete: string) => {
     console.log('Deleting product with ID:', productIdToDelete);
     console.log('Previous results:', searchResults);
-  
+
     setSearchResults((prevResults) => {
       const newResults = prevResults.filter((product) => product.productId !== productIdToDelete);
       console.log('New results:', newResults);
@@ -493,7 +528,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       // Maneja el error según sea necesario
       toast.error('Hubo un error al confirmar los productos');
     }
-  };  
+  };
 
   return (
     <form onSubmit={handleAdd}>
@@ -504,6 +539,30 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         </Typography>
 
         <Grid container spacing={2}>
+          {/* <Grid item xs={12} style={{ width: '50%' }}>
+            <TextField
+              label="Invoice ID"
+              variant="outlined"
+              type="text"
+              value={invoiceId || ""}
+              fullWidth
+              onChange={(e) => setInvoiceId(e.target.value)}
+            />
+          </Grid> */}
+
+          <Grid item xs={12} style={{ width: '50%' }}>
+            <TextField
+              label="Invoice ID"
+              variant="outlined"
+              type="text"
+              value={invoiceId}
+              fullWidth
+              onChange={(e) => setInvoiceId(e.target.value)}
+            />
+          </Grid>
+
+
+
           <Grid item xs={6}>
             {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Purchase'))) && (
 
@@ -517,7 +576,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               />
             )}
           </Grid>
-
 
           <Grid item xs={6}>
             {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Purchase'))) && (
