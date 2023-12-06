@@ -75,6 +75,18 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
         };
       },
     }),
+
+
+    getGenerateIdInvoice: builder.query({
+      query: (object) => ({
+        url: `${INVOICES_URL}/generate-id/${object.data.invoiceId}`,
+        headers: {
+          Authorization: `Bearer ${object.token}`,
+        },
+      }),
+    }),
+
+
   }),
 });
 
@@ -84,4 +96,6 @@ export const {
   useDeleteInvoiceMutation,
   useGetInvoiceQuery,
   useGetInvoicesByUserIdQuery,
+  //useGetGenerateIdInvoice,
+  useGetGenerateIdInvoiceQuery,
 } = invoicesApiSlice;

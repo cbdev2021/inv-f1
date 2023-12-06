@@ -82,6 +82,18 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
         };
       },
     }),
+
+    // getGenerateIdInvoice: builder.query({
+    //   query: (object) => {  //al parecer solo permite OBJETO de entrada!
+    //     //console.log("param:", param); // Agregar un console.log aquí
+    //     return {
+    //       url: `${TYPE_VALUES_URL}/generate-id/${object.data.invoiceId}`,
+    //       headers: {
+    //         Authorization: `Bearer ${param.token}`, 
+    //       },
+    //     };
+    //   },
+    // }),
   }),
 });
 
