@@ -414,7 +414,8 @@ const Billing: FunctionComponent = () => {
                                 {activeTab === 0 && filteredPurchaseData.length > 0 ? (
                                     filteredPurchaseData.map((row: any) => (
                                         <TableRow key={row._id}>
-                                            <TableCell>{row.purchaseId}</TableCell>
+                                            {/* <TableCell>{row.purchaseId}</TableCell> */}
+                                            <TableCell>{row.invoiceID}</TableCell>
                                             <TableCell>{row.invoiceType}</TableCell>
                                             <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
                                             <TableCell>{row.provider ? row.provider : row.customer}</TableCell>
@@ -444,7 +445,8 @@ const Billing: FunctionComponent = () => {
                                 ) : activeTab === 1 && filteredSalesData.length > 0 ? (
                                     filteredSalesData.map((row: any) => (
                                         <TableRow key={row._id}>
-                                            <TableCell>{row.saleId}</TableCell>
+                                            {/* <TableCell>{row.saleId}</TableCell> */}
+                                            <TableCell>{row.invoiceID}</TableCell>
                                             <TableCell>{row.invoiceType}</TableCell>
                                             <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
                                             <TableCell>{row.provider ? row.provider : row.customer}</TableCell>

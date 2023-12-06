@@ -391,9 +391,10 @@ const Inventory: FunctionComponent = () => {
                                 <TableRow>
                                     {/* <TableCell>ID</TableCell> */}
                                     <TableCell>Product ID</TableCell>
-                                    <TableCell>Invoice ID</TableCell>
-                                    <TableCell>Product Name</TableCell>                                    
-                                    <TableCell>Monto</TableCell>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>Description</TableCell>                                    
+                                    <TableCell>Price</TableCell>
+                                    <TableCell>Amount</TableCell>
                                     <TableCell>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -404,10 +405,11 @@ const Inventory: FunctionComponent = () => {
                                 {dataResponseRegisters && dataResponseRegisters.length > 0 ? (
                                     dataResponseRegisters.map((row: any) => (
                                         <TableRow key={row._id}>
-                                            <TableCell>{row.correlative}</TableCell>
-                                            <TableCell>{row.fecha}</TableCell>
-                                            <TableCell>{row.description}</TableCell>                                            
-                                            <TableCell>{row.monto}</TableCell>
+                                            <TableCell>{row.productId}</TableCell>
+                                            <TableCell>{row.name}</TableCell>
+                                            <TableCell>{row.description}</TableCell>
+                                            <TableCell>{row.price}</TableCell>                                              
+                                            <TableCell>{row.amount}</TableCell>
                                             <TableCell>
                                                 <IconButton
                                                     aria-label="edit"
