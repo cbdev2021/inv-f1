@@ -354,6 +354,9 @@ const Billing: FunctionComponent = () => {
                                     updateData={updateData}
                                     refetch={refetch}
                                     itemToUpdate={null}
+                                    //openDialog={openDialog}
+                                    setOpenDialog={setOpenDialog}
+                                    
                                 />
                             )}
                             {dialogTitle === "Sales" && (
@@ -367,6 +370,8 @@ const Billing: FunctionComponent = () => {
                                     updateData={updateData}
                                     refetch={refetch}
                                     itemToUpdate={null}
+                                    //openDialog={openDialog}
+                                    setOpenDialog={setOpenDialog}
                                 />
                             )}
 
@@ -382,6 +387,8 @@ const Billing: FunctionComponent = () => {
                                     updateData={updateData}
                                     refetch={refetch}
                                     itemToUpdate={itemToUpdate}
+                                    //openDialog={openDialog}
+                                    setOpenDialog={setOpenDialog}
                                 />
                             )}
                         </DialogContent>
@@ -420,7 +427,7 @@ const Billing: FunctionComponent = () => {
                                             <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
                                             <TableCell>{row.provider ? row.provider : row.customer}</TableCell>
                                             {/* <TableCell>{row.provider ? row.paymentSell : row.paymentBuy}</TableCell> */}
-                                            <TableCell>{ row.paymentSell? row.paymentSell : row.paymentBuy}</TableCell>                                            
+                                            <TableCell>{row.paymentSell ? row.paymentSell : row.paymentBuy}</TableCell>
                                             <TableCell>{row.taxes}</TableCell>
                                             <TableCell>{row.subTotal}</TableCell>
                                             <TableCell>
@@ -451,7 +458,7 @@ const Billing: FunctionComponent = () => {
                                             <TableCell>{new Date(row.dateIssue).toLocaleDateString('es-ES')}</TableCell>
                                             <TableCell>{row.provider ? row.provider : row.customer}</TableCell>
                                             {/* <TableCell>{row.provider ? row.paymentSell : row.paymentBuy}</TableCell> */}
-                                            <TableCell>{ row.paymentSell? row.paymentSell : row.paymentBuy}</TableCell>
+                                            <TableCell>{row.paymentSell ? row.paymentSell : row.paymentBuy}</TableCell>
                                             <TableCell>{row.taxes}</TableCell>
                                             <TableCell>{row.subTotal}</TableCell>
                                             <TableCell>
