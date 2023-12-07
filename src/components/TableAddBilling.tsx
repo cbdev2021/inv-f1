@@ -56,6 +56,7 @@ interface TableConfigProps {
   updateData: (newData: any, dataType: string) => void;
   refetch: () => void;
   itemToUpdate: any;
+  setOpenDialog: any;
 
 }
 
@@ -68,7 +69,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   token,
   updateData,
   refetch,
-  itemToUpdate
+  itemToUpdate,
+  setOpenDialog
 }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newSubtype, setNewSubtype] = useState("");
@@ -134,6 +136,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   );
 
   const paymentSellOptions = ['efectivo', 'tarjeta de crédito', 'tarjeta de débito', 'cheque', 'pago en línea'];
+
+  const [editableAmount, setEditableAmount] = useState('');
 
   // useEffect(() => {
   //   if (itemToUpdate && typevalue === "Edit Register") {
@@ -470,10 +474,20 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setSearchResults(filteredResults);
   };
 
-  const handleAddToList = () => {
-    if (selectedProduct) {
-      setConfirmAddDialogOpen(true);
-    }
+  // const handleAddToList = () => {
+  //   if (selectedProduct) {
+  //     setConfirmAddDialogOpen(true);
+  //   }
+  // };
+
+  // const handleAddToList = () => {
+  //   if (selectedProduct) {
+  //     setConfirmAddDialogOpen(true);
+  //   }
+  // };
+
+  const handleCreateInvoice = () => {   
+      setConfirmAddDialogOpen(true);   
   };
 
   const confirmAddToCart = () => {
@@ -572,12 +586,21 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       // Puedes agregar aquí cualquier lógica adicional después de la confirmación de todos los productos
 
       // Notifica al usuario que todos los productos han sido confirmados
-      toast.success('Todos los productos han sido confirmados exitosamente');
+      toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
     } catch (error) {
       console.error('Error al confirmar los productos:', error);
       // Maneja el error según sea necesario
       toast.error('Hubo un error al confirmar los productos');
     }
+  };
+
+  const handleEditAmount = (productId: string, newValue: string) => {
+    // Actualiza el valor de product.amount en tu estado o en la lista de búsqueda
+    const updatedSearchResults = searchResults.map((product) =>
+      product.productId === productId ? { ...product, amount: newValue } : product
+    );
+
+    setSearchResults(updatedSearchResults);
   };
 
 
@@ -601,7 +624,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             />
           </Grid> */}
 
-          <Grid item xs={12} style={{ width: '50%' }}>
+          <Grid item xs={6} style={{ width: '50%' }}>
             <TextField
               label="Invoice ID"
               variant="outlined"
@@ -609,7 +632,27 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               value={invoiceId}
               fullWidth
               onChange={(e) => setInvoiceId(e.target.value)}
+              InputProps={{
+                readOnly: true, // Hace que el campo sea de solo lectura
+              }}
             />
+          </Grid>
+
+          {/* DatePicker */}
+          <Grid item xs={6}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Select Date"
+                value={dayjs(dateIssue)}
+                onChange={(newValue) => {
+                  if (newValue !== null) {
+                    setDateIssue(newValue.format('MM-DD-YYYY'));
+                    //setFecha(newValue.format('YYYY-MM-DD'));
+                  }
+                }}
+              />
+
+            </LocalizationProvider>
           </Grid>
 
 
@@ -707,23 +750,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             />
           </Grid>
 
-          {/* DatePicker */}
-          <Grid item xs={6}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select Date"
-                value={dayjs(dateIssue)}
-                onChange={(newValue) => {
-                  if (newValue !== null) {
-                    setDateIssue(newValue.format('MM-DD-YYYY'));
-                    //setFecha(newValue.format('YYYY-MM-DD'));
-                  }
-                }}
-              />
-
-            </LocalizationProvider>
-          </Grid>
-
           {/* <Grid item xs={6}>
             {addButton}
           </Grid> */}
@@ -764,7 +790,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         Search
       </Button>
 
-      <Button variant="contained" color="primary" onClick={handleAddToList} disabled={!selectedProduct}>
+      {/* <Button variant="contained" color="primary" onClick={handleAddToList} disabled={!selectedProduct}> */}
+      <Button variant="contained" color="primary" onClick={confirmAddToCart} disabled={!selectedProduct}>      
         Add to List
       </Button>
 
@@ -786,7 +813,20 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   <TableCell>{product.productId}</TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.price}</TableCell>
-                  <TableCell>{product.amount}</TableCell>
+                  {/* <TableCell>{product.amount}</TableCell>
+                   */}
+                  <TableCell>
+                    <TextField
+                      type="number"
+                      //value={editableAmount}
+                      onChange={(e) => setEditableAmount(e.target.value)}
+                      onBlur={() => handleEditAmount(product.productId, editableAmount)}
+                      inputProps={{ min: 1 }}
+                      value={ editableAmount} 
+                    />
+                  </TableCell>
+
+
                   <TableCell>
                     <IconButton onClick={() => handleDeleteFromList(product.productId)}>
                       <DeleteIcon />
@@ -813,14 +853,20 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       <Button
         variant="contained"
         color="primary"
+        // onClick={() => {
+        //   handleAdd();
+        //   //handleAddToList();
+        //   handleConfirmAll();
+        // }}
+
         onClick={() => {
-          handleAdd();
-          //handleAddToList();
-          handleConfirmAll();
+          // handleAddToList
+          handleCreateInvoice()
         }}
+
         fullWidth
         sx={{ marginTop: 2 }}
-        //disabled={!selectedProduct}
+      //disabled={!selectedProduct}
       >
         Generar Factura
       </Button>
@@ -828,22 +874,25 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       <Dialog open={confirmAddDialogOpen} onClose={cancelAddToCart}>
         <DialogTitle>Confirm Add to List</DialogTitle>
         <DialogContent>
-          Are you sure you want to add {selectedProduct?.name} to the list?
+          Confirmas que todos los datos son correctos, para la Nueva Factura?
         </DialogContent>
         <DialogActions>
           <Button onClick={cancelAddToCart} color="primary">
             Cancel
           </Button>
-          <Button onClick={confirmAddToCart} color="primary">
+          {/* <Button onClick={confirmAddToCart} color="primary">
+           */}
+          <Button onClick={() => {
+          handleAdd();
+          handleConfirmAll();
+          setOpenDialog(false);
+          setConfirmAddDialogOpen(false);
+        }} color="primary">
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
-
     </form>
-
-
-
   );
 };
 
