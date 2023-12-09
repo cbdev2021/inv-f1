@@ -486,8 +486,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   //   }
   // };
 
-  const handleCreateInvoice = () => {   
-      setConfirmAddDialogOpen(true);   
+  const handleCreateInvoice = () => {
+    setConfirmAddDialogOpen(true);
   };
 
   const confirmAddToCart = () => {
@@ -770,6 +770,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         </Button>
       </div> */}
 
+      <br />
+
       <Autocomplete
         options={dataResponseRegisters}
         getOptionLabel={(option) => option.name}
@@ -786,14 +788,18 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           />
         )}
       />
-      <Button variant="contained" color="primary" onClick={handleSearch}>
+      {/* <Button variant="contained" color="primary" onClick={handleSearch}>
         Search
-      </Button>
+      </Button> */}
+      <br />
+
 
       {/* <Button variant="contained" color="primary" onClick={handleAddToList} disabled={!selectedProduct}> */}
-      <Button variant="contained" color="primary" onClick={confirmAddToCart} disabled={!selectedProduct}>      
+      <Button variant="contained" color="primary" onClick={confirmAddToCart} disabled={!selectedProduct}>
         Add to List
       </Button>
+      <br />
+
 
       <div style={{ marginTop: '20px' }}>
         <TableContainer component={Paper}>
@@ -822,7 +828,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                       onChange={(e) => setEditableAmount(e.target.value)}
                       onBlur={() => handleEditAmount(product.productId, editableAmount)}
                       inputProps={{ min: 1 }}
-                      value={ editableAmount} 
+                      value={editableAmount}
                     />
                   </TableCell>
 
@@ -883,11 +889,11 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           {/* <Button onClick={confirmAddToCart} color="primary">
            */}
           <Button onClick={() => {
-          handleAdd();
-          handleConfirmAll();
-          setOpenDialog(false);
-          setConfirmAddDialogOpen(false);
-        }} color="primary">
+            handleAdd();
+            handleConfirmAll();
+            setOpenDialog(false);
+            setConfirmAddDialogOpen(false);
+          }} color="primary">
             Confirm
           </Button>
         </DialogActions>
