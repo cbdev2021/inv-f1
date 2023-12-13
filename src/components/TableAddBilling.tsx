@@ -138,6 +138,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const paymentSellOptions = ['efectivo', 'tarjeta de crédito', 'tarjeta de débito', 'cheque', 'pago en línea'];
 
   const [editableAmount, setEditableAmount] = useState('');
+  const [productAmounts, setProductAmounts] = useState<{ [productId: string]: string }>({});
+
 
   // useEffect(() => {
   //   if (itemToUpdate && typevalue === "Edit Register") {
@@ -297,8 +299,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
   useEffect(() => {
 
-    console.log("generateIdData");
-    console.log(generateIdData);
+    // console.log("generateIdData");
+    // console.log(generateIdData);
 
 
     if (generateIdData) {
@@ -490,12 +492,37 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setConfirmAddDialogOpen(true);
   };
 
+  // const confirmAddToCart = () => {
+  //   console.log('1 selectedProduct:', selectedProduct);
+  //   console.log('1 searchResults:', searchResults);
+  //   setSearchResults([...searchResults, selectedProduct!]);
+  //   setSelectedProduct(null);
+  //   setSearchTerm('');
+  //   setConfirmAddDialogOpen(false);
+  //   console.log('2searchResults:', searchResults);
+  //   console.log('2 selectedProduct:', selectedProduct);
+  // };
+
+
   const confirmAddToCart = () => {
+    setProductAmounts((prevAmounts) => ({
+      ...prevAmounts,
+      [selectedProduct!.productId]: editableAmount,
+    }));
+
+
     setSearchResults([...searchResults, selectedProduct!]);
     setSelectedProduct(null);
     setSearchTerm('');
     setConfirmAddDialogOpen(false);
   };
+
+
+
+
+
+
+
 
   const cancelAddToCart = () => {
     setConfirmAddDialogOpen(false);
@@ -561,30 +588,66 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   //   }
   // };
 
+  // const handleConfirmAll = async () => {
+  //   try {
+  //     // Itera sobre los resultados y realiza la inserción para cada registro
+  //     for (const originalProduct of searchResults) {
+  //       // Crea un nuevo objeto extendiendo el original
+  //       const product = { ...originalProduct };
+
+  //       // Agrega las propiedades invoiceID e invoiceType
+  //       product.invoiceID = generateIdData.sequence_value;
+  //       product.invoiceType = typevalue;
+  //       product.amount = editableAmount;
+
+  //       const response = await addProductInvoiceMutation({
+  //         registro: product,
+  //         token: token,
+  //       });
+
+  //       // Puedes imprimir en la consola la respuesta si lo necesitas
+  //       console.log('Respuesta de la inserción:', response);
+  //     }
+
+  //     // Limpia la lista después de confirmar todos los productos
+  //     setSearchResults([]);
+  //     // Puedes agregar aquí cualquier lógica adicional después de la confirmación de todos los productos
+
+  //     // Notifica al usuario que todos los productos han sido confirmados
+  //     toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
+  //   } catch (error) {
+  //     console.error('Error al confirmar los productos:', error);
+  //     // Maneja el error según sea necesario
+  //     toast.error('Hubo un error al confirmar los productos');
+  //   }
+  // };
+
+
   const handleConfirmAll = async () => {
     try {
       // Itera sobre los resultados y realiza la inserción para cada registro
       for (const originalProduct of searchResults) {
         // Crea un nuevo objeto extendiendo el original
         const product = { ...originalProduct };
-
-        // Agrega las propiedades invoiceID e invoiceType
+  
+        // Agrega las propiedades invoiceID, invoiceType, y amount
         product.invoiceID = generateIdData.sequence_value;
         product.invoiceType = typevalue;
-
+        product.amount = productAmounts[product.productId]; // Ensure amount is provided
+  
         const response = await addProductInvoiceMutation({
           registro: product,
           token: token,
         });
-
+  
         // Puedes imprimir en la consola la respuesta si lo necesitas
         console.log('Respuesta de la inserción:', response);
       }
-
+  
       // Limpia la lista después de confirmar todos los productos
       setSearchResults([]);
       // Puedes agregar aquí cualquier lógica adicional después de la confirmación de todos los productos
-
+  
       // Notifica al usuario que todos los productos han sido confirmados
       toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
     } catch (error) {
@@ -593,14 +656,41 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       toast.error('Hubo un error al confirmar los productos');
     }
   };
+  
 
-  const handleEditAmount = (productId: string, newValue: string) => {
-    // Actualiza el valor de product.amount en tu estado o en la lista de búsqueda
-    const updatedSearchResults = searchResults.map((product) =>
-      product.productId === productId ? { ...product, amount: newValue } : product
-    );
 
-    setSearchResults(updatedSearchResults);
+
+
+
+
+
+
+
+
+  // const handleEditAmount = (productId: string, newValue: string) => {
+  //   // Actualiza el valor de product.amount en tu estado o en la lista de búsqueda
+  //   const updatedSearchResults = searchResults.map((product) =>
+  //     product.productId === productId ? { ...product, amount: newValue } : product
+  //   );
+
+  //   setSearchResults(updatedSearchResults);
+  // };
+
+
+  const handleAmountChange = (productId: any, newValue: any) => {
+    setProductAmounts((prevAmounts) => ({
+      ...prevAmounts,
+      [productId]: newValue,
+    }));
+  };
+
+  // Function to handle the onBlur event for the amount input
+  const handleEditAmount = (productId: string) => {
+    // Use the updated amount value for the specific product
+    const updatedAmount = productAmounts[productId];
+
+    // Now you can perform any additional logic with the updated amount
+    console.log(`Product ${productId} amount updated to ${updatedAmount}`);
   };
 
 
@@ -800,7 +890,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       </Button>
       <br />
 
-
       <div style={{ marginTop: '20px' }}>
         <TableContainer component={Paper}>
           <Table>
@@ -819,19 +908,16 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   <TableCell>{product.productId}</TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.price}</TableCell>
-                  {/* <TableCell>{product.amount}</TableCell>
-                   */}
+
                   <TableCell>
                     <TextField
                       type="number"
-                      //value={editableAmount}
-                      onChange={(e) => setEditableAmount(e.target.value)}
-                      onBlur={() => handleEditAmount(product.productId, editableAmount)}
+                      value={productAmounts[product.productId] || ""}
+                      onChange={(e) => handleAmountChange(product.productId, e.target.value)}
+                      onBlur={() => handleEditAmount(product.productId)}
                       inputProps={{ min: 1 }}
-                      value={editableAmount}
                     />
                   </TableCell>
-
 
                   <TableCell>
                     <IconButton onClick={() => handleDeleteFromList(product.productId)}>
@@ -844,6 +930,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Table>
         </TableContainer>
       </div>
+
+
+
 
       {/* <Button
         variant="contained"
