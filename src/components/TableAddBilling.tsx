@@ -38,10 +38,20 @@ import { useGetProductsByUserIdQuery } from '../slices/productApiSlice'; // Impo
 //import { useAddProductMutation, useDeleteProductMutation } from '../slices/productApiSlice';
 import { useAddProductInvoiceMutation } from '../slices/productInvoicesApiSlice';
 import { useGetGenerateIdInvoiceQuery } from '../slices/invoicesApiSlice';
+import { useGetProductsByUserIdInvoiceQuery } from '../slices/productInvoicesApiSlice';
 
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+
+
+interface Product {
+  productId: string;
+  name: string;
+  price: number;
+  amount: number;
+}
+
 
 interface TableConfigProps {
   userId: string;
@@ -211,17 +221,15 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     // Este efecto se ejecutará cuando dataResponseRegisters cambie
     // Aquí puedes realizar acciones adicionales si es necesario
     // Puedes acceder a dataResponseRegisters directamente
-
     console.log("dataResponseRegisters");
     console.log(dataResponseRegisters)
-
-
-
     if (dataResponseRegisters) {
       // Realizar acciones adicionales si es necesario
       // Por ejemplo, actualizar algún estado o realizar operaciones con los datos
     }
   }, [dataResponseRegisters]);
+
+
 
   const handleAdd = async () => {
     if (!subTotal || !dateIssue) {
@@ -435,6 +443,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         Edit
       </Button>
     );
+
+
   }
 
   const handlePaymentSellChange = (event: { target: { value: any; }; }) => {
@@ -629,25 +639,25 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       for (const originalProduct of searchResults) {
         // Crea un nuevo objeto extendiendo el original
         const product = { ...originalProduct };
-  
+
         // Agrega las propiedades invoiceID, invoiceType, y amount
         product.invoiceID = generateIdData.sequence_value;
         product.invoiceType = typevalue;
         product.amount = productAmounts[product.productId]; // Ensure amount is provided
-  
+
         const response = await addProductInvoiceMutation({
           registro: product,
           token: token,
         });
-  
+
         // Puedes imprimir en la consola la respuesta si lo necesitas
         console.log('Respuesta de la inserción:', response);
       }
-  
+
       // Limpia la lista después de confirmar todos los productos
       setSearchResults([]);
       // Puedes agregar aquí cualquier lógica adicional después de la confirmación de todos los productos
-  
+
       // Notifica al usuario que todos los productos han sido confirmados
       toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
     } catch (error) {
@@ -656,16 +666,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       toast.error('Hubo un error al confirmar los productos');
     }
   };
-  
-
-
-
-
-
-
-
-
-
 
   // const handleEditAmount = (productId: string, newValue: string) => {
   //   // Actualiza el valor de product.amount en tu estado o en la lista de búsqueda
@@ -692,6 +692,47 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     // Now you can perform any additional logic with the updated amount
     console.log(`Product ${productId} amount updated to ${updatedAmount}`);
   };
+
+  // filtro invoiceId y productsinvoices
+  const { data: dataProductsInvoicesRegisters } = useGetProductsByUserIdInvoiceQuery({
+    data: {
+      idUsuario: userId
+    },
+    token: token,
+  });
+
+  useEffect(() => {
+    console.log("dataProductsInvoicesRegisters");
+    console.log(dataProductsInvoicesRegisters)
+    if (dataProductsInvoicesRegisters) {
+    }
+  }, [dataProductsInvoicesRegisters]);
+
+  const [filteredData, setFilteredData] = useState<Product[]>([]);
+
+  const filterDataByInvoiceID = (invoiceID: any) => {
+    if (dataProductsInvoicesRegisters) {
+      // Filtrar la lista por invoiceID
+      const dataInvoiceIdProducts = dataProductsInvoicesRegisters.filter((item: { invoiceID: any; }) => item.invoiceID === invoiceID);
+
+      // Actualizar el estado con la lista filtrada
+      setFilteredData(dataInvoiceIdProducts);
+    }
+  };
+
+  useEffect(() => {
+    if (typevalue === 'Edit Register') {
+      // Ejecuta el filtro cuando typevalue es 'Edit Register'
+      filterDataByInvoiceID(invoiceID);
+    } else {
+      // Si no está en 'Edit Register', muestra la lista normal
+      setFilteredData([]);
+    }
+  }, [typevalue, invoiceID, dataProductsInvoicesRegisters, searchResults]);
+
+  const isAutocompleteDisabled = typevalue === 'Edit Register';
+  //
+
 
 
   return (
@@ -870,11 +911,14 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Search by Name or ProductID"
+            label="Search product by description"
             variant="outlined"
             fullWidth
-            value={searchTerm}
+            //value={searchTerm}
+            value={typevalue === 'Edit Register' ? null : selectedProduct}
             onChange={(e) => setSearchTerm(e.target.value)}
+            //disabled={isAutocompleteDisabled}
+            style={{ display: isAutocompleteDisabled ? 'none' : 'block' }}
           />
         )}
       />
@@ -885,13 +929,15 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
 
       {/* <Button variant="contained" color="primary" onClick={handleAddToList} disabled={!selectedProduct}> */}
-      <Button variant="contained" color="primary" onClick={confirmAddToCart} disabled={!selectedProduct}>
+      <Button variant="contained" color="primary" onClick={confirmAddToCart} disabled={!selectedProduct}
+        style={{ display: isAutocompleteDisabled ? 'none' : 'block' }}
+      >
         Add to List
       </Button>
       <br />
 
       <div style={{ marginTop: '20px' }}>
-        <TableContainer component={Paper}>
+        {/* <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
@@ -926,6 +972,57 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   </TableCell>
                 </TableRow>
               ))}
+            </TableBody>
+          </Table>
+        </TableContainer> */}
+
+        <Typography variant="h6" gutterBottom>
+          Product list          
+        </Typography>
+
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Product ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {typevalue === 'Edit Register'
+                ? filteredData.map((product) => (
+                  <TableRow key={product.productId}>
+                    <TableCell>{product.productId}</TableCell>
+                    <TableCell>{product.name}</TableCell>
+                    <TableCell>{product.price}</TableCell>
+                    <TableCell>{/* Renderizar aquí el campo de cantidad, puedes adaptarlo según tus necesidades */}</TableCell>
+                    <TableCell>{/* Acciones específicas para Edit Register, si es necesario */}</TableCell>
+                  </TableRow>
+                ))
+                : searchResults.map((product) => (
+                  <TableRow key={product.productId}>
+                    <TableCell>{product.productId}</TableCell>
+                    <TableCell>{product.name}</TableCell>
+                    <TableCell>{product.price}</TableCell>
+                    <TableCell>
+                      <TextField
+                        type="number"
+                        value={productAmounts[product.productId] || ""}
+                        onChange={(e) => handleAmountChange(product.productId, e.target.value)}
+                        onBlur={() => handleEditAmount(product.productId)}
+                        inputProps={{ min: 1 }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleDeleteFromList(product.productId)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
