@@ -75,7 +75,7 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
       query: (param) => {  //al parecer solo permite OBJETO de entrada!
         //console.log("param:", param); // Agregar un console.log aquí
         return {
-          url: `${TYPE_VALUES_URL}/get-products-invoices/${param.data.idUsuario}`,
+          url: `${TYPE_VALUES_URL}/get-products-invoice/${param.data.idUsuario}`,
           headers: {
             Authorization: `Bearer ${param.token}`, 
           },
