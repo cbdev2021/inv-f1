@@ -300,11 +300,16 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.invoiceID : ""
   );
 
-  const { data: generateIdData, error: generateIdError } = useGetGenerateIdInvoiceQuery({
+  // const { data: generateIdData, error: generateIdError } = useGetGenerateIdInvoiceQuery({
+  //   data: { invoiceId: typevalue },
+  //   token: token
+  // });
+
+  const { data: generateIdData, error: generateIdError, refetch: generateIdRefetch } = useGetGenerateIdInvoiceQuery({
     data: { invoiceId: typevalue },
     token: token
   });
-
+ 
   useEffect(() => {
 
     // console.log("generateIdData");
@@ -312,7 +317,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
 
     if (generateIdData) {
-      setInvoiceId(generateIdData.sequence_value);  // Ajusta según la estructura de tu respuesta
+      setInvoiceId(generateIdData.sequence_value);  // Hay que hacer que esto no se setee sin que lo vaya a buscar al servicio!
     }
   }, [generateIdData]);
 
@@ -653,6 +658,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         // Puedes imprimir en la consola la respuesta si lo necesitas
         console.log('Respuesta de la inserción:', response);
         handleForceReload();
+        generateIdRefetch();
       }
 
       // Limpia la lista después de confirmar todos los productos
@@ -994,7 +1000,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                     <TableCell>{product.productId}</TableCell>
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.price}</TableCell>
-                    <TableCell>{/* Renderizar aquí el campo de cantidad, puedes adaptarlo según tus necesidades */}</TableCell>
+                    <TableCell>{product.amount}</TableCell>
                     <TableCell>{/* Acciones específicas para Edit Register, si es necesario */}</TableCell>
                   </TableRow>
                 ))

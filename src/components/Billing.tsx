@@ -31,7 +31,8 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+//import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { useGetRegistersByCriteriaQuery } from '../slices/registerApiSlice'; // Import the hook
 //import { useAddRegisterMutation } from '../slices/registerApiSlice';
@@ -438,7 +439,7 @@ const Billing: FunctionComponent = () => {
                                                         handleEdit("Edit Register", row._id);
                                                     }}
                                                 >
-                                                    <EditIcon color="primary" />
+                                                    <VisibilityIcon color="primary" />
                                                 </IconButton>
                                                 <IconButton
                                                     aria-label="delete"
@@ -469,7 +470,7 @@ const Billing: FunctionComponent = () => {
                                                         handleEdit("Edit Register", row._id);
                                                     }}
                                                 >
-                                                    <EditIcon color="primary" />
+                                                    <VisibilityIcon color="primary" />
                                                 </IconButton>
                                                 <IconButton
                                                     aria-label="delete"
