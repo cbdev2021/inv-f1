@@ -308,7 +308,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   useEffect(() => {
 
     // console.log("generateIdData");
-    // console.log(generateIdData);
+    console.log(generateIdData);
 
 
     if (generateIdData) {
@@ -652,6 +652,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
         // Puedes imprimir en la consola la respuesta si lo necesitas
         console.log('Respuesta de la inserción:', response);
+        handleForceReload();
       }
 
       // Limpia la lista después de confirmar todos los productos
@@ -694,43 +695,38 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   };
 
   // filtro invoiceId y productsinvoices
-  const { data: dataProductsInvoicesRegisters } = useGetProductsByUserIdInvoiceQuery({
+  const [filteredData, setFilteredData] = useState<Product[]>([]);
+  const [invalidationKey, setInvalidationKey] = useState<number>(0); // Estado para la clave de invalidación
+
+  const { data: dataProductsInvoicesRegisters, refetch: customRefetch } = useGetProductsByUserIdInvoiceQuery({
     data: {
       idUsuario: userId
     },
     token: token,
   });
-
-  useEffect(() => {
-    console.log("dataProductsInvoicesRegisters");
-    console.log(dataProductsInvoicesRegisters)
-    if (dataProductsInvoicesRegisters) {
-    }
-  }, [dataProductsInvoicesRegisters]);
-
-  const [filteredData, setFilteredData] = useState<Product[]>([]);
-
-  const filterDataByInvoiceID = (invoiceID: any) => {
-    if (dataProductsInvoicesRegisters) {
-      // Filtrar la lista por invoiceID
-      const dataInvoiceIdProducts = dataProductsInvoicesRegisters.filter((item: { invoiceID: any; }) => item.invoiceID === invoiceID);
-
-      // Actualizar el estado con la lista filtrada
-      setFilteredData(dataInvoiceIdProducts);
-    }
-  };
+  
 
   useEffect(() => {
     if (typevalue === 'Edit Register') {
-      // Ejecuta el filtro cuando typevalue es 'Edit Register'
-      filterDataByInvoiceID(invoiceID);
+      console.log("en useEffect");
+
+      if (dataProductsInvoicesRegisters) {
+        const dataInvoiceIdProducts = dataProductsInvoicesRegisters.filter((item: { invoiceID: any; }) => item.invoiceID === invoiceID);
+        setFilteredData(dataInvoiceIdProducts);
+      }
     } else {
-      // Si no está en 'Edit Register', muestra la lista normal
       setFilteredData([]);
     }
-  }, [typevalue, invoiceID, dataProductsInvoicesRegisters, searchResults]);
+  }, [typevalue, invoiceID, dataProductsInvoicesRegisters, searchResults, refetch]);
+
+  // Función para forzar la recarga de datos
+  const handleForceReload = () => {
+    setInvalidationKey((prevKey) => prevKey + 1);
+    customRefetch(); // Llama a la función de refetch aquí
+  };
 
   const isAutocompleteDisabled = typevalue === 'Edit Register';
+
   //
 
 
@@ -977,7 +973,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         </TableContainer> */}
 
         <Typography variant="h6" gutterBottom>
-          Product list          
+          Product list
         </Typography>
 
         <TableContainer component={Paper}>
@@ -1079,6 +1075,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             handleConfirmAll();
             setOpenDialog(false);
             setConfirmAddDialogOpen(false);
+            //handleForceReload();
           }} color="primary">
             Confirm
           </Button>
