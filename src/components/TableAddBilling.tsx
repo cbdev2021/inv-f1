@@ -39,6 +39,7 @@ import { useGetProductsByUserIdQuery } from '../slices/productApiSlice'; // Impo
 import { useAddProductInvoiceMutation } from '../slices/productInvoicesApiSlice';
 import { useGetGenerateIdInvoiceQuery } from '../slices/invoicesApiSlice';
 import { useGetProductsByUserIdInvoiceQuery } from '../slices/productInvoicesApiSlice';
+import { useUpdateProductAmountMutation } from '../slices/productApiSlice';
 
 
 import dayjs from 'dayjs';
@@ -91,6 +92,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const [updateInvoice] = useUpdateInvoiceMutation();
   const [addProductInvoiceMutation] = useAddProductInvoiceMutation();
   //const [getGenerateIdInvoice] = useGetGenerateIdInvoiceQuery();
+  const [updateProductAmount] = useUpdateProductAmountMutation();
 
   // const [invoiceId, setInvoiceId] = useState('');
 
@@ -309,7 +311,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     data: { invoiceId: typevalue },
     token: token
   });
- 
+
   useEffect(() => {
 
     // console.log("generateIdData");
@@ -650,6 +652,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         product.invoiceType = typevalue;
         product.amount = productAmounts[product.productId]; // Ensure amount is provided
 
+        // registro productinvoice
         const response = await addProductInvoiceMutation({
           registro: product,
           token: token,
@@ -659,6 +662,16 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         console.log('Respuesta de la inserción:', response);
         handleForceReload();
         generateIdRefetch();
+
+        const responseUpdate = await updateProductAmount({
+          registro: {
+            amount: product.amount,
+            typevalue: typevalue
+          },
+          productId: product.productId,
+          token: token,
+        });
+
       }
 
       // Limpia la lista después de confirmar todos los productos
@@ -710,7 +723,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     },
     token: token,
   });
-  
+
 
   useEffect(() => {
     if (typevalue === 'Edit Register') {

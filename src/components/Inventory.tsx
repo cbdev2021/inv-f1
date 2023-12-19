@@ -108,40 +108,31 @@ const Inventory: FunctionComponent = () => {
     // }, [itemToUpdate]);
 
     const userId = useSelector((state: any) => state.auth.userInfo._id);
-
-    
     // console.log("userId");
     // console.log(userId);
-
-
-
     const token = useSelector((state: any) => state.auth.token);
     const { data: dataResponse } = useGetTypeValuesByUserIdQuery({
         idUsuario: userId,
         token: token,
     });
-
-
     // console.log("userInfo");
     // console.log(useSelector((state: any) => state.auth.userInfo._id));
-    
-
     const { data: dataResponseRegisters, isLoading, refetch } = useGetProductsByUserIdQuery({
         data: {
             idUsuario: userId
         },
         token: token,
     });
+    // useEffect(() => {
+    //     if (dataResponseRegisters) {
+    //     }
+    // }, [dataResponseRegisters]);
 
+    // useEffect(() => {
+    //     refetch();
+    // }, [userId, token]);
     useEffect(() => {
-        // Este efecto se ejecutará cuando dataResponseRegisters cambie
-        // Aquí puedes realizar acciones adicionales si es necesario
-        // Puedes acceder a dataResponseRegisters directamente
-
-        if (dataResponseRegisters) {
-            // Realizar acciones adicionales si es necesario
-            // Por ejemplo, actualizar algún estado o realizar operaciones con los datos
-        }
+        refetch();
     }, [dataResponseRegisters]);
 
     useEffect(() => {
@@ -276,7 +267,7 @@ const Inventory: FunctionComponent = () => {
                     [];
 
         // Pasa la función refetch al componente hijo
-       // setDataEdit({ dataEdit, refetchFunction });
+        // setDataEdit({ dataEdit, refetchFunction });
     };
 
     useEffect(() => {
@@ -391,8 +382,8 @@ const Inventory: FunctionComponent = () => {
                                 <TableRow>
                                     {/* <TableCell>ID</TableCell> */}
                                     <TableCell>Product ID</TableCell>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Description</TableCell>                                    
+                                    <TableCell>Brand</TableCell>
+                                    <TableCell>Description</TableCell>
                                     <TableCell>Price</TableCell>
                                     <TableCell>Amount</TableCell>
                                     <TableCell>Acciones</TableCell>
@@ -408,7 +399,7 @@ const Inventory: FunctionComponent = () => {
                                             <TableCell>{row.productId}</TableCell>
                                             <TableCell>{row.name}</TableCell>
                                             <TableCell>{row.description}</TableCell>
-                                            <TableCell>{row.price}</TableCell>                                              
+                                            <TableCell>{row.price}</TableCell>
                                             <TableCell>{row.amount}</TableCell>
                                             <TableCell>
                                                 <IconButton
