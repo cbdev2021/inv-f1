@@ -7,7 +7,7 @@ const TYPE_VALUES_URL = 'http://localhost:10000/api/products';
 
 export const typeValuesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    
+
     addProduct: builder.mutation({
       query: (object) => ({
         url: `${TYPE_VALUES_URL}/add-product`,
@@ -31,25 +31,20 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
     // }),    
 
     updateProduct: builder.mutation({
-        query: (object) => {
-          const apiUrl = `${TYPE_VALUES_URL}/update-product/${object.id}`;
-          console.log("update object:", object);
-          
-          return {
-            url: apiUrl,
-            method: 'PUT',
-            body: object.registro,
-            headers: {
-              Authorization: `Bearer ${object.token}`,
-            },
-          };
-        },
-      }),
-      
+      query: (object) => {
+        const apiUrl = `${TYPE_VALUES_URL}/update-product/${object.id}`;
+        console.log("update object:", object);
 
-
-
-
+        return {
+          url: apiUrl,
+          method: 'PUT',
+          body: object.registro,
+          headers: {
+            Authorization: `Bearer ${object.token}`,
+          },
+        };
+      },
+    }),
 
     deleteProduct: builder.mutation({
       query: (object) => ({
@@ -60,7 +55,7 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
         },
       }),
     }),
-    
+
     getTypeValue: builder.query({
       query: (id, token) => ({
         url: `${TYPE_VALUES_URL}/get-products/${id}`,
@@ -77,7 +72,23 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
         return {
           url: `${TYPE_VALUES_URL}/get-products/${param.data.idUsuario}`,
           headers: {
-            Authorization: `Bearer ${param.token}`, 
+            Authorization: `Bearer ${param.token}`,
+          },
+        };
+      },
+    }),
+
+    updateProductAmount: builder.mutation({
+      query: (object) => {
+        const apiUrl = `${TYPE_VALUES_URL}/update-product-amount/${object.productId}`;
+        console.log("update object:", object);
+
+        return {
+          url: apiUrl,
+          method: 'PUT',
+          body: object.registro,
+          headers: {
+            Authorization: `Bearer ${object.token}`,
           },
         };
       },
@@ -91,4 +102,5 @@ export const {
   useDeleteProductMutation,
   useGetTypeValueQuery,
   useGetProductsByUserIdQuery,
+  useUpdateProductAmountMutation,
 } = typeValuesApiSlice;
