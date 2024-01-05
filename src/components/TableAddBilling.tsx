@@ -21,6 +21,7 @@ import {
   Autocomplete,
   IconButton,
   DialogActions,
+  CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -282,7 +283,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
   const handleAdd = async () => {
     if (!dateIssue) {
-
       if (!dateIssue) {
         toast.error("Debes seleccionar una dateIssue válida.");
       }
@@ -291,15 +291,10 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       // }
       return;
     }
-
-
     //console.log('Total Sum:', totalSum);
-
     try {
-      //await handleConfirmAll();
-      
+      //await handleConfirmAll();      
       const totalSum = await calculateTotal();
-
       const response = await addInvoiceMutation({
         registro: {
           //Mandatory fields
@@ -308,7 +303,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           dateIssue: dateIssue,
           // subTotal: subTotal,
           subTotal: totalSum,
-          taxes: totalSum*0.19,
+          // taxes: totalSum*0.19,
+          taxes: (totalSum * 0.19).toFixed(0),
           //compra
           customer: customer,
           paymentSell: paymentSell,
@@ -887,8 +883,27 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const isAutocompleteDisabled = typevalue === 'Edit Register';
 
   //
+  const [loading, setLoading] = useState(false);
 
-
+  const handleClick = async () => {
+    try {
+      // Iniciar el estado de carga
+      setLoading(true);
+      // Primero ejecutar handleConfirmAll
+      await handleConfirmAll();
+      // Luego ejecutar handleAdd
+      await handleAdd();
+      // Desactivar el estado de carga
+      setLoading(false);
+      // Cerrar los diálogos
+      setOpenDialog(false);
+      setConfirmAddDialogOpen(false);
+    } catch (error) {
+      console.error("Error:", error);
+      // Manejar el error aquí y desactivar el estado de carga
+      setLoading(false);
+    }
+  };
 
   return (
     <form onSubmit={handleAdd}>
@@ -1277,33 +1292,24 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             Confirm
           </Button> */}
 
-          <Button onClick={async () => {
+          {/* <Button onClick={async () => {
             try {
               // Primero ejecuta handleConfirmAll
               await handleConfirmAll();
-
-              // Luego calcula el total
               //const totalSum = await calculateTotal();
-
-              // Finalmente, ejecuta handleAdd con el total calculado
               await handleAdd();
-
               setOpenDialog(false);
               setConfirmAddDialogOpen(false);
             } catch (error) {
-              // Maneja los errores según sea necesario
               console.error("Error:", error);
             }
           }} color="primary">
             Confirm
+          </Button> */}
+
+          <Button onClick={handleClick} color="primary" disabled={loading}>
+            {loading ? <CircularProgress size={24} /> : 'Confirm'}
           </Button>
-
-
-
-
-
-
-
 
         </DialogActions>
       </Dialog>
