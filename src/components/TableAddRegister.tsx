@@ -71,8 +71,8 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   const [addNewSubtype, setAddNewSubtype] = useState("");
   const [isNumericKeyboardOpen, setIsNumericKeyboardOpen] = useState(true);
   const tableRef = useRef<HTMLTableElement | null>(null);
-  // const [updateTypeValue] = useUpdateProductMutation();
-  const [updateTypeValue] = useUpdateProductAmountMutation();
+  const [updateTypeValue] = useUpdateProductMutation();
+  //const [updateTypeValue] = useUpdateProductAmountMutation();
 
 
   useEffect(() => {
@@ -82,13 +82,23 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     // Realiza las acciones necesarias basadas en el cambio de itemToUpdate
   }, [itemToUpdate]);
 
+  const [name, setName] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.name : ""
+  );
+
   const [description, setDescription] = useState(
     itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.description : ""
+  );
+
+  const [price, setPrice] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.price : 0
   );
 
   const [amount, setAmount] = useState(
     itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.amount : 0
   );
+
+
   // const [monto, setMonto] = useState(
   //   itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.monto : ""
   // );
@@ -147,11 +157,10 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     try {
       const response = await addTypeValueMutation({
         registro: {
+          name: name,
           description: description,
-          amount: amount, //Mandatory
-          // descRegistro: descRegistro,
-          // fecha: fecha,
-          // monto: monto
+          price: price,
+          amount: amount
         },
         token: token,
       });
@@ -248,22 +257,19 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
       }
 
       const updatedItem = {
+        name: name,
         description: description,
-        typevalue: "SaveAmount",
+        price: price,
         amount: amount
-        
-        // descRegistro: descRegistro,
-        // fecha: fecha,
-        // monto: monto
       };
 
       console.log("updatedItem:");
       console.log(updatedItem);
-      console.log(itemToUpdate.productId);
+      console.log(itemToUpdate._id);
 
       await updateTypeValue(
         {
-          productId: parseFloat(itemToUpdate.productId),
+          id: itemToUpdate._id,
           registro: updatedItem,
           token: token
         }
@@ -313,8 +319,6 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     );
   }
 
-
-
   return (
     <form onSubmit={handleAdd}>
       <div>
@@ -334,7 +338,17 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
             //onClick={openNumericKeyboard}
             //onKeyPress={handleKeyPress}
             /> */}
+            <TextField
+              label="Brand"
+              variant="outlined"
+              type="text" // o type="text"
+              value={name || ""}
+              onChange={(e) => setName(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
+              fullWidth
+              style={{ marginBottom: '20px' }} 
+            />
 
+            <br />
             <TextField
               label="Description"
               variant="outlined"
@@ -342,16 +356,28 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
               value={description || ""}
               onChange={(e) => setDescription(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
               fullWidth
+              style={{ marginBottom: '20px' }} 
             />
-            <br />
 
+            <br />
+            <TextField
+              label="Price"
+              variant="outlined"
+              type="number"
+              value={price || 0}
+              onChange={(e) => setPrice(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
+              fullWidth
+              style={{ marginBottom: '20px' }} 
+            />
+
+            <br />
             <TextField
               label="Amount"
               variant="outlined"
               type="number"
               value={amount || 0}
               onChange={(e) => setAmount(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
-              fullWidth
+              fullWidth 
             />
 
           </Grid>

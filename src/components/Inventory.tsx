@@ -323,7 +323,8 @@ const Inventory: FunctionComponent = () => {
                         fullWidth
                     >
                         <DialogTitle>{dialogTitle}</DialogTitle>
-                        <DialogContent style={{ maxHeight: 400, overflowY: 'scroll' }}>
+                        {/* <DialogContent style={{ maxHeight: 400, overflowY: 'scroll' }}> */}
+                        <DialogContent style={{ maxHeight: 400, overflowY: 'scroll'}}>
                             {dialogTitle === "Spent" && (
                                 <TableAddRegister
                                     userId={userId}
