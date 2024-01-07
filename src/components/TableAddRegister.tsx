@@ -31,6 +31,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { toast } from "react-toastify";
 //import { useUpdateRegisterMutation } from '../slices/registerApiSlice';
 import { useUpdateProductMutation } from '../slices/productApiSlice';
+import { useUpdateProductAmountMutation } from '../slices/productApiSlice';
+
 
 
 import dayjs from 'dayjs';
@@ -69,7 +71,9 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   const [addNewSubtype, setAddNewSubtype] = useState("");
   const [isNumericKeyboardOpen, setIsNumericKeyboardOpen] = useState(true);
   const tableRef = useRef<HTMLTableElement | null>(null);
-  const [updateTypeValue] = useUpdateProductMutation();
+  // const [updateTypeValue] = useUpdateProductMutation();
+  const [updateTypeValue] = useUpdateProductAmountMutation();
+
 
   useEffect(() => {
     // Este bloque de código se ejecutará cuando itemToUpdate cambie
@@ -82,9 +86,9 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.description : ""
   );
 
-  // const [descRegistro, setDescRegistro] = useState(
-  //   itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.descRegistro : ""
-  // );
+  const [amount, setAmount] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.amount : 0
+  );
   // const [monto, setMonto] = useState(
   //   itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.monto : ""
   // );
@@ -95,7 +99,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   useEffect(() => {
     if (itemToUpdate && typevalue === "Edit Register") {
       setDescription(itemToUpdate.description);
-
+      setAmount(itemToUpdate.amount);
 
       // setDescRegistro(itemToUpdate.descRegistro);
       // setMonto(itemToUpdate.monto);
@@ -104,7 +108,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
       // En caso de que itemToUpdate sea null u otra condición, puedes establecer los estados en un valor predeterminado
 
       setDescription("");
-      // setDescRegistro("");
+      setAmount("");
       // setMonto("");
       // setFecha("");
     }
@@ -130,8 +134,11 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   // };
 
   const handleAdd = async () => {
-    if (!description) {
-      if (!description) {
+    if (!description || !amount) {
+      if (!description || !amount) {
+        toast.error("El campo de valor numérico es obligatorio.");
+      }
+      if (!amount) {
         toast.error("El campo de valor numérico es obligatorio.");
       }
       return;
@@ -140,8 +147,8 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     try {
       const response = await addTypeValueMutation({
         registro: {
-          description: description
-          // tipoRegistro: typevalue, //Mandatory
+          description: description,
+          amount: amount, //Mandatory
           // descRegistro: descRegistro,
           // fecha: fecha,
           // monto: monto
@@ -211,8 +218,11 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!description) {
+    if (!description || !amount) {
       if (!description) {
+        toast.error("El campo de valor numérico es obligatorio.");
+      }
+      if (!description || !amount) {
         toast.error("El campo de valor numérico es obligatorio.");
       }
 
@@ -230,6 +240,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     try {
       console.log("itemToUpdate");
       console.log(itemToUpdate);
+      console.log(itemToUpdate._id);
 
       if (!itemToUpdate) {
         console.error("Elemento no encontrado para actualizar");
@@ -237,8 +248,10 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
       }
 
       const updatedItem = {
-        description: description
-        // tipoRegistro: itemToUpdate.tipoRegistro,
+        description: description,
+        typevalue: "SaveAmount",
+        amount: amount
+        
         // descRegistro: descRegistro,
         // fecha: fecha,
         // monto: monto
@@ -246,10 +259,11 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
 
       console.log("updatedItem:");
       console.log(updatedItem);
+      console.log(itemToUpdate.productId);
 
       await updateTypeValue(
         {
-          id: itemToUpdate._id,
+          productId: parseFloat(itemToUpdate.productId),
           registro: updatedItem,
           token: token
         }
@@ -322,16 +336,23 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
             /> */}
 
             <TextField
-              label="Numeric Value"
+              label="Description"
               variant="outlined"
-              type="tel" // o type="text"
+              type="text" // o type="text"
               value={description || ""}
               onChange={(e) => setDescription(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
               fullWidth
             />
+            <br />
 
-
-
+            <TextField
+              label="Amount"
+              variant="outlined"
+              type="number"
+              value={amount || 0}
+              onChange={(e) => setAmount(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
+              fullWidth
+            />
 
           </Grid>
 
