@@ -385,6 +385,7 @@ const Inventory: FunctionComponent = () => {
                                     <TableCell>Product ID</TableCell>
                                     <TableCell>Brand</TableCell>
                                     <TableCell>Description</TableCell>
+                                    <TableCell>Utility</TableCell>
                                     <TableCell>Price</TableCell>
                                     <TableCell>Amount</TableCell>
                                     <TableCell>Acciones</TableCell>
@@ -400,6 +401,7 @@ const Inventory: FunctionComponent = () => {
                                             <TableCell>{row.productId}</TableCell>
                                             <TableCell>{row.name}</TableCell>
                                             <TableCell>{row.description}</TableCell>
+                                            <TableCell>{row.utility}</TableCell>
                                             <TableCell>{row.price}</TableCell>
                                             <TableCell>{row.amount}</TableCell>
                                             <TableCell>
