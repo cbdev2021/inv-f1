@@ -50,6 +50,7 @@ import 'dayjs/locale/es';
 interface Product {
   productId: number;
   name: string;
+  description: string;
   price: number;
   amount: number;
 }
@@ -163,6 +164,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     invoiceType: string;
     productId: number;
     name: string;
+    description: string;
+    utility: number;
     price: number;
     amount: number;
   }>>([]);
@@ -180,7 +183,18 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         console.log('FOR - product:');
         console.log(product);
 
-        const multiplicationResult = product.price * product.amount;
+        // const multiplicationResult = product.price * product.amount;
+        let multiplicationResult = 0;
+
+        if (typevalue === 'Sales') {
+          multiplicationResult = (product.price + (product.price * (product.utility / 100))) * product.amount;
+        } else if (typevalue === 'Purchase') {
+          multiplicationResult = product.price * product.amount;
+        } else {
+          // Manejar otros casos si es necesario
+          console.error('Tipo de valor no reconocido');
+        }
+
 
         // Verifica si el resultado es un número válido
         if (!isNaN(multiplicationResult)) {
@@ -515,6 +529,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     invoiceType: string;
     productId: number;
     name: string;
+    description: string;
+    utility: number;
     price: number;
     amount: number;
   }>>([]);
@@ -523,6 +539,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     invoiceType: string;
     productId: number;
     name: string;
+    description: string;
+    utility: number;
     price: number;
     amount: number;
   } | null>(null);
@@ -886,6 +904,41 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
+
+    if (!dateIssue) {
+      toast.error("Debes seleccionar una dateIssue válida.");
+      return;
+    }
+
+    if (typevalue == "Purchase") {
+      if (!provider) {
+        toast.error("Debes ingresar una provider válido.");
+        return;
+      }
+      if (!paymentBuy) {
+        toast.error("Debes ingresar una paymentBuy válida.");
+        return;
+      }
+    }
+    if (typevalue == "Sales") {
+      if (!customer) {
+        toast.error("Debes ingresar una customer válido.");
+        return;
+      }
+      if (!paymentSell) {
+        toast.error("Debes ingresar una paymentSell válida.");
+        return;
+      }
+    }
+
+    if (searchResults.length === 0) {
+      toast.error("Debes agregar productos a la lista.");
+      return;
+    }
+
+
+
+
     try {
       // Iniciar el estado de carga
       setLoading(true);
@@ -1075,7 +1128,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
       <Autocomplete
         options={dataResponseRegisters}
-        getOptionLabel={(option) => option.name}
+        getOptionLabel={(option) => option.description}
         value={selectedProduct}
         onChange={(_, newValue) => setSelectedProduct(newValue)}
         renderInput={(params) => (
@@ -1156,7 +1209,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             <TableHead>
               <TableRow>
                 <TableCell>Product ID</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Description</TableCell>
                 <TableCell>Price</TableCell>
                 <TableCell>Amount</TableCell>
                 <TableCell>Actions</TableCell>
@@ -1167,7 +1220,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                 ? filteredData.map((product) => (
                   <TableRow key={product.productId}>
                     <TableCell>{product.productId}</TableCell>
-                    <TableCell>{product.name}</TableCell>
+                    <TableCell>{product.description}</TableCell>
                     <TableCell>{product.price}</TableCell>
                     <TableCell>{product.amount}</TableCell>
                     <TableCell>{/* Acciones específicas para Edit Register, si es necesario */}</TableCell>
@@ -1176,7 +1229,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                 : searchResults.map((product) => (
                   <TableRow key={product.productId}>
                     <TableCell>{product.productId}</TableCell>
-                    <TableCell>{product.name}</TableCell>
+                    <TableCell>{product.description}</TableCell>
                     <TableCell>{product.price}</TableCell>
                     <TableCell>
                       {/* <TextField

@@ -90,6 +90,10 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.description : ""
   );
 
+  const [utility, setUtility] = useState(
+    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.utility : 0
+  );
+
   const [price, setPrice] = useState(
     itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.price : 0
   );
@@ -160,7 +164,8 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
           name: name,
           description: description,
           price: price,
-          amount: amount
+          amount: amount,
+          utility: utility
         },
         token: token,
       });
@@ -260,7 +265,8 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
         name: name,
         description: description,
         price: price,
-        amount: amount
+        amount: amount,
+        utility: utility
       };
 
       console.log("updatedItem:");
@@ -345,7 +351,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
               value={name || ""}
               onChange={(e) => setName(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
               fullWidth
-              style={{ marginBottom: '20px' }} 
+              style={{ marginBottom: '20px' }}
             />
 
             <br />
@@ -356,7 +362,18 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
               value={description || ""}
               onChange={(e) => setDescription(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
               fullWidth
-              style={{ marginBottom: '20px' }} 
+              style={{ marginBottom: '20px' }}
+            />
+
+            <br />
+            <TextField
+              label="Utility %"
+              variant="outlined"
+              type="number"
+              value={utility || 0}
+              onChange={(e) => setUtility(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
+              fullWidth
+              style={{ marginBottom: '20px' }}
             />
 
             <br />
@@ -367,7 +384,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
               value={price || 0}
               onChange={(e) => setPrice(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
               fullWidth
-              style={{ marginBottom: '20px' }} 
+              style={{ marginBottom: '20px' }}
             />
 
             <br />
@@ -377,7 +394,7 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
               type="number"
               value={amount || 0}
               onChange={(e) => setAmount(e.target.value)} // Asumiendo que estás utilizando un estado (useState)
-              fullWidth 
+              fullWidth
             />
 
           </Grid>
