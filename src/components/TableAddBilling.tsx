@@ -339,6 +339,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       // const updatedData = [...data, newItem];
       // setAddNewSubtype("");
       // updateData(updatedData, typevalue);
+
+      generateIdRefetch(); //test
       refetch();
     } catch (error) {
       console.error("Error al agregar el nuevo valor:", error);
@@ -795,7 +797,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
         console.log("product");
 
-       console.log(product);
+        console.log(product);
 
 
 
@@ -815,9 +817,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         //   productId: product.productId,
         //   token: token,
         // });
-
-        
         searchResultsUpdated.push(product);
+        generateIdRefetch();
+
       }
 
       console.log('searchResultsUpdated');
