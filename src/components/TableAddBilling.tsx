@@ -53,6 +53,8 @@ interface Product {
   description: string;
   price: number;
   amount: number;
+  dateIssue: string;
+  utility: number;
 }
 
 
@@ -533,6 +535,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     utility: number;
     price: number;
     amount: number;
+    dateIssue: string;
   }>>([]);
   const [selectedProduct, setSelectedProduct] = useState<{
     invoiceID: number;
@@ -543,6 +546,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     utility: number;
     price: number;
     amount: number;
+    dateIssue: string;
   } | null>(null);
   const [confirmAddDialogOpen, setConfirmAddDialogOpen] = useState(false);
 
@@ -786,11 +790,14 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         product.invoiceID = generateIdData.sequence_value;
         product.invoiceType = typevalue;
         product.amount = productAmounts[product.productId]; // Ensure amount is provided
+        product.dateIssue = dateIssue;
+        // product.utility = product.utility;
 
-        console.log('productAmounts[product.productId]: ');
-        console.log(productAmounts[product.productId]);
-        console.log('productAmounts[product.productId]: ');
-        console.log(productAmounts[product.productId]);
+        console.log("product");
+
+       console.log(product);
+
+
 
         // registro productinvoice
         const response = await addProductInvoiceMutation({
@@ -800,16 +807,16 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         console.log('Respuesta de la inserción:', response);
         handleForceReload();
         generateIdRefetch();
-        const responseUpdate = await updateProductAmount({
-          registro: {
-            amount: product.amount,
-            typevalue: typevalue
-          },
-          productId: product.productId,
-          token: token,
-        });
+        // const responseUpdate = await updateProductAmount({
+        //   registro: {
+        //     amount: product.amount,
+        //     typevalue: typevalue
+        //   },
+        //   productId: product.productId,
+        //   token: token,
+        // });
 
-
+        
         searchResultsUpdated.push(product);
       }
 
@@ -905,35 +912,38 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
   const handleClick = async () => {
 
-    if (!dateIssue) {
-      toast.error("Debes seleccionar una dateIssue válida.");
-      return;
-    }
+    //if (!dateIssue || !provider || !paymentBuy || !customer || !paymentSell) {
+    if (!dateIssue || (!provider && !paymentBuy) || (!customer && !paymentSell)) {
+      if (!dateIssue) {
+        toast.error("Debes seleccionar una dateIssue válida.");
+        return;
+      }
 
-    if (typevalue == "Purchase") {
-      if (!provider) {
-        toast.error("Debes ingresar una provider válido.");
-        return;
+      if (typevalue == "Purchase") {
+        if (!provider) {
+          toast.error("Debes ingresar una provider válido.");
+          return;
+        }
+        if (!paymentBuy) {
+          toast.error("Debes ingresar una paymentBuy válida.");
+          return;
+        }
       }
-      if (!paymentBuy) {
-        toast.error("Debes ingresar una paymentBuy válida.");
-        return;
+      if (typevalue == "Sales") {
+        if (!customer) {
+          toast.error("Debes ingresar una customer válido.");
+          return;
+        }
+        if (!paymentSell) {
+          toast.error("Debes ingresar una paymentSell válida.");
+          return;
+        }
       }
-    }
-    if (typevalue == "Sales") {
-      if (!customer) {
-        toast.error("Debes ingresar una customer válido.");
-        return;
-      }
-      if (!paymentSell) {
-        toast.error("Debes ingresar una paymentSell válida.");
-        return;
-      }
-    }
 
-    if (searchResults.length === 0) {
-      toast.error("Debes agregar productos a la lista.");
-      return;
+      if (searchResults.length === 0) {
+        toast.error("Debes agregar productos a la lista.");
+        return;
+      }
     }
 
 
@@ -956,6 +966,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       // Manejar el error aquí y desactivar el estado de carga
       setLoading(false);
     }
+
+
   };
 
   return (
