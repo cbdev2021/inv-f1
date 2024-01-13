@@ -1,32 +1,3 @@
-// import React, { FunctionComponent, useEffect, useState } from "react";
-// import { toast } from 'react-toastify';
-// import { Typography, TextField, Button } from '@mui/material';
-
-
-// const Reports: FunctionComponent = () => {
-
-//     return (
-//         <div className="contenedor" style={{ display: 'flex' }}>
-//             <div className="mitad-izquierda" style={{ flex: '1' }}>
-
-//                 <form className={"form"} style={{ width: '100%' }}>
-//                     <Typography variant="h5" align="center" gutterBottom>
-//                     Reports
-//                     </Typography>
-
-//                     <div className="form-elements-container">
-
-//                     </div>
-//                 </form>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default Reports;
-
-
-
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { Container, CssBaseline, Typography, IconButton, Box, Tab, Tabs } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -40,6 +11,7 @@ import { useGetProductsByUserIdInvoiceQuery } from '../slices/productInvoicesApi
 import Switch from '@mui/material/Switch';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PaidIcon from '@mui/icons-material/Paid';
+import { BarChart } from '@mui/x-charts/BarChart';
 
 const Reports: FunctionComponent = () => {
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -82,25 +54,6 @@ const Reports: FunctionComponent = () => {
             setCurrentYear(Number(selectedYear));
         }
     };
-
-    // type Record = {
-    //     _id: string;
-    //     // invoiceType: string;
-    //     // descRegistro: string;
-    //     // fecha: string;
-    //     // monto: number;
-    //     customer: string;
-    //     dateIssue: string;
-    //     idUsuario: string;
-    //     invoiceID: number;
-    //     invoiceType: string;
-    //     paymentBuy: string;
-    //     paymentSell: string;
-    //     provider: string;
-    //     subTotal: number;
-    //     taxes: number;
-    // };
-
 
     type Record = {
         totalSales: number;
@@ -146,7 +99,6 @@ const Reports: FunctionComponent = () => {
     }
 
     const registrosDelMesSeleccionado = filterRecordsByMonthAndYear(dataResponseRegisters, currentMonth, currentYear);
-
     // Agrupa registros por "descRegistro" y asigna colores
     const tipoColores: { [key: string]: string } = {};
 
@@ -168,7 +120,6 @@ const Reports: FunctionComponent = () => {
 
     const tipoFiltrado = filterByType === 'All' ? registrosDelMesSeleccionado : registrosDelMesSeleccionado.filter((registro) => registro.invoiceType === filterByType);
 
-
     let sumaDeValoresDelMes = 0;
     if (tipoFiltrado) {
         console.log('tipoFiltrado:');
@@ -186,114 +137,8 @@ const Reports: FunctionComponent = () => {
         console.log('sumaDeValoresDelMes:' + getTopSellingProducts(tipoFiltrado, filterByType));
     }
 
-    // Agrupa registros de "pieChartData" por "descRegistro" y asigna colores
-    // const pieChartData = tipoFiltrado.reduce((result, item) => {
-    //     const existingItem = result.find((x: { invoiceType: any; }) => x.invoiceType === item.invoiceType);
-    //     if (existingItem) {
-    //         existingItem.value += item.subTotal;
-    //     } else {
-    //         result.push({
-    //             value: item.subTotal,
-    //             invoiceType: item.invoiceType,
-    //             fill: tipoColores[item.invoiceType],
-    //         });
-    //     }
-    //     return result;
-    // }, []);
-
-
-    type RecordProduct = {
-        _id: string;
-        idUsuario: string;
-        invoiceType: string;
-        invoiceID: number;
-        productId: number;
-        name: string;
-        description: string;
-        price: number;
-        amount: number;
-        createdAt: string;
-        updatedAt: string;
-    };
-
-    // function getTopSellingProducts(records: Record[], targetInvoiceType: string): Record[] {
-    //     const filteredRecords = records.filter((record) => record.invoiceType === targetInvoiceType);
-
-    //     const productSalesMap: { [productId: number]: number } = {};
-
-    //     // Calcular la venta total de cada producto
-    //     filteredRecords.forEach((record) => {
-    //         const productSales = (() => {
-    //             switch (filterByType) {
-    //                 case "Purchase":
-    //                     return record.price * record.amount;
-    //                 case "Sales":
-    //                     return record.amount * (record.price + (record.price * record.utility || 0));
-    //                 default:
-    //                     console.error("Tipo de filtro no válido");
-    //                     return 0; // Otra opción podría ser omitir el registro si el filtro no es válido
-    //             }
-    //         })();
-
-    //         productSalesMap[record.productId] = (productSalesMap[record.productId] || 0) + productSales;
-
-    //     });
-    //     const sortedProducts = Object.keys(productSalesMap)
-    //         .map((productId) => ({
-    //             productId: parseInt(productId),
-    //             totalSales: productSalesMap[parseInt(productId)],
-    //         }))
-    //         .sort((a, b) => b.totalSales - a.totalSales);
-    //     const topSellingProducts = sortedProducts.map((product) =>
-    //         filteredRecords.find((record) => record.productId === product.productId)
-    //     ).filter((record): record is Record => record !== undefined);
-
-    //     return topSellingProducts;
-    // }
-
-    // function getTopSellingProducts(records: Record[], targetInvoiceType: string): Record[] {
-    //     const filteredRecords = records.filter((record) => record.invoiceType === targetInvoiceType);
-
-    //     const productSalesMap: { [productId: number]: number } = {};
-
-    //     // Calcular la venta total de cada producto
-    //     filteredRecords.forEach((record) => {
-    //         const productSales = (() => {
-    //             switch (targetInvoiceType) {
-    //                 case "Purchase":
-    //                     return record.price * record.amount;
-    //                 case "Sales":
-    //                     return record.amount * (record.price + (record.utility || 0));
-    //                 default:
-    //                     console.error("Tipo de filtro no válido");
-    //                     return 0; // Otra opción podría ser omitir el registro si el filtro no es válido
-    //             }
-    //         })();
-
-    //         productSalesMap[record.productId] = (productSalesMap[record.productId] || 0) + productSales;
-    //     });
-
-    //     // Crear un array ordenado por las ventas totales
-    //     const sortedProducts = Object.keys(productSalesMap)
-    //         .map((productId) => ({
-    //             productId: parseInt(productId),
-    //             totalSales: productSalesMap[parseInt(productId)],
-    //         }))
-    //         .sort((a, b) => b.totalSales - a.totalSales);
-
-    //     // Obtener los detalles completos de los productos más vendidos
-    //     const topSellingProducts = sortedProducts.map((product) =>
-    //         filteredRecords.find((record) => record.productId === product.productId)
-    //     ).filter((record): record is Record => record !== undefined);
-
-    //     return topSellingProducts;
-    // }
-
     function sumPriceByDescription(records: Record[]): Record[] {
         const summarizedRecords: { [description: string]: Record } = {};
-
-        console.log("1 records");
-        console.log(records);
 
         records.forEach((record) => {
             const key = record.description;
@@ -303,12 +148,7 @@ const Reports: FunctionComponent = () => {
                 summarizedRecords[key].price += record.price;
             }
         });
-
-        console.log("1 summarizedRecords");
-        console.log(summarizedRecords);
-
         const result: Record[] = Object.values(summarizedRecords);
-
         return result;
     }
 
@@ -316,7 +156,6 @@ const Reports: FunctionComponent = () => {
         const filteredRecords = records.filter((record) => record.invoiceType === targetInvoiceType);
 
         const productSalesMap: { [productId: number]: number } = {};
-
         // Calcular la venta total de cada producto
         filteredRecords.forEach((record) => {
             const productSales = (() => {
@@ -330,7 +169,6 @@ const Reports: FunctionComponent = () => {
                         return 0;
                 }
             })();
-
             // Utilizar el productId como clave para sumar los valores
             productSalesMap[record.productId] = (productSalesMap[record.productId] || 0) + productSales;
         });
@@ -357,38 +195,34 @@ const Reports: FunctionComponent = () => {
         //return sumPriceByDescription(topSellingProducts);
     }
 
-    // const topSellingProducts = getTopSellingProducts(tipoFiltrado, filterByType);
-    // const topSellingProducts = sumPriceByDescription(tipoFiltrado);
-
     function calcularYModificar(records: Record[]): Record[] {
         const acumulador: Record[] = [];
-        
+
         console.log("records:");
         console.log(records);
 
-      
+
         // Recorrer el array de objetos
         records.forEach((record) => {
-          const existingRecord = acumulador.find((r) => r.description === record.description);
-      
-          // Verificar si el producto ya está en el acumulador
-          if (existingRecord) {
-            // Sumar la cantidad al acumulador existente
-            existingRecord.amount += record.amount;
-          } else {
-            // Agregar una nueva entrada al acumulador
-            acumulador.push({ ...record });
-          }
+            const existingRecord = acumulador.find((r) => r.description === record.description);
+
+            // Verificar si el producto ya está en el acumulador
+            if (existingRecord) {
+                // Sumar la cantidad al acumulador existente
+                existingRecord.amount += record.amount;
+            } else {
+                // Agregar una nueva entrada al acumulador
+                acumulador.push({ ...record });
+            }
         });
         console.log("acumulador:");
         console.log(acumulador);
-      
+
         return acumulador;
-      }
+    }
 
 
     const topSellingProducts = calcularYModificar(tipoFiltrado);
-
     console.log('topSellingProducts:');
     console.log(topSellingProducts);
 
@@ -410,12 +244,6 @@ const Reports: FunctionComponent = () => {
         fill: tipoColores[filterByType], // Puedes ajustar esto según sea necesario
     }));
 
-    // Imprimir el resultado
-    console.log(topSellingProducts);
-    console.log(pieChartData);
-
-
-
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -424,13 +252,69 @@ const Reports: FunctionComponent = () => {
         }, 10);
     }, []);
 
+    //bar chart
+    const generateChartData = (records: Record[]) => {
+        // Verifica si no hay registros o el array está vacío
+        if (!records || records.length === 0) {
+            console.error("No hay registros para procesar en el gráfico");
+            return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
+        }
+
+        // Filtra los registros por tipo
+        const type = "Sales";
+        const filteredRecords = records.filter(record => record.invoiceType === type);
+
+        // Verifica que haya registros después del filtro
+        if (filteredRecords.length === 0) {
+            console.error(`No hay registros de tipo ${type}`);
+            return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
+        }
+
+        const aggregatedData: { [key: string]: number } = {};
+        const xAxisData: { data: string[]; scaleType: 'band' }[] = [{ data: [], scaleType: 'band' as const }];
+
+        filteredRecords.forEach(record => {
+            // Verifica que record tenga la propiedad 'description'
+            if (record.description) {
+                const sales = record.price * (record.utility / 100) * record.amount;
+                if (aggregatedData[record.description] === undefined) {
+                    aggregatedData[record.description] = sales;
+                    xAxisData[0].data.push(record.description);
+                } else {
+                    aggregatedData[record.description] += sales;
+                }
+            } else {
+                console.error(`Registro sin propiedad 'description': ${JSON.stringify(record)}`);
+            }
+        });
+        // Verifica que haya datos después del proceso
+        if (xAxisData[0].data.length === 0) {
+            console.error("No hay datos para mostrar en el gráfico");
+            return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
+        }
+        // Corrección: Cambiar de map a reduce para acumular
+        const originalData = xAxisData[0].data.map(description => aggregatedData[description]);
+
+        return { originalData, xAxisData };
+    };
+
+    const { originalData, xAxisData } = generateChartData(registrosDelMesSeleccionado);
+    const formatData = (data: any[]) => {
+        return data.map(value => `$${value.toFixed(1)}k`);
+    };
+    const formattedData = formatData(originalData);
+    const seriesData = [{ data: originalData }];
+    const isChartDataEmpty = seriesData.length === 0 || xAxisData[0].data.length === 0;
+    const height = 290;
+    const margin = { top: 10, bottom: 30, left: 40, right: 10 };
+
     return (
         // <Container component="main" maxWidth="xs" sx={{ marginTop: 10, height: '540.5px' }}>
         <Container component="main" maxWidth="xs" className={`fade-in-vertical ${isVisible ? 'active' : ''} common-styles`}>
             <CssBaseline />
             <div style={{ textAlign: "center" }}>
                 <Typography variant="h5" align="center" gutterBottom>
-                    Data
+                Monthly Period
                 </Typography>
 
                 <Box display="flex" alignItems="center" justifyContent="center">
@@ -467,24 +351,7 @@ const Reports: FunctionComponent = () => {
 
                 <Typography variant="h6">
                     Total Mes: {sumaDeValoresDelMes}
-                </Typography>
-
-                {/* {tipoFiltrado.length > 0 && (
-                    <PieChart
-                        series={[
-                            {
-                                data: pieChartData.map((item: { value: any; invoiceType: any; fill: any; }, index: any) => ({
-                                    id: index,
-                                    value: item.value,
-                                    label: item.invoiceType,
-                                    fill: item.fill,
-                                })),
-                            },
-                        ]}
-                        width={400}
-                        height={200}
-                    />
-                )} */}
+                </Typography>         
 
                 {tipoFiltrado.length > 0 && (
                     <PieChart
@@ -503,7 +370,18 @@ const Reports: FunctionComponent = () => {
                     />
                 )}
 
-
+                <div>
+                    {isChartDataEmpty ? (
+                        <p>No hay datos para gráfico de Utilidades.</p>
+                    ) : (
+                        <BarChart
+                            series={seriesData}
+                            height={height}
+                            xAxis={xAxisData}
+                            margin={margin}
+                        />
+                    )}
+                </div>
                 <form></form>
             </div>
         </Container>
