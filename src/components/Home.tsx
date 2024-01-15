@@ -281,6 +281,64 @@ const Home: FunctionComponent = () => {
     }, []);
 
     //lines chart Utility
+    // const generateMonthlyChartData = (records: Record[]) => {
+    //     // Verifica si no hay registros o el array está vacío
+    //     if (!records || records.length === 0) {
+    //         console.error("No hay registros para procesar en el gráfico");
+    //         return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
+    //     }
+
+    //     // Filtra los registros por tipo
+    //     const type = "Sales";
+    //     const filteredRecords = records.filter(record => record.invoiceType === type);
+
+    //     // Verifica que haya registros después del filtro
+    //     if (filteredRecords.length === 0) {
+    //         console.error(`No hay registros de tipo ${type}`);
+    //         return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
+    //     }
+
+    //     const aggregatedData: { [key: string]: number } = {};
+    //     //const xAxisData: { data: string[]; scaleType: 'band' }[] = [{ data: [], scaleType: 'band' as const }];
+
+    //     const monthlyChartData: { month: string; utility: number }[] = [];
+
+    //     filteredRecords.forEach((record) => {
+    //         // Verifica que record tenga la propiedad 'dateIssue'
+    //         if (record.dateIssue) {
+    //             const date = new Date(record.dateIssue);
+    //             const month = date.toLocaleString('en-US', { month: 'long' });
+
+    //             const sales = record.price * (record.utility / 100) * record.amount;
+
+    //             const existingMonth = monthlyChartData.find((item) => item.month === month);
+
+    //             if (!existingMonth) {
+    //                 // Si el mes no existe en el array, lo añadimos
+    //                 monthlyChartData.push({ month, utility: sales });
+    //             } else {
+    //                 // Si el mes ya existe, actualizamos la utilidad
+    //                 existingMonth.utility += sales;
+    //             }
+    //         } else {
+    //             console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
+    //         }
+    //     });
+
+    //     console.log('monthlyChartData');
+    //     console.log(monthlyChartData);
+    //     // if (xAxisData[0].data.length === 0) {
+    //     //     console.error("No hay datos para mostrar en el gráfico");
+    //     //     return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
+    //     // }
+    //     // const originalData = xAxisData[0].data.map(description => aggregatedData[description]);
+    //     const originalData = monthlyChartData.map(entry => entry.utility);
+    //     const xAxisData: { data: string[]; scaleType: 'band' }[] = [{ data: monthlyChartData.map(entry => entry.month), scaleType: 'band' as const }];
+
+
+    //     return { originalData, xAxisData };
+    // };
+
     const generateMonthlyChartData = (records: Record[]) => {
         // Verifica si no hay registros o el array está vacío
         if (!records || records.length === 0) {
@@ -299,9 +357,18 @@ const Home: FunctionComponent = () => {
         }
 
         const aggregatedData: { [key: string]: number } = {};
-        //const xAxisData: { data: string[]; scaleType: 'band' }[] = [{ data: [], scaleType: 'band' as const }];
+        const months: string[] = [];
 
-        const monthlyChartData: { month: string; utility: number }[] = [];
+        // Crear un objeto para almacenar las ventas mensuales
+        const monthlyChartData: { [month: string]: number } = {};
+
+        // Obtener todos los meses
+        for (let i = 0; i < 12; i++) {
+            const date = new Date(2023, i, 1); // Se establece el año y el día fijos para evitar problemas con fechas no existentes
+            const month = date.toLocaleString('en-US', { month: 'long' });
+            months.push(month);
+            monthlyChartData[month] = 0;
+        }
 
         filteredRecords.forEach((record) => {
             // Verifica que record tenga la propiedad 'dateIssue'
@@ -310,31 +377,15 @@ const Home: FunctionComponent = () => {
                 const month = date.toLocaleString('en-US', { month: 'long' });
 
                 const sales = record.price * (record.utility / 100) * record.amount;
-
-                const existingMonth = monthlyChartData.find((item) => item.month === month);
-
-                if (!existingMonth) {
-                    // Si el mes no existe en el array, lo añadimos
-                    monthlyChartData.push({ month, utility: sales });
-                } else {
-                    // Si el mes ya existe, actualizamos la utilidad
-                    existingMonth.utility += sales;
-                }
+                monthlyChartData[month] += sales;
             } else {
                 console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
             }
         });
 
-        console.log('monthlyChartData');
-        console.log(monthlyChartData);
-        // if (xAxisData[0].data.length === 0) {
-        //     console.error("No hay datos para mostrar en el gráfico");
-        //     return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
-        // }
-        // const originalData = xAxisData[0].data.map(description => aggregatedData[description]);
-        const originalData = monthlyChartData.map(entry => entry.utility);
-        const xAxisData: { data: string[]; scaleType: 'band' }[] = [{ data: monthlyChartData.map(entry => entry.month), scaleType: 'band' as const }];
-
+        // Construir arrays con los datos necesarios
+        const originalData = months.map(month => monthlyChartData[month]);
+        const xAxisData: { data: string[]; scaleType: 'band' }[] = [{ data: months, scaleType: 'band' as const }];
 
         return { originalData, xAxisData };
     };
@@ -346,175 +397,92 @@ const Home: FunctionComponent = () => {
     const formattedData = formatData(originalData);
     const seriesData = [{ data: originalData }];
     const isChartDataEmpty = seriesData.length === 0 || xAxisData[0].data.length === 0;
-    const height = 290;
-    const margin = { top: 10, bottom: 30, left: 40, right: 10 };
+    const height = 300;
+    // const margin = { top: 10, bottom: 30, left: 40, right: 10 };
+    const margin = { top: 20, bottom: 50, left: 50, right: 20 };
 
     //lines chart Purchase
-    // const generateMonthlyChartDataPurchase = (records: Record[]) => {
-    //     if (!records || records.length === 0) {
-    //         console.error("No hay registros para procesar en el gráfico");
-    //         return { originalDataPurchase: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
-    //     }
-    //     const type = "Purchase";
-    //     const filteredRecords = records.filter(record => record.invoiceType === type);
-    //     if (filteredRecords.length === 0) {
-    //         console.error(`No hay registros de tipo ${type}`);
-    //         return { originalDataPurchase: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
-    //     }
-    //     const monthlyChartData: { month: string; utility: number }[] = [];
-    //     filteredRecords.forEach((record) => {
-    //         if (record.dateIssue) {
-    //             const date = new Date(record.dateIssue);
-    //             const month = date.toLocaleString('en-US', { month: 'long' });
-    //             const sales = record.price * record.amount;
-    //             const existingMonth = monthlyChartData.find((item) => item.month === month);
-    //             if (!existingMonth) {
-    //                 monthlyChartData.push({ month, utility: sales });
-    //             } else {
-    //                 existingMonth.utility += sales;
-    //             }
-    //         } else {
-    //             console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
-    //         }
-    //     });
-    //     console.log('monthlyChartData');
-    //     console.log(monthlyChartData);
-    //     // if (xAxisData[0].data.length === 0) {
-    //     //     console.error("No hay datos para mostrar en el gráfico");
-    //     //     return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
-    //     // }
-    //     // const originalData = xAxisData[0].data.map(description => aggregatedData[description]);
-    //     const originalDataPurchase = monthlyChartData.map(entry => entry.utility);
-    //     const xAxisDataPurchase: { data: string[]; scaleType: 'band' }[] = [{ data: monthlyChartData.map(entry => entry.month), scaleType: 'band' as const }];
-
-
-    //     return { originalDataPurchase, xAxisDataPurchase };
-    // };
-
-    // const generateMonthlyChartDataPurchase = (records: Record[]) => {
-    //     if (!records || records.length === 0) {
-    //         console.error("No hay registros para procesar en el gráfico");
-    //         return { originalDataPurchase: [], xAxisDataPurchase: [{ data: [], scaleType: 'band' as const }] };
-    //     }
-
-    //     console.log('Purchase records');
-    //     console.log(records);
-
-    //     const type = "Purchase";
-    //     const filteredRecords = records.filter(record => record.invoiceType === type);
-
-    //     console.log('Purchase filteredRecords');
-    //     console.log(filteredRecords);
-
-    //     if (filteredRecords.length === 0) {
-    //         console.error(`No hay registros de tipo ${type}`);
-    //         return { originalDataPurchase: [], xAxisDataPurchase: [{ data: [], scaleType: 'band' as const }] };
-    //     }
-
-    //     const monthlyChartData: { month: string; totalSales: number }[] = [];
-
-    //     filteredRecords.forEach((record) => {
-    //         if (record.dateIssue) {
-
-    //             console.log("c/record"+ record.invoiceID  +" "+ record.price * record.amount);
-    //             const date = new Date(record.dateIssue);
-    //             const month = date.toLocaleString('en-US', { month: 'long' });
-    //             const sales = record.price * record.amount;
-    //             const existingMonth = monthlyChartData.find((item) => item.month === month);
-
-    //             if (!existingMonth) {
-    //                 monthlyChartData.push({ month, totalSales: sales });
-    //             } else {
-    //                 existingMonth.totalSales += sales;
-    //                 console.log("suma de invoice: "+existingMonth.totalSales);
-
-    //             }
-    //         } else {
-    //             console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
-    //         }
-    //     });
-
-    //     console.log('Purchase monthlyChartData');
-    //     console.log(monthlyChartData);
-
-    //     const originalDataPurchase = monthlyChartData.map(entry => entry.totalSales);
-    //     const xAxisDataPurchase: { data: string[]; scaleType: 'band' }[] = [
-    //         { data: monthlyChartData.map(entry => entry.month), scaleType: 'band' as const }
-    //     ];
-
-    //     return { originalDataPurchase, xAxisDataPurchase };
-    // };
-
     const generateMonthlyChartDataPurchase = (records: Record[]) => {
         if (!records || records.length === 0) {
-          console.error("No hay registros para procesar en el gráfico");
-          return { originalDataPurchase: [], xAxisDataPurchase: [{ data: [], scaleType: 'band' as const }] };
+            console.error("No hay registros para procesar en el gráfico");
+            return { originalDataPurchase: [], xAxisDataPurchase: [{ data: [], scaleType: 'band' as const }] };
         }
-      
+
         console.log('Purchase records');
         console.log(records);
-      
+
         const type = "Purchase";
         const filteredRecords = records.filter(record => record.invoiceType === type);
-      
+
         console.log('Purchase filteredRecords');
         console.log(filteredRecords);
-      
+
         if (filteredRecords.length === 0) {
-          console.error(`No hay registros de tipo ${type}`);
-          return { originalDataPurchase: [], xAxisDataPurchase: [{ data: [], scaleType: 'band' as const }] };
+            console.error(`No hay registros de tipo ${type}`);
+            return { originalDataPurchase: [], xAxisDataPurchase: [{ data: [], scaleType: 'band' as const }] };
         }
-      
+
         const monthlyChartData: { month: string; totalSales: number }[] = [];
-      
+
+        // Crear un objeto para almacenar las ventas por mes
+        const salesByMonth: { [month: string]: number } = {};
+
         filteredRecords.forEach((record) => {
-          if (record.dateIssue) {
-            console.log("c/record" + record.invoiceID + " " + record.price * record.amount);
-            const date = new Date(record.dateIssue);
-            const month = date.toLocaleString('en-US', { month: 'long' });
-            const sales = record.price * record.amount;
-            const existingMonth = monthlyChartData.find((item) => item.month === month);
-      
-            if (!existingMonth) {
-              monthlyChartData.push({ month, totalSales: sales });
+            if (record.dateIssue) {
+                console.log("c/record" + record.invoiceID + " " + record.price * record.amount);
+                const date = new Date(record.dateIssue);
+                const monthKey = date.toLocaleString('en-US', { month: 'short' }); // Usar 'short' para obtener abreviaturas de meses
+
+                const sales = record.price * record.amount;
+
+                if (salesByMonth[monthKey] === undefined) {
+                    salesByMonth[monthKey] = sales;
+                } else {
+                    salesByMonth[monthKey] += sales;
+                    console.log("suma de invoice: " + salesByMonth[monthKey]);
+                }
             } else {
-              existingMonth.totalSales += sales;
-              console.log("suma de invoice: " + existingMonth.totalSales);
+                console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
             }
-          } else {
-            console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
-          }
         });
-      
+
+        // Llenar monthlyChartData con todos los meses y sus valores
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        months.forEach((month) => {
+            monthlyChartData.push({ month, totalSales: salesByMonth[month] || 0 });
+        });
+
         console.log('Purchase monthlyChartData');
         console.log(monthlyChartData);
-      
-        // const originalDataPurchase = monthlyChartData.map(entry => String(entry.totalSales));
+
         const originalDataPurchase = monthlyChartData.map(entry => entry.totalSales);
 
-
         const xAxisDataPurchase: { data: string[]; scaleType: 'band' }[] = [
-          { data: monthlyChartData.map(entry => entry.month), scaleType: 'band' as const }
+            { data: months, scaleType: 'band' as const }
         ];
-      
-        console.log(originalDataPurchase); // ["132000", "180000"]
-        console.log(xAxisDataPurchase); // [{ data: ["January", "February", ...], scaleType: 'band' }]
-      
-        return { originalDataPurchase, xAxisDataPurchase };
-      };
 
+        console.log(originalDataPurchase); // [132000, 180000, 0, 0, ...]
+        console.log(xAxisDataPurchase); // [{ data: ["Jan", "Feb", ...], scaleType: 'band' }]
+
+        return { originalDataPurchase, xAxisDataPurchase };
+    };
 
     const { originalDataPurchase, xAxisDataPurchase } = generateMonthlyChartDataPurchase(registrosDelYearSeleccionado);
     const formatDataPurchase = (data: any[]) => {
         return data.map(value => `$${value.toFixed(1)}k`);
     };
-    const formattedDataPurchase = formatData(originalDataPurchase);
+
+    // Corrección aquí: usar formatDataPurchase y originalDataPurchase
+    const formattedDataPurchase = formatDataPurchase(originalDataPurchase);
+
     const seriesDataPurchase = [{ data: originalDataPurchase }];
     // const isChartDataEmptyPurchase = seriesDataPurchase.length === 0 || xAxisDataPurchase[0].data.length === 0;
     const isChartDataEmptyPurchase = !xAxisDataPurchase || xAxisDataPurchase.length === 0 || xAxisDataPurchase[0].data.length === 0;
-    const heightPurchase = 290;
-    const marginPurchase = { top: 10, bottom: 30, left: 40, right: 10 };
+    // const heightPurchase = 290;
+    // const marginPurchase = { top: 10, bottom: 30, left: 40, right: 10 };
 
+    const heightPurchase = 300;
+    const marginPurchase = { top: 20, bottom: 50, left: 50, right: 20 };
 
 
     return (
@@ -525,8 +493,7 @@ const Home: FunctionComponent = () => {
                 <Typography variant="h5" align="center" gutterBottom>
                     Home
                 </Typography>
-
-                <Box display="flex" alignItems="center" justifyContent="center">
+                {/* <Box display="flex" alignItems="center" justifyContent="center">
                     <ShoppingCartIcon />
                     <Switch
                         checked={filterByType === 'Purchase'}
@@ -535,9 +502,7 @@ const Home: FunctionComponent = () => {
                         inputProps={{ 'aria-label': 'toggle type filter' }}
                     />
                     <PaidIcon />
-                </Box>
-
-
+                </Box> */}
                 <Box display="flex" alignItems="center" justifyContent="center">
                     <IconButton onClick={handlePreviousDate}>
                         <ArrowBackIcon />
@@ -558,12 +523,12 @@ const Home: FunctionComponent = () => {
                         <ArrowForwardIcon />
                     </IconButton>
                 </Box>
-
-                <Typography variant="h6">
-                    Total Año: {sumaDeValoresDelMes}
-                </Typography>
+                {/* // <Typography variant="h6">
+                //     Total Año: {sumaDeValoresDelMes}
+                // </Typography> */}
 
                 <div>
+                    <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Profit per year"}</h4>
                     {isChartDataEmpty ? (
                         <p>No hay datos para gráfico de Utilidades por año.</p>
                     ) : (
@@ -576,19 +541,19 @@ const Home: FunctionComponent = () => {
                     )}
                 </div>
                 <div>
+                    <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Sales per year"}</h4>
                     {isChartDataEmptyPurchase ? (
                         <p>No hay datos para gráfico de Compras por año.</p>
                     ) : (
                         <LineChart
                             series={seriesDataPurchase}
-                            height={height}
+                            height={heightPurchase}
                             xAxis={xAxisDataPurchase}
-                            margin={margin}
+                            margin={marginPurchase}
                         />
                     )}
                 </div>
 
-                <form></form>
             </div>
         </Container>
     );
