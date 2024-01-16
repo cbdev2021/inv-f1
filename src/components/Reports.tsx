@@ -359,26 +359,54 @@ const Reports: FunctionComponent = () => {
                     Total Mes: {sumaDeValoresDelMes}
                 </Typography>
 
-                {tipoFiltrado.length > 0 && (
-                    <PieChart
-                        series={[
-                            {
-                                data: pieChartData.map((item: { value: any; label: any; fill: any }, index: any) => ({
-                                    id: index,
-                                    value: item.value,
-                                    label: item.label, // Cambiado de 'invoiceType' a 'label'
-                                    fill: item.fill,
-                                })),
-                            },
-                        ]}
-                        width={400}
-                        height={200}
-                    />
-                )}
+                <div  style={{ minWidth: '400px', minHeight: '230px' }}>
+                    {/* {tipoFiltrado.length > 0 && (
+                        <PieChart
+                            series={[
+                                {
+                                    data: pieChartData.map((item: { value: any; label: any; fill: any }, index: any) => ({
+                                        id: index,
+                                        value: item.value,
+                                        label: item.label, // Cambiado de 'invoiceType' a 'label'
+                                        fill: item.fill,
+                                    })),
+                                },
+                            ]}
+                            width={400}
+                            height={200}
+                        />
+                    )} */}
 
-                <div>
+                    {tipoFiltrado.length > 0 ? (
+                        <PieChart
+                            series={[
+                                {
+                                    data: pieChartData.map((item: { value: any; label: any; fill: any }, index: any) => ({
+                                        id: index,
+                                        value: item.value,
+                                        label: item.label,
+                                        fill: item.fill,
+                                    })),
+                                },
+                            ]}
+                            width={400}
+                            height={200}
+                        />
+                    ) : (
+                        <div style={{ minWidth: '400px', minHeight: '230px' }}>
+                            <p style={{ margin: 0 }}>No hay datos para el gráfico de Compras/Ventas </p>
+                        </div>
+                    )}
+                </div>
+
+
+
+
+                <div style={{ minWidth: '400px', minHeight: '230px' }}>
                     {isChartDataEmpty ? (
-                        <p>No hay datos para gráfico de Utilidades.</p>
+                        <div style={{ minWidth: '400px', minHeight: '230px' }}>
+                            <p style={{ margin: 0 }}>No hay datos para el gráfico de Utilidades.</p>
+                        </div>
                     ) : (
                         <BarChart
                             series={seriesData}
