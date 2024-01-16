@@ -6,6 +6,9 @@ body {
   margin: 0;
   line-height: normal;
   background-color:#f0f2f5 !important;
+  height: 100%; /* Asegura que el body ocupa el 100% de la altura */
+  overflow-y: auto; /* Añade un scroll si es necesario */
+
 }
 :root {
   /* fonts */
@@ -29,6 +32,23 @@ body {
   --gap-lgi: 19px;
 }
 
+/* contenedor app */
+
+.app-container {
+  /* height: 100%; */
+  display: flex;
+  height: 100vh; /* Ajusta la altura al 100% de la ventana */
+}
+
+.component-container {
+  max-height: 86vh;
+    overflow-y: auto;
+    max-width: 65%;
+}
+/* fin contenedor app */
+
+
+
 .h7 {
   font-size: 18px; /* Puedes ajustar el tamaño de fuente según tus preferencias */
   /* Otros estilos personalizados, si es necesario */
@@ -36,7 +56,7 @@ body {
 
 .common-styles {
   margin-top: 40px;
-  height: 540.5px;
+  /* height: 540.5px; */
 }
 
 /* .form {
