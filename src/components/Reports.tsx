@@ -310,11 +310,17 @@ const Reports: FunctionComponent = () => {
 
     return (
         // <Container component="main" maxWidth="xs" sx={{ marginTop: 10, height: '540.5px' }}>
-        <Container component="main" maxWidth="xs" className={`fade-in-vertical ${isVisible ? 'active' : ''} common-styles`}>
+        <Container component="main" maxWidth="xs" className={`fade-in-vertical ${isVisible ? 'active' : ''} common-styles  component-container`}
+            style={{
+                maxHeight: '86vh',
+                overflowY: 'auto',
+                maxWidth: '35%',
+            }}
+        >
             <CssBaseline />
             <div style={{ textAlign: "center" }}>
                 <Typography variant="h5" align="center" gutterBottom>
-                Monthly Period
+                    Monthly Period
                 </Typography>
 
                 <Box display="flex" alignItems="center" justifyContent="center">
@@ -351,7 +357,7 @@ const Reports: FunctionComponent = () => {
 
                 <Typography variant="h6">
                     Total Mes: {sumaDeValoresDelMes}
-                </Typography>         
+                </Typography>
 
                 {tipoFiltrado.length > 0 && (
                     <PieChart

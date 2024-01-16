@@ -301,7 +301,7 @@ const Billing: FunctionComponent = () => {
 
     return (
         //<Container component="main" maxWidth="xs" sx={{ marginTop: 10, height: '540.5px' }}>
-        <Container component="main" maxWidth="md" className={`fade-in-vertical ${isVisible ? 'active' : ''} common-styles`}>
+        <Container component="main" maxWidth="md" className={`fade-in-vertical ${isVisible ? 'active' : ''} common-styles  component-container`}>
             <CssBaseline />
             <div>
                 <Typography variant="h5" align="center" gutterBottom>
