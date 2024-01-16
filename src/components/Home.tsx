@@ -339,56 +339,104 @@ const Home: FunctionComponent = () => {
     //     return { originalData, xAxisData };
     // };
 
+    // const generateMonthlyChartData = (records: Record[]) => {
+    //     // Verifica si no hay registros o el array está vacío
+    //     if (!records || records.length === 0) {
+    //         console.error("No hay registros para procesar en el gráfico");
+    //         return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
+    //     }
+
+    //     // Filtra los registros por tipo
+    //     const type = "Sales";
+    //     const filteredRecords = records.filter(record => record.invoiceType === type);
+
+    //     // Verifica que haya registros después del filtro
+    //     if (filteredRecords.length === 0) {
+    //         console.error(`No hay registros de tipo ${type}`);
+    //         return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
+    //     }
+
+    //     const aggregatedData: { [key: string]: number } = {};
+    //     const months: string[] = [];
+
+    //     // Crear un objeto para almacenar las ventas mensuales
+    //     const monthlyChartData: { [month: string]: number } = {};
+
+    //     // Obtener todos los meses
+    //     for (let i = 0; i < 12; i++) {
+    //         const date = new Date(2023, i, 1); // Se establece el año y el día fijos para evitar problemas con fechas no existentes
+    //         const month = date.toLocaleString('en-US', { month: 'long' });
+    //         months.push(month);
+    //         monthlyChartData[month] = 0;
+    //     }
+
+    //     filteredRecords.forEach((record) => {
+    //         // Verifica que record tenga la propiedad 'dateIssue'
+    //         if (record.dateIssue) {
+    //             const date = new Date(record.dateIssue);
+    //             const month = date.toLocaleString('en-US', { month: 'long' });
+
+    //             const sales = record.price * (record.utility / 100) * record.amount;
+    //             monthlyChartData[month] += sales;
+    //         } else {
+    //             console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
+    //         }
+    //     });
+
+    //     // Construir arrays con los datos necesarios
+    //     const originalData = months.map(month => monthlyChartData[month]);
+    //     const xAxisData: { data: string[]; scaleType: 'band' }[] = [{ data: months, scaleType: 'band' as const }];
+
+    //     return { originalData, xAxisData };
+    // };
+
     const generateMonthlyChartData = (records: Record[]) => {
-        // Verifica si no hay registros o el array está vacío
         if (!records || records.length === 0) {
             console.error("No hay registros para procesar en el gráfico");
             return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
         }
-
-        // Filtra los registros por tipo
+    
         const type = "Sales";
         const filteredRecords = records.filter(record => record.invoiceType === type);
-
-        // Verifica que haya registros después del filtro
+    
         if (filteredRecords.length === 0) {
             console.error(`No hay registros de tipo ${type}`);
             return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
         }
-
-        const aggregatedData: { [key: string]: number } = {};
-        const months: string[] = [];
-
-        // Crear un objeto para almacenar las ventas mensuales
-        const monthlyChartData: { [month: string]: number } = {};
-
-        // Obtener todos los meses
-        for (let i = 0; i < 12; i++) {
-            const date = new Date(2023, i, 1); // Se establece el año y el día fijos para evitar problemas con fechas no existentes
-            const month = date.toLocaleString('en-US', { month: 'long' });
-            months.push(month);
-            monthlyChartData[month] = 0;
-        }
-
+    
+        const monthlyChartData: { month: string; totalSales: number }[] = [];
+        const salesByMonth: { [month: string]: number } = {};
+    
         filteredRecords.forEach((record) => {
-            // Verifica que record tenga la propiedad 'dateIssue'
             if (record.dateIssue) {
                 const date = new Date(record.dateIssue);
-                const month = date.toLocaleString('en-US', { month: 'long' });
-
+                const monthKey = date.toLocaleString('en-US', { month: 'short' });
+    
                 const sales = record.price * (record.utility / 100) * record.amount;
-                monthlyChartData[month] += sales;
+    
+                if (salesByMonth[monthKey] === undefined) {
+                    salesByMonth[monthKey] = sales;
+                } else {
+                    salesByMonth[monthKey] += sales;
+                }
             } else {
                 console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
             }
         });
-
-        // Construir arrays con los datos necesarios
-        const originalData = months.map(month => monthlyChartData[month]);
-        const xAxisData: { data: string[]; scaleType: 'band' }[] = [{ data: months, scaleType: 'band' as const }];
-
+    
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        months.forEach((month) => {
+            monthlyChartData.push({ month, totalSales: salesByMonth[month] || 0 });
+        });
+    
+        const originalData = monthlyChartData.map(entry => entry.totalSales);
+        const xAxisData: { data: string[]; scaleType: 'band' }[] = [
+            { data: months, scaleType: 'band' as const }
+        ];
+    
         return { originalData, xAxisData };
     };
+    
 
     const { originalData, xAxisData } = generateMonthlyChartData(registrosDelYearSeleccionado);
     const formatData = (data: any[]) => {
