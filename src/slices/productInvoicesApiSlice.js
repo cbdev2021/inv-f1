@@ -94,6 +94,15 @@ export const typeValuesApiSlice = apiSlice.injectEndpoints({
     //     };
     //   },
     // }),
+    deleteProductsByInvoiceID: builder.mutation({
+      query: (object) => ({
+        url: `${TYPE_VALUES_URL}/delete-products-invoice-id/${object.registro.invoiceID}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${object.token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -103,4 +112,5 @@ export const {
   useDeleteProductInvoiceMutation,
   useGetProductInvoiceQuery,
   useGetProductsByUserIdInvoiceQuery,
+  useDeleteProductsByInvoiceIDMutation,
 } = typeValuesApiSlice;
