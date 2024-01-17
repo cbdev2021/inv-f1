@@ -39,6 +39,8 @@ import { useGetRegistersByCriteriaQuery } from '../slices/registerApiSlice'; // 
 import { useAddInvoiceMutation } from '../slices/invoicesApiSlice';
 import { useDeleteInvoiceMutation } from '../slices/invoicesApiSlice';
 import { CircularProgress } from "@mui/material";
+import { useDeleteProductsByInvoiceIDMutation } from '../slices/productInvoicesApiSlice';
+
 
 function filterRecordsByMonthAndYear(records: any[], targetMonth: number, targetYear: number) {
     return records.filter((record: { fecha: string | number | Date; }) => {
@@ -74,6 +76,7 @@ const Billing: FunctionComponent = () => {
     //const [filteredRecords, setFilteredRecords] = useState([]);
     //const [filtered, setFiltered] = useState<Record[]>([]);
     const [filteredRecords, setFilteredRecords] = useState<Record[]>([]);
+    const [deleteProductsByInvoiceMutation] = useDeleteProductsByInvoiceIDMutation();
 
     // useEffect(() => {
     //     console.log("itemToUpdate ha cambiado:", itemToUpdate);  
@@ -172,8 +175,22 @@ const Billing: FunctionComponent = () => {
         refetch();
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: string, invoiceID: number) => {
         try {
+
+            console.log("invoiceID");
+            console.log(invoiceID);
+
+
+            //await deleteProductsByInvoiceMutation(id);
+            await deleteProductsByInvoiceMutation(
+                {
+                    registro: {
+                        invoiceID: invoiceID
+                    },
+                    token: token
+                }
+            );
             //await deleteTypeValueMutation(id);
             await deleteInvoiceMutation(
                 {
@@ -183,7 +200,6 @@ const Billing: FunctionComponent = () => {
                     token: token
                 }
             );
-
             refetch(); // Refrescar los datos desde la consulta
         } catch (error) {
             console.error("Error al eliminar el valor:", error);
@@ -443,7 +459,7 @@ const Billing: FunctionComponent = () => {
                                                 </IconButton>
                                                 <IconButton
                                                     aria-label="delete"
-                                                    onClick={() => handleDelete(row._id)}
+                                                    onClick={() => handleDelete(row._id, row.invoiceID)}
                                                 >
                                                     <DeleteIcon color="secondary" />
                                                 </IconButton>
@@ -474,7 +490,7 @@ const Billing: FunctionComponent = () => {
                                                 </IconButton>
                                                 <IconButton
                                                     aria-label="delete"
-                                                    onClick={() => handleDelete(row._id)}
+                                                    onClick={() => handleDelete(row._id, row.invoiceID)}
                                                 >
                                                     <DeleteIcon color="secondary" />
                                                 </IconButton>

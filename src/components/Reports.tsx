@@ -314,7 +314,7 @@ const Reports: FunctionComponent = () => {
             style={{
                 maxHeight: '86vh',
                 overflowY: 'auto',
-                maxWidth: '35%',
+                maxWidth: '30%',
             }}
         >
             <CssBaseline />
