@@ -395,25 +395,25 @@ const Home: FunctionComponent = () => {
             console.error("No hay registros para procesar en el gráfico");
             return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
         }
-    
+
         const type = "Sales";
         const filteredRecords = records.filter(record => record.invoiceType === type);
-    
+
         if (filteredRecords.length === 0) {
             console.error(`No hay registros de tipo ${type}`);
             return { originalData: [], xAxisData: [{ data: [], scaleType: 'band' as const }] };
         }
-    
+
         const monthlyChartData: { month: string; totalSales: number }[] = [];
         const salesByMonth: { [month: string]: number } = {};
-    
+
         filteredRecords.forEach((record) => {
             if (record.dateIssue) {
                 const date = new Date(record.dateIssue);
                 const monthKey = date.toLocaleString('en-US', { month: 'short' });
-    
+
                 const sales = record.price * (record.utility / 100) * record.amount;
-    
+
                 if (salesByMonth[monthKey] === undefined) {
                     salesByMonth[monthKey] = sales;
                 } else {
@@ -423,20 +423,20 @@ const Home: FunctionComponent = () => {
                 console.error(`Registro sin propiedad 'dateIssue': ${JSON.stringify(record)}`);
             }
         });
-    
+
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         months.forEach((month) => {
             monthlyChartData.push({ month, totalSales: salesByMonth[month] || 0 });
         });
-    
+
         const originalData = monthlyChartData.map(entry => entry.totalSales);
         const xAxisData: { data: string[]; scaleType: 'band' }[] = [
             { data: months, scaleType: 'band' as const }
         ];
-    
+
         return { originalData, xAxisData };
     };
-    
+
 
     const { originalData, xAxisData } = generateMonthlyChartData(registrosDelYearSeleccionado);
     const formatData = (data: any[]) => {
@@ -445,7 +445,7 @@ const Home: FunctionComponent = () => {
     const formattedData = formatData(originalData);
     const seriesData = [{ data: originalData }];
     const isChartDataEmpty = seriesData.length === 0 || xAxisData[0].data.length === 0;
-    const height = 300;
+    const height = 240;
     // const margin = { top: 10, bottom: 30, left: 40, right: 10 };
     const margin = { top: 20, bottom: 50, left: 50, right: 20 };
 
@@ -529,7 +529,7 @@ const Home: FunctionComponent = () => {
     // const heightPurchase = 290;
     // const marginPurchase = { top: 10, bottom: 30, left: 40, right: 10 };
 
-    const heightPurchase = 300;
+    const heightPurchase = 240;
     const marginPurchase = { top: 20, bottom: 50, left: 50, right: 20 };
 
 
@@ -575,10 +575,12 @@ const Home: FunctionComponent = () => {
                 //     Total Año: {sumaDeValoresDelMes}
                 // </Typography> */}
 
-                <div>
+                <div style={{ minWidth: '400px', minHeight: '240px' }}>
                     <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Profit per year"}</h4>
                     {isChartDataEmpty ? (
-                        <p>No hay datos para gráfico de Utilidades por año.</p>
+                        <div style={{ minWidth: '400px', minHeight: '240px' }}>
+                            <p style={{ margin: 0 }}>No hay datos para gráfico de Utilidades por año.</p>
+                        </div>
                     ) : (
                         <LineChart
                             series={seriesData}
@@ -587,11 +589,12 @@ const Home: FunctionComponent = () => {
                             margin={margin}
                         />
                     )}
-                </div>
-                <div>
-                    <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Sales per year"}</h4>
+              
+                    <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Purchases per year"}</h4>
                     {isChartDataEmptyPurchase ? (
-                        <p>No hay datos para gráfico de Compras por año.</p>
+                        <div style={{ minWidth: '400px', minHeight: '240px' }}>
+                            <p style={{ margin: 0 }}>No hay datos para gráfico de Compras por año. </p>
+                        </div>
                     ) : (
                         <LineChart
                             series={seriesDataPurchase}

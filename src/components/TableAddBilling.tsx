@@ -808,7 +808,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         });
         console.log('Respuesta de la inserción:', response);
         handleForceReload();
-        generateIdRefetch();
+
+        //generateIdRefetch();
+        
         // const responseUpdate = await updateProductAmount({
         //   registro: {
         //     amount: product.amount,
@@ -818,7 +820,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         //   token: token,
         // });
         searchResultsUpdated.push(product);
-        generateIdRefetch();
+        //generateIdRefetch();
 
       }
 
