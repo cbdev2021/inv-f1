@@ -305,7 +305,7 @@ const Reports: FunctionComponent = () => {
     const formattedData = formatData(originalData);
     const seriesData = [{ data: originalData }];
     const isChartDataEmpty = seriesData.length === 0 || xAxisData[0].data.length === 0;
-    const height = 290;
+    const height = 210;
     const margin = { top: 10, bottom: 30, left: 40, right: 10 };
 
     return (
@@ -355,28 +355,12 @@ const Reports: FunctionComponent = () => {
                     </IconButton>
                 </Box>
 
-                <Typography variant="h6">
+                {/* <Typography variant="h6">
                     Total Mes: {sumaDeValoresDelMes}
-                </Typography>
+                </Typography> */}
 
-                <div  style={{ minWidth: '400px', minHeight: '230px' }}>
-                    {/* {tipoFiltrado.length > 0 && (
-                        <PieChart
-                            series={[
-                                {
-                                    data: pieChartData.map((item: { value: any; label: any; fill: any }, index: any) => ({
-                                        id: index,
-                                        value: item.value,
-                                        label: item.label, // Cambiado de 'invoiceType' a 'label'
-                                        fill: item.fill,
-                                    })),
-                                },
-                            ]}
-                            width={400}
-                            height={200}
-                        />
-                    )} */}
-
+                <div style={{ minWidth: '400px', minHeight: '210px' }}>
+                    <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Monthly " + filterByType}</h4>
                     {tipoFiltrado.length > 0 ? (
                         <PieChart
                             series={[
@@ -390,21 +374,19 @@ const Reports: FunctionComponent = () => {
                                 },
                             ]}
                             width={400}
-                            height={200}
+                            height={210}
                         />
                     ) : (
-                        <div style={{ minWidth: '400px', minHeight: '230px' }}>
-                            <p style={{ margin: 0 }}>No hay datos para el gráfico de Compras/Ventas </p>
+                        <div style={{ minWidth: '400px', minHeight: '210px' }}>
+                            <p style={{ margin: 0 }}>No hay datos para el gráfico {filterByType}. </p>
                         </div>
                     )}
-                </div>
+                {/* </div>
 
-
-
-
-                <div style={{ minWidth: '400px', minHeight: '230px' }}>
+                <div style={{ minWidth: '400px', minHeight: '230px' }}> */}
+                    <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Monthly Profits"}</h4>
                     {isChartDataEmpty ? (
-                        <div style={{ minWidth: '400px', minHeight: '230px' }}>
+                        <div style={{ minWidth: '400px', minHeight: '210px' }}>
                             <p style={{ margin: 0 }}>No hay datos para el gráfico de Utilidades.</p>
                         </div>
                     ) : (
