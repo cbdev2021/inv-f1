@@ -45,7 +45,36 @@ body {
     overflow-y: auto;
     max-width: 65%;
 }
-/* fin contenedor app */
+.component-container-reports {
+  max-height: 86vh;
+    overflow-y: auto;
+    max-width: 35%;
+}
+/* @media (min-width: 300px) and (max-width: 768px) {
+  .component-container,
+  .component-container-reports {
+    max-width: 100%;
+  }
+} */
+@media (min-width: 300px) and (max-width: 768px) {
+  .component-container{
+    max-width: 100%;
+  }
+}
+@media (min-width: 240px) and (max-width: 650px) {
+  .component-container-reports {
+    max-width: 100%;
+  }
+}
+@media (min-width: 651px) and (max-width: 1140px) {
+  .component-container-reports {
+    max-width: 70%;
+  }
+}
+
+
+
+
 
 
 
