@@ -310,13 +310,7 @@ const Reports: FunctionComponent = () => {
 
     return (
         // <Container component="main" maxWidth="xs" sx={{ marginTop: 10, height: '540.5px' }}>
-        <Container component="main" maxWidth="xs" className={`fade-in-vertical ${isVisible ? 'active' : ''} common-styles  component-container`}
-            style={{
-                maxHeight: '86vh',
-                overflowY: 'auto',
-                maxWidth: '30%',
-            }}
-        >
+        <Container component="main" maxWidth="xs" className={`fade-in-vertical ${isVisible ? 'active' : ''} common-styles component-container-reports `}>
             <CssBaseline />
             <div style={{ textAlign: "center" }}>
                 <Typography variant="h5" align="center" gutterBottom>
@@ -381,7 +375,7 @@ const Reports: FunctionComponent = () => {
                             <p style={{ margin: 0 }}>No hay datos para el gráfico {filterByType}. </p>
                         </div>
                     )}
-                {/* </div>
+                    {/* </div>
 
                 <div style={{ minWidth: '400px', minHeight: '230px' }}> */}
                     <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Monthly Profits"}</h4>
