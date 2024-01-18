@@ -810,7 +810,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         handleForceReload();
 
         //generateIdRefetch();
-        
+
         // const responseUpdate = await updateProductAmount({
         //   registro: {
         //     amount: product.amount,
@@ -974,6 +974,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
   };
 
+  const isReadOnly = typevalue === 'Edit Register';
+
   return (
     <form onSubmit={handleAdd}>
       <div>
@@ -1009,7 +1011,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           {/* DatePicker */}
-          <Grid item xs={6}>
+          <Grid item xs={6} >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Select Date"
@@ -1020,6 +1022,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                     //setFecha(newValue.format('YYYY-MM-DD'));
                   }
                 }}
+                disabled={isReadOnly}
               />
 
             </LocalizationProvider>
@@ -1037,6 +1040,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                 value={provider || ""}
                 fullWidth
                 onChange={(e) => setProvider(e.target.value)}
+                InputProps={{
+                  readOnly: isReadOnly,
+                }}
               />
             )}
           </Grid>
@@ -1052,6 +1058,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   value={paymentBuy}
                   onChange={handlePaymentBuyChange}
                   label="Payment Buy"
+                  inputProps={{
+                    readOnly: isReadOnly, // Utiliza inputProps para aplicar readOnly
+                  }}
                 >
                   {paymentSellOptions.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -1073,6 +1082,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                 value={customer || ""}
                 fullWidth
                 onChange={(e) => setCustomer(e.target.value)}
+                InputProps={{
+                  readOnly: isReadOnly,
+                }}
               />
             )}
           </Grid>
@@ -1087,6 +1099,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   value={paymentSell}
                   onChange={handlePaymentSellChange}
                   label="Payment Sell"
+                  inputProps={{
+                    readOnly: isReadOnly, // Utiliza inputProps para aplicar readOnly
+                  }}
                 >
                   {paymentSellOptions.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -1098,7 +1113,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             )}
           </Grid>
 
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <TextField
               label="Taxes"
               variant="outlined"
@@ -1118,7 +1133,39 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               fullWidth
               onChange={(e) => setSubTotal(e.target.value)}
             />
-          </Grid>
+          </Grid> */}
+          {typevalue === 'Edit Register' && (
+            <>
+              {/* Muestra los campos solo cuando typevalue es 'Edit Register' */}
+              <Grid item xs={6}>
+                <TextField
+                  label="Taxes"
+                  variant="outlined"
+                  type="text"
+                  value={taxes || ""}
+                  fullWidth
+                  onChange={(e) => setTaxes(e.target.value)}
+                  InputProps={{
+                    readOnly: isReadOnly,
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  label="Sub Total"
+                  variant="outlined"
+                  type="text"
+                  value={subTotal || ""}
+                  fullWidth
+                  onChange={(e) => setSubTotal(e.target.value)}
+                  InputProps={{
+                    readOnly: isReadOnly,
+                  }}
+                />
+              </Grid>
+            </>
+          )}
 
           {/* <Grid item xs={6}>
             {addButton}
