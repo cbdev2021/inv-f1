@@ -10,6 +10,7 @@ import {
     DialogActions,
     Slide,
     TextField,
+    Fab,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PaidIcon from "@mui/icons-material/Paid";
@@ -321,18 +322,18 @@ const Billing: FunctionComponent = () => {
             <CssBaseline />
             <div>
                 <Typography variant="h5" align="center" gutterBottom>
-                    Billing
+                    Invoices
                 </Typography>
 
                 <form className={"form"}>
                     <div className={"buttonsContainer"}>
-                        <Button
+                        {/* <Button
                             variant="contained"
                             color="primary"
                             onClick={() => handleClickOpen("Purchase")}
                             startIcon={<ShoppingCartIcon />}
                         >
-                            Purchase Invoice
+                            Purchase
                         </Button>
                         <Button
                             variant="contained"
@@ -340,8 +341,21 @@ const Billing: FunctionComponent = () => {
                             onClick={() => handleClickOpen("Sales")}
                             startIcon={<PaidIcon />}
                         >
-                            Sales Invoice
-                        </Button>
+                            Sales   
+                        </Button> */}
+                        <Fab
+                            color="primary"
+                            onClick={() => handleClickOpen("Purchase")}
+                        >
+                            <ShoppingCartIcon />+
+                        </Fab>
+                        <Fab
+                            color="secondary"
+                            onClick={() => handleClickOpen("Sales")}
+                        >
+                            <PaidIcon />+
+                        </Fab>
+
                     </div>
 
                     <Tabs value={activeTab} onChange={handleTabChange} centered>
@@ -373,7 +387,7 @@ const Billing: FunctionComponent = () => {
                                     itemToUpdate={null}
                                     //openDialog={openDialog}
                                     setOpenDialog={setOpenDialog}
-                                    
+
                                 />
                             )}
                             {dialogTitle === "Sales" && (
