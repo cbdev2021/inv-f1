@@ -980,9 +980,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     <form onSubmit={handleAdd}>
       <div>
         <Typography variant="h6" gutterBottom>
-          {/* Add {title} */}
-          {title}Invoice
-           {itemToUpdate.invoiceType} Invoice
+          {/* Add {title}   {title} Invoice      {/* {itemToUpdate.invoiceType} Invoice //new invoice */}
+          {itemToUpdate ? itemToUpdate.invoiceType + ' Invoice' : `${title} Invoice`}
         </Typography>
         <br />
 
