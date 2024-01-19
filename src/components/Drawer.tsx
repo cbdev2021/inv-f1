@@ -3,10 +3,14 @@ import { Drawer as MUIDrawer } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+// import NoteAltIcon from '@mui/icons-material/NoteAlt';
+
 
 interface DrawerProps {
     open: boolean;
@@ -46,25 +50,25 @@ const Drawer: FunctionComponent<DrawerProps> = ({ open, onClose }) => {
                 <List>
                     <ListItem button onClick={() => handleItemClick('/home')}>
                         <ListItemIcon>
-                            <InboxIcon />
+                            <HomeIcon />
                         </ListItemIcon>
                         <ListItemText primary="Home" />
                     </ListItem>
                     <ListItem button onClick={() => handleItemClick('/billing')}>
                         <ListItemIcon>
-                            <MailIcon />
+                            <ReceiptLongIcon />
                         </ListItemIcon>
                         <ListItemText primary="Billing" />
                     </ListItem>
                     <ListItem button onClick={() => handleItemClick('/inventory')}>
                         <ListItemIcon>
-                            <MailIcon />
+                            <Inventory2Icon />
                         </ListItemIcon>
                         <ListItemText primary="Inventory" />
                     </ListItem>
                     <ListItem button onClick={() => handleItemClick('/reports')}>
                         <ListItemIcon>
-                            <MailIcon />
+                            <BarChartIcon />
                         </ListItemIcon>
                         <ListItemText primary="Reports" />
                     </ListItem>
