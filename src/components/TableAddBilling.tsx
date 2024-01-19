@@ -115,46 +115,46 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
 
   const [descRegistro, setDescRegistro] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.descRegistro : ""
+    itemToUpdate && typevalue === "View" ? itemToUpdate.descRegistro : ""
   );
   // const [subTotal, setSubTotal] = useState(
-  //   itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.subTotal : ""
+  //   itemToUpdate && typevalue === "View" ? itemToUpdate.subTotal : ""
   // );
 
   const [subTotal, setSubTotal] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.subTotal : 0
+    itemToUpdate && typevalue === "View" ? itemToUpdate.subTotal : 0
   );
 
 
   const [dateIssue, setDateIssue] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? formatDate(itemToUpdate.dateIssue) : ""
+    itemToUpdate && typevalue === "View" ? formatDate(itemToUpdate.dateIssue) : ""
   );
 
   const [taxes, setTaxes] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.taxes : ""
+    itemToUpdate && typevalue === "View" ? itemToUpdate.taxes : ""
   );
 
   const [invoiceID, setInvoiceID] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.invoiceID : ""
+    itemToUpdate && typevalue === "View" ? itemToUpdate.invoiceID : ""
   );
 
   //venta
   const [customer, setCustomer] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.customer : ""
+    itemToUpdate && typevalue === "View" ? itemToUpdate.customer : ""
   );
 
   const [paymentSell, setPaymentSell] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.paymentSell : ""
+    itemToUpdate && typevalue === "View" ? itemToUpdate.paymentSell : ""
   );
 
   //compra
 
   const [provider, setProvider] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.provider : ""
+    itemToUpdate && typevalue === "View" ? itemToUpdate.provider : ""
   );
 
   const [paymentBuy, setPaymentBuy] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.paymentBuy : ""
+    itemToUpdate && typevalue === "View" ? itemToUpdate.paymentBuy : ""
   );
 
   const paymentSellOptions = ['efectivo', 'tarjeta de crédito', 'tarjeta de débito', 'cheque', 'pago en línea'];
@@ -217,7 +217,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
 
   // useEffect(() => {
-  //   if (itemToUpdate && typevalue === "Edit Register") {
+  //   if (itemToUpdate && typevalue === "View") {
   //     setDescRegistro(itemToUpdate.descRegistro);
   //     setSubTotal(itemToUpdate.subTotal);
   //     setDateIssue(formatDate(itemToUpdate.dateIssue));
@@ -230,7 +230,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   // }, [itemToUpdate, typevalue]);
 
   useEffect(() => {
-    if (itemToUpdate && typevalue === "Edit Register") {
+    if (itemToUpdate && typevalue === "View") {
       const { descRegistro, subTotal, dateIssue, taxes, invoiceID, customer, paymentSell, provider, paymentBuy } = itemToUpdate;
 
       setDescRegistro(descRegistro || "");
@@ -365,7 +365,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   };
 
   const [invoiceId, setInvoiceId] = useState(
-    itemToUpdate && typevalue === "Edit Register" ? itemToUpdate.invoiceID : ""
+    itemToUpdate && typevalue === "View" ? itemToUpdate.invoiceID : ""
   );
 
   // const { data: generateIdData, error: generateIdError } = useGetGenerateIdInvoiceQuery({
@@ -500,7 +500,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         Add
       </Button>
     );
-  } else if (typevalue === "Edit Register") {
+  } else if (typevalue === "View") {
     addButton = (
       <Button
         variant="contained"
@@ -891,7 +891,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
 
   useEffect(() => {
-    if (typevalue === 'Edit Register') {
+    if (typevalue === 'View') {
       console.log("en useEffect");
 
       if (dataProductsInvoicesRegisters) {
@@ -909,7 +909,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     customRefetch(); // Llama a la función de refetch aquí
   };
 
-  const isAutocompleteDisabled = typevalue === 'Edit Register';
+  const isAutocompleteDisabled = typevalue === 'View';
 
   //
   const [loading, setLoading] = useState(false);
@@ -974,15 +974,17 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
   };
 
-  const isReadOnly = typevalue === 'Edit Register';
+  const isReadOnly = typevalue === 'View';
 
   return (
     <form onSubmit={handleAdd}>
       <div>
         <Typography variant="h6" gutterBottom>
           {/* Add {title} */}
-          {title}
+          {title}Invoice
+           {itemToUpdate.invoiceType} Invoice
         </Typography>
+        <br />
 
         <Grid container spacing={2}>
           {/* <Grid item xs={12} style={{ width: '50%' }}>
@@ -1031,7 +1033,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
 
           <Grid item xs={6}>
-            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Purchase'))) && (
+            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Purchase'))) && (
 
               <TextField
                 label="Provider"
@@ -1048,7 +1050,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={6}>
-            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Purchase'))) && (
+            {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Purchase'))) && (
 
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Buy</InputLabel>
@@ -1073,7 +1075,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={6}>
-            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Sales'))) && (
+            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Sales'))) && (
 
               <TextField
                 label="Customer"
@@ -1090,7 +1092,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
 
           <Grid item xs={6}>
-            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'Edit Register' && itemToUpdate.invoiceType === 'Sales'))) && (
+            {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Sales'))) && (
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
                 <Select
@@ -1134,9 +1136,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               onChange={(e) => setSubTotal(e.target.value)}
             />
           </Grid> */}
-          {typevalue === 'Edit Register' && (
+          {typevalue === 'View' && (
             <>
-              {/* Muestra los campos solo cuando typevalue es 'Edit Register' */}
+              {/* Muestra los campos solo cuando typevalue es 'View' */}
               <Grid item xs={6}>
                 <TextField
                   label="Taxes"
@@ -1201,7 +1203,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             variant="outlined"
             fullWidth
             //value={searchTerm}
-            value={typevalue === 'Edit Register' ? null : selectedProduct}
+            value={typevalue === 'View' ? null : selectedProduct}
             onChange={(e) => setSearchTerm(e.target.value)}
             //onChange={(e) => setSearchResults(e.target.value)}
             //disabled={isAutocompleteDisabled}
@@ -1279,14 +1281,14 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {typevalue === 'Edit Register'
+              {typevalue === 'View'
                 ? filteredData.map((product) => (
                   <TableRow key={product.productId}>
                     <TableCell>{product.productId}</TableCell>
                     <TableCell>{product.description}</TableCell>
                     <TableCell>{product.price}</TableCell>
                     <TableCell>{product.amount}</TableCell>
-                    <TableCell>{/* Acciones específicas para Edit Register, si es necesario */}</TableCell>
+                    <TableCell>{/* Acciones específicas para View, si es necesario */}</TableCell>
                   </TableRow>
                 ))
                 : searchResults.map((product) => (

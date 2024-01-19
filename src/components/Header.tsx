@@ -6,7 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice';
 
@@ -50,9 +50,11 @@ const Header: FunctionComponent<HeaderProps> = ({ onMenuClick }) => {
                     <SearchIcon />
                     <InputBase placeholder="Search..." sx={{ marginLeft: '5px', color: '#fff' }} />
                 </div>
-                <IconButton color="inherit">
-                    <AccountCircleIcon />
-                </IconButton>
+                <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <IconButton color="inherit">
+                        <AccountCircleIcon />
+                    </IconButton>
+                </Link>
                 <IconButton color="inherit" onClick={handleLogout}>
                     <LogoutIcon />
                 </IconButton>
