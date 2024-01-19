@@ -329,7 +329,8 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
     <form onSubmit={handleAdd}>
       <div>
         <Typography variant="h6" gutterBottom>
-          Add {title}
+          {/* Add {title} */}
+          New Register
         </Typography>
 
         <Grid container spacing={2}>

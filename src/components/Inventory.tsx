@@ -37,6 +37,7 @@ import {
     DialogActions,
     Slide,
     TextField,
+    Fab,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PaidIcon from "@mui/icons-material/Paid";
@@ -64,9 +65,8 @@ import { useGetProductsByUserIdQuery } from '../slices/productApiSlice'; // Impo
 
 //import { useAddRegisterMutation, useDeleteRegisterMutation } from '../slices/registerApiSlice';
 import { useAddProductMutation, useDeleteProductMutation } from '../slices/productApiSlice';
-
-
 import { CircularProgress } from "@mui/material";
+import PostAddIcon from '@mui/icons-material/PostAdd';
 
 function filterRecordsByMonthAndYear(records: any[], targetMonth: number, targetYear: number) {
     return records.filter((record: { fecha: string | number | Date; }) => {
@@ -295,23 +295,31 @@ const Inventory: FunctionComponent = () => {
                 </Typography>
 
                 <form className={"form"}>
-                    <div className={"buttonsContainer"}>
-                        <Button
+                    {/* <div className={"buttonsContainer"}> */}
+                    {/* <Button
                             variant="contained"
                             color="primary"
                             onClick={() => handleClickOpen("Spent")}
                             startIcon={<ShoppingCartIcon />}
                         >
                             New Spent
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => handleClickOpen("Income")}
-                            startIcon={<PaidIcon />}
+                        </Button>  */}
+
+                    {/* <Fab
+                            color="primary"
+                            onClick={() => handleClickOpen("Spent")}
                         >
-                            New Income
-                        </Button>
+                            <PostAddIcon />
+                        </Fab>
+                    </div> */}
+                    <div className="buttonsContainer" style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Fab
+                            color="primary"
+                            onClick={() => handleClickOpen("Spent")}
+                        >
+                            <Typography variant="body2" style={{ fontSize: '0.65rem', marginRight: '5px' }}> New</Typography>
+                            <PostAddIcon />
+                        </Fab>
                     </div>
 
                     <Dialog
@@ -322,9 +330,11 @@ const Inventory: FunctionComponent = () => {
                         maxWidth="xs"
                         fullWidth
                     >
-                        <DialogTitle>{dialogTitle}</DialogTitle>
+
+                        {/* <DialogTitle>{dialogTitle}</DialogTitle> */}
+
                         {/* <DialogContent style={{ maxHeight: 400, overflowY: 'scroll' }}> */}
-                        <DialogContent style={{ maxHeight: 400, overflowY: 'scroll'}}>
+                        <DialogContent style={{ maxHeight: 400, overflowY: 'scroll' }}>
                             {dialogTitle === "Spent" && (
                                 <TableAddRegister
                                     userId={userId}
