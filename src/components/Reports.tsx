@@ -318,14 +318,14 @@ const Reports: FunctionComponent = () => {
                 </Typography>
 
                 <Box display="flex" alignItems="center" justifyContent="center">
-                    <ShoppingCartIcon />
+                    <PaidIcon />
                     <Switch
                         checked={filterByType === 'Purchase'}
                         onChange={(event) => setFilterByType(event.target.checked ? 'Purchase' : 'Sales')}
                         color="primary"
                         inputProps={{ 'aria-label': 'toggle type filter' }}
                     />
-                    <PaidIcon />
+                    <ShoppingCartIcon />
                 </Box>
 
                 <Box display="flex" alignItems="center" justifyContent="center">
