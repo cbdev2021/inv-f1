@@ -358,7 +358,7 @@ const Billing: FunctionComponent = () => {
                         maxWidth="md"
                         fullWidth
                     >
-                        <DialogTitle>{dialogTitle}</DialogTitle>
+                        {/* <DialogTitle>{dialogTitle}</DialogTitle>   titulo del componente */}
                         <DialogContent style={{ maxHeight: 400, overflowY: 'scroll' }}>
                             {dialogTitle === "Purchase" && (
                                 <TableAddBilling
@@ -392,11 +392,11 @@ const Billing: FunctionComponent = () => {
                                 />
                             )}
 
-                            {dialogTitle === "Edit Register" && (
+                            {dialogTitle === "View" && (
                                 <TableAddBilling
                                     userId={userId}
                                     title={dialogTitle}
-                                    typevalue="Edit Register"
+                                    typevalue="View"
                                     data={dataEdit || []}
                                     //dataRegisters= {dataResponseRegisters}
                                     addInvoiceMutation={addInvoiceMutation}
@@ -452,7 +452,7 @@ const Billing: FunctionComponent = () => {
                                                     aria-label="edit"
                                                     onClick={() => {
                                                         handleCloseRegisters();
-                                                        handleEdit("Edit Register", row._id);
+                                                        handleEdit("View", row._id);
                                                     }}
                                                 >
                                                     <VisibilityIcon color="primary" />
@@ -483,7 +483,7 @@ const Billing: FunctionComponent = () => {
                                                     aria-label="edit"
                                                     onClick={() => {
                                                         handleCloseRegisters();
-                                                        handleEdit("Edit Register", row._id);
+                                                        handleEdit("View", row._id);
                                                     }}
                                                 >
                                                     <VisibilityIcon color="primary" />

@@ -12,6 +12,7 @@ import PrivateRoute from './components/PrivateRoute';
 import { useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Profile from './components/Profile';
 
 const App: FunctionComponent = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -46,6 +47,7 @@ const App: FunctionComponent = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/inventory" element={<Inventory />} />
                     <Route path="/reports" element={<Reports />} />
+                    <Route path="/profile" element={<Profile />} />
                 </Route>
             </Routes>
         </div>
