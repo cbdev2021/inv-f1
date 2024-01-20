@@ -317,15 +317,16 @@ const Reports: FunctionComponent = () => {
                     Monthly Period
                 </Typography>
 
-                <Box display="flex" alignItems="center" justifyContent="center">
-                    <PaidIcon />
+                <Box display="flex" alignItems="center" justifyContent="center">  
+                    <ShoppingCartIcon />
                     <Switch
-                        checked={filterByType === 'Purchase'}
-                        onChange={(event) => setFilterByType(event.target.checked ? 'Purchase' : 'Sales')}
+                        checked={filterByType === 'Sales'}
+                        onChange={(event) => setFilterByType(event.target.checked ? 'Sales' : 'Purchase')}
                         color="primary"
                         inputProps={{ 'aria-label': 'toggle type filter' }}
                     />
-                    <ShoppingCartIcon />
+                    <PaidIcon />
+                    
                 </Box>
 
                 <Box display="flex" alignItems="center" justifyContent="center">
