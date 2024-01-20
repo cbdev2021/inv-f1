@@ -84,7 +84,12 @@ const Register: FunctionComponent = () => {
 
           <div className="form-elements-container">
 
-            <Typography align="center" style={{ lineHeight: '1.5em' }}>
+            {/* <Typography align="center" style={{ lineHeight: '1.5em' }}>
+              <b>Welcome</b>, we want that you use <b>Inv</b> for your business to obtain the best results.
+              To start to use our web app, complete the next register form!
+            </Typography> */}
+
+            <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '0px', fontFamily: 'Roboto, sans-serif', color: '#333', fontSize: '14px' }}>
               <b>Welcome</b>, we want that you use <b>Inv</b> for your business to obtain the best results.
               To start to use our web app, complete the next register form!
             </Typography>
@@ -185,10 +190,30 @@ const Register: FunctionComponent = () => {
       </div>
 
       <div className="mitad-derecha" style={{ flex: '1', backgroundColor: '#e0e0e0', padding: '20px' }}>
-        <Typography variant="h6" align="center" style={{ lineHeight: '1.5em' }}>
-          ya estás registrado?
-          inicia sesión para comenzar!!
+        <img
+          src="./inventory3.jpg"
+          alt="Inventario"
+          style={{
+            maxWidth: '100%',
+            maxHeight: '100%',
+            objectFit: 'contain',
+            margin: 'auto', // Centrar horizontalmente
+            display: 'block',
+            opacity: 0.35,
+            marginTop: 'auto',
+            marginBottom: 'auto',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        />
+        <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontWeight: 'bold', fontSize: '14px' }}>
+          Register today to enjoy exclusive features, personalized services, and seamless connectivity for a more efficient management experience
         </Typography>
+
+        {/* <Typography align="center" style={{ lineHeight: '1.5em' }}>
+          Register today to enjoy exclusive features, personalized services, and seamless connectivity for a more efficient management experience
+
+        </Typography> */}
       </div>
     </div>
   );

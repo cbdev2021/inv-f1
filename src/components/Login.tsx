@@ -129,12 +129,25 @@ const Login: FunctionComponent = () => {
       </div>
 
       <div className="mitad-derecha" style={{ flex: '1', backgroundColor: '#e0e0e0', padding: '20px' }}>
-        <Typography variant="h6" align="center" style={{ lineHeight: '1.5em' }}>
-          Obten un mejor control de tus inventarios,
-          inicia sesión para comenzar!!
+        <img
+          src="./inventory2.jpg"
+          alt="Inventario"
+          style={{
+            maxWidth: '100%',
+            maxHeight: '100%',
+            objectFit: 'contain',
+            margin: 'auto', // Centrar horizontalmente
+            display: 'block',
+            opacity: 0.35,
+            marginTop: 'auto',
+            marginBottom: 'auto',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          }}
+        />
+        <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontWeight: 'bold', fontSize: '14px'}}>
+          Login to your account for instant access to your inventory, real-time updates, and a user-friendly interface that empowers you to take control of your business with confidence.
         </Typography>
-
-
       </div>
     </div>
   );

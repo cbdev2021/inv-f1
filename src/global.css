@@ -136,7 +136,7 @@ body {
 .yaTienesCuentaContainer {
   position: absolute;
   /* top: calc(50% + 100px);  */
-  top: calc(50% + 300px); 
+  top: calc(50% + 300px);   
 
   left: calc(50% - 104px); /* Ajusta la posición horizontal aquí */
   text-align: center;
@@ -149,7 +149,7 @@ body {
 .noTienesCuentaContainer {
   position: absolute;
   /* top: calc(50% + 100px); */
-  top: calc(50% + 300px);
+  top: calc(50% + 300px); 
 
   left: calc(50% - 104px); /* Ajusta la posición horizontal aquí */
   text-align: center;
@@ -214,15 +214,20 @@ body {
 @media (max-width: 768px) {
   .contenedor {
     flex-direction: column; /* Cambia la dirección a columna para móviles y tabletas */
+    height: 100vh; /* Ocupa el 100% de la altura de la ventana gráfica */
   }
 
   .mitad-izquierda,
   .mitad-derecha {
     width: 100%; /* Ocupar el 100% del ancho en dispositivos móviles y tabletas */
+    height: 50%; /* Cada mitad ocupa el 50% de la altura */
+
+    /* Asegurar que cada mitad tenga al menos 689 px de altura */
+    min-height: 689px;
   }
 
   .mitad-derecha {
     order: 1; /* Cambia el orden para que la mitad derecha aparezca debajo en dispositivos más pequeños */
-    margin-top: 20px; /* Agrega un margen superior para separar las mitades */
+    margin-top: 0; /* No es necesario el margen superior en este caso */
   }
 }
