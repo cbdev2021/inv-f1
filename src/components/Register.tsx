@@ -206,14 +206,19 @@ const Register: FunctionComponent = () => {
             marginRight: 'auto',
           }}
         />
-        <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontWeight: 'bold', fontSize: '14px' }}>
+        {/* <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontWeight: 'bold', fontSize: '14px' }}>
           Register today to enjoy exclusive features, personalized services, and seamless connectivity for a more efficient management experience
-        </Typography>
+        </Typography> */}
 
         {/* <Typography align="center" style={{ lineHeight: '1.5em' }}>
           Register today to enjoy exclusive features, personalized services, and seamless connectivity for a more efficient management experience
 
         </Typography> */}
+
+        <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontSize: '14px' }}>
+          <b> Register</b> today to enjoy exclusive features, personalized services, and seamless connectivity for a more efficient management experience
+        </Typography>
+
       </div>
     </div>
   );
