@@ -1272,11 +1272,11 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Product ID</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Price</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Product ID</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Price</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Amount</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}> </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
