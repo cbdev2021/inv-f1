@@ -579,7 +579,7 @@ const Home: FunctionComponent = () => {
                     <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Profit per year"}</h4>
                     {isChartDataEmpty ? (
                         <div style={{ minWidth: '400px', minHeight: '240px' }}>
-                            <p style={{ margin: 0 }}>No hay datos para gráfico de Utilidades por año.</p>
+                            <p style={{ margin: 0 }}>There is no data for the Profit by Year chart.</p>
                         </div>
                     ) : (
                         <LineChart
@@ -593,7 +593,7 @@ const Home: FunctionComponent = () => {
                     <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Purchases per year"}</h4>
                     {isChartDataEmptyPurchase ? (
                         <div style={{ minWidth: '400px', minHeight: '240px' }}>
-                            <p style={{ margin: 0 }}>No hay datos para gráfico de Compras por año. </p>
+                            <p style={{ margin: 0 }}>There is no data for the Purchases by Year chart.</p>
                         </div>
                     ) : (
                         <LineChart

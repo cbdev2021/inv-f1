@@ -438,13 +438,20 @@ const Billing: FunctionComponent = () => {
                             <TableHead>
                                 <TableRow>
                                     {/* <TableCell>ID</TableCell> */}
-                                    <TableCell>Invoice ID</TableCell>
-                                    <TableCell>invoice Type</TableCell>
-                                    <TableCell>Date</TableCell>
-                                    <TableCell>Provider/Customer</TableCell>
-                                    <TableCell>Payment</TableCell>
-                                    <TableCell>Taxes</TableCell>
-                                    <TableCell>Sub-total</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Invoice ID</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Invoice Type</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
+                                    {/* <TableCell sx={{ fontWeight: 'bold' }}>Provider/Customer</TableCell> */}
+
+                                    {/* <TableCell sx={{ fontWeight: 'bold' }}> {activeTab}</TableCell> */}
+                                    
+                                    <TableCell sx={{ fontWeight: 'bold' }}>
+                                        {activeTab === 0 ? "Provider"   : activeTab === 1  ? "Customer" : ""}
+                                    </TableCell>
+
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Payment</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Taxes</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Sub-total</TableCell>
                                 </TableRow>
                             </TableHead>
 

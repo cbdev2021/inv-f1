@@ -373,7 +373,7 @@ const Reports: FunctionComponent = () => {
                         />
                     ) : (
                         <div style={{ minWidth: '400px', minHeight: '210px' }}>
-                            <p style={{ margin: 0 }}>No hay datos para el gráfico {filterByType}. </p>
+                            <p style={{ margin: 0 }}>There is no data for the {filterByType} chart. </p>
                         </div>
                     )}
                     {/* </div>
@@ -382,7 +382,7 @@ const Reports: FunctionComponent = () => {
                     <h4 style={{ fontWeight: 'bold', textAlign: 'left', marginBottom: '5px' }}>{"Monthly Profits"}</h4>
                     {isChartDataEmpty ? (
                         <div style={{ minWidth: '400px', minHeight: '210px' }}>
-                            <p style={{ margin: 0 }}>No hay datos para el gráfico de Utilidades.</p>
+                            <p style={{ margin: 0 }}>There is no data for the Profit chart.</p>
                         </div>
                     ) : (
                         <BarChart
