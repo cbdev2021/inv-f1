@@ -145,9 +145,15 @@ const Login: FunctionComponent = () => {
             marginRight: 'auto',
           }}
         />
-        <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontWeight: 'bold', fontSize: '14px'}}>
+
+        {/* <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontWeight: 'bold', fontSize: '14px'}}>
           Login to your account for instant access to your inventory, real-time updates, and a user-friendly interface that empowers you to take control of your business with confidence.
+        </Typography> */}
+
+        <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontSize: '14px' }}>
+          <b> Login</b> to your account for instant access to your inventory, real-time updates, and a user-friendly interface that empowers you to take control of your business with confidence.
         </Typography>
+
       </div>
     </div>
   );
