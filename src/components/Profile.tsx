@@ -99,8 +99,8 @@ const Profile = () => {
               type="text"
               name="name"
               id="name"
-              label="Username"
-              placeholder="Insert Username"
+              label="Name"
+              placeholder="Insert Name"
               size="medium"
               margin="normal"
               fullWidth
