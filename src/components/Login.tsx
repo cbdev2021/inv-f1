@@ -70,8 +70,16 @@ const Login: FunctionComponent = () => {
       <div className="mitad-izquierda" style={{ flex: '1' }}>
 
         <form onSubmit={submitHandler} className={"form"} style={{ width: '100%' }}>
+          <Typography variant="h6" component="div" sx={{
+            flexGrow: 1, fontFamily: 'Exo 2, sans-serif', fontSize: '4.8rem', fontWeight: 600, letterSpacing: '2px', textAlign: 'center',
+            color: '#da48ff',
+          }}>
+            Inv
+          </Typography>
+   
+
           <Typography variant="h5" align="center" gutterBottom>
-            Login
+            Log In
           </Typography>
 
           <div className="form-elements-container">
@@ -115,14 +123,14 @@ const Login: FunctionComponent = () => {
               fullWidth
               sx={{ marginTop: 2 }}
             >
-              Sing In
+              Log In
             </Button>
           </div>
 
           <div className={"noTienesCuentaContainer"}>
-            <span>¿No tienes cuenta? </span>
+            <span>You don't have an account? </span>
             <Link to="/register" className={"registrate"}>
-              <b className={"registrate"}>Registro</b>
+              <b className={"registrate"}>Sign Up</b>
             </Link>
           </div>
         </form>
@@ -151,7 +159,7 @@ const Login: FunctionComponent = () => {
         </Typography> */}
 
         <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontSize: '14px' }}>
-          <b> Login</b> to your account for instant access to your inventory, real-time updates, and a user-friendly interface that empowers you to take control of your business with confidence.
+          <b> Log In</b> to your account for instant access to your inventory, real-time updates, and a user-friendly interface that empowers you to take control of your business with confidence.
         </Typography>
 
       </div>

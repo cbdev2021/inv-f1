@@ -78,8 +78,15 @@ const Register: FunctionComponent = () => {
       <div className="mitad-izquierda" style={{ flex: '1' }}>
 
         <form onSubmit={handleRegister} className={"form"} style={{ width: '100%' }}>
+          <Typography variant="h6" component="div" sx={{
+            flexGrow: 1, fontFamily: 'Exo 2, sans-serif', fontSize: '4.8rem', fontWeight: 600, letterSpacing: '2px', textAlign: 'center',
+            color: '#da48ff',
+          }}>
+            Inv
+          </Typography>
+
           <Typography variant="h5" align="center" gutterBottom>
-            Register
+            Sign Up
           </Typography>
 
           <div className="form-elements-container">
@@ -89,10 +96,7 @@ const Register: FunctionComponent = () => {
               To start to use our web app, complete the next register form!
             </Typography> */}
 
-            <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '0px', fontFamily: 'Roboto, sans-serif', color: '#333', fontSize: '14px' }}>
-              <b>Welcome</b>, we want that you use <b>Inv</b> for your business to obtain the best results.
-              To start to use our web app, complete the next register form!
-            </Typography>
+
 
 
             <TextField
@@ -163,7 +167,7 @@ const Register: FunctionComponent = () => {
               control={<Checkbox color="primary" checked={acceptTerms} onChange={() => setAcceptTerms(!acceptTerms)} />}
               label={
                 <Typography variant="body1">
-                  Acepta nuestros <b>términos y condiciones </b>
+                  Accept our <b>terms and conditions </b>
                 </Typography>
               }
             />
@@ -177,13 +181,13 @@ const Register: FunctionComponent = () => {
               fullWidth
               sx={{ marginTop: 2 }}
             >
-              Register
+              Sign Up
             </Button>
           </div>
           <div className={"yaTienesCuentaContainer"}>
-            <span>¿Ya tienes cuenta? </span>
+            <span>You already have an account? </span>
             <Link to="/login" className={"registrate"}>
-              <b className={"registrate"}>Iniciar sesión</b>
+              <b className={"registrate"}>Log In</b>
             </Link>
           </div>
         </form>
@@ -215,8 +219,13 @@ const Register: FunctionComponent = () => {
 
         </Typography> */}
 
+        {/* <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontSize: '14px' }}>
+          <b>Welcome</b>, we want that you use <b>Inv</b> for your business to obtain the best results.
+          To start to use our web app, complete the next register form!
+        </Typography> */}
+
         <Typography variant="h6" align="center" style={{ lineHeight: '1.5em', marginTop: '50px', fontFamily: 'Roboto, sans-serif', color: '#333', fontSize: '14px' }}>
-          <b> Register</b> today to enjoy exclusive features, personalized services, and seamless connectivity for a more efficient management experience
+          <b> Sign Up</b> today to enjoy exclusive features, personalized services, and seamless connectivity for a more efficient management experience
         </Typography>
 
       </div>

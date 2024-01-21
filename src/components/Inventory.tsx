@@ -392,13 +392,13 @@ const Inventory: FunctionComponent = () => {
                             <TableHead>
                                 <TableRow>
                                     {/* <TableCell>ID</TableCell> */}
-                                    <TableCell>Product ID</TableCell>
-                                    <TableCell>Brand</TableCell>
-                                    <TableCell>Description</TableCell>
-                                    <TableCell>Utility</TableCell>
-                                    <TableCell>Price</TableCell>
-                                    <TableCell>Amount</TableCell>
-                                    <TableCell>Acciones</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Product ID</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Brand</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Utility</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Price</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Amount</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
                                 </TableRow>
                             </TableHead>
 

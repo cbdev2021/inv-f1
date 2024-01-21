@@ -99,8 +99,8 @@ const Profile = () => {
               type="text"
               name="name"
               id="name"
-              label="Nombre de Usuario"
-              placeholder="Ingrese su nombre de usuario"
+              label="Username"
+              placeholder="Insert Username"
               size="medium"
               margin="normal"
               fullWidth
@@ -114,8 +114,8 @@ const Profile = () => {
               type="text"
               name="email"
               id="email"
-              label="Correo electrónico"
-              placeholder="Ingrese su correo"
+              label="Email"
+              placeholder="Insert Email"
               size="medium"
               margin="normal"
               fullWidth
@@ -130,8 +130,8 @@ const Profile = () => {
               type="password"
               name="newPassword"
               id="newPassword"
-              label="Nueva Contraseña"
-              placeholder="Ingrese su nueva contraseña"
+              label="New Password"
+              placeholder="Insert New Password"
               size="medium"
               margin="normal"
               fullWidth
@@ -144,8 +144,8 @@ const Profile = () => {
               type="password"
               name="confirmPassword"
               id="confirmPassword"
-              label="Confirmar Contraseña"
-              placeholder="Confirme su nueva contraseña"
+              label="Confirm Password"
+              placeholder="Confirm New Password"
               size="medium"
               margin="normal"
               fullWidth
