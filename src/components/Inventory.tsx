@@ -398,7 +398,7 @@ const Inventory: FunctionComponent = () => {
                                     <TableCell sx={{ fontWeight: 'bold' }}>Utility</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Price</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Amount</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}> </TableCell>
                                 </TableRow>
                             </TableHead>
 
