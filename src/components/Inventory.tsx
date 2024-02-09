@@ -41,7 +41,7 @@ import {
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PaidIcon from "@mui/icons-material/Paid";
-import { useGetTypeValuesByUserIdQuery } from '../slices/typeValuesApiSlice';
+//import { useGetTypeValuesByUserIdQuery } from '../slices/typeValuesApiSlice';
 import { useSelector } from "react-redux";
 import TableAddRegister from "./TableAddRegister";
 
@@ -111,10 +111,13 @@ const Inventory: FunctionComponent = () => {
     // console.log("userId");
     // console.log(userId);
     const token = useSelector((state: any) => state.auth.token);
-    const { data: dataResponse } = useGetTypeValuesByUserIdQuery({
-        idUsuario: userId,
-        token: token,
-    });
+    
+    // const { data: dataResponse } = useGetTypeValuesByUserIdQuery({
+    //     idUsuario: userId,
+    //     token: token,
+    // });
+
+
     // console.log("userInfo");
     // console.log(useSelector((state: any) => state.auth.userInfo._id));
     const { data: dataResponseRegisters, isLoading, refetch } = useGetProductsByUserIdQuery({
@@ -135,26 +138,26 @@ const Inventory: FunctionComponent = () => {
         refetch();
     }, [dataResponseRegisters]);
 
-    useEffect(() => {
-        if (dataResponse) {
-            const spentDataMapped = dataResponse
-                .filter((item: { typevalue: string; }) => item.typevalue === 'Spent')
-                .map((item: { _id: string; subtype: any; }) => ({
-                    _id: item._id,
-                    subtype: item.subtype
-                }));
+    // useEffect(() => {
+    //     if (dataResponse) {
+    //         const spentDataMapped = dataResponse
+    //             .filter((item: { typevalue: string; }) => item.typevalue === 'Spent')
+    //             .map((item: { _id: string; subtype: any; }) => ({
+    //                 _id: item._id,
+    //                 subtype: item.subtype
+    //             }));
 
-            const incomeDataMapped = dataResponse
-                .filter((item: { typevalue: string; }) => item.typevalue === 'Income')
-                .map((item: { _id: string; subtype: any; }) => ({
-                    _id: item._id,
-                    subtype: item.subtype
-                }));
+    //         const incomeDataMapped = dataResponse
+    //             .filter((item: { typevalue: string; }) => item.typevalue === 'Income')
+    //             .map((item: { _id: string; subtype: any; }) => ({
+    //                 _id: item._id,
+    //                 subtype: item.subtype
+    //             }));
 
-            setSpentData(spentDataMapped);
-            setIncomeData(incomeDataMapped);
-        }
-    }, [dataResponse]);
+    //         setSpentData(spentDataMapped);
+    //         setIncomeData(incomeDataMapped);
+    //     }
+    // }, [dataResponse]);
 
     const handleClickOpen = (title: string) => {
         setDialogTitle(title);
