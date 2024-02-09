@@ -165,7 +165,8 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
           description: description,
           price: price,
           amount: amount,
-          utility: utility
+          utility: utility,
+          idUsuario: userId
         },
         token: token,
       });
