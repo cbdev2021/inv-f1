@@ -95,36 +95,16 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const tableRef = useRef<HTMLTableElement | null>(null);
   const [updateInvoice] = useUpdateInvoiceMutation();
   const [addProductInvoiceMutation] = useAddProductInvoiceMutation();
-  //const [getGenerateIdInvoice] = useGetGenerateIdInvoiceQuery();
   const [updateProductAmount] = useUpdateProductAmountMutation();
-
-  // const [invoiceId, setInvoiceId] = useState('');
-
-  // // Llamada a la consulta para obtener el ID generado
-  // const { data: generateIdData, error: generateIdError } = useGetGenerateIdInvoiceQuery({
-  //   data: { invoiceId: typevalue },
-  // });
-
-
-  useEffect(() => {
-    // Este bloque de código se ejecutará cuando itemToUpdate cambie
-    console.log("itemToUpdate ha cambiado en TableAddRegister:", itemToUpdate);
-
-    // Realiza las acciones necesarias basadas en el cambio de itemToUpdate
-  }, [itemToUpdate]);
 
 
   const [descRegistro, setDescRegistro] = useState(
     itemToUpdate && typevalue === "View" ? itemToUpdate.descRegistro : ""
   );
-  // const [subTotal, setSubTotal] = useState(
-  //   itemToUpdate && typevalue === "View" ? itemToUpdate.subTotal : ""
-  // );
 
   const [subTotal, setSubTotal] = useState(
     itemToUpdate && typevalue === "View" ? itemToUpdate.subTotal : 0
   );
-
 
   const [dateIssue, setDateIssue] = useState(
     itemToUpdate && typevalue === "View" ? formatDate(itemToUpdate.dateIssue) : ""
@@ -148,16 +128,54 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   );
 
   //compra
-
   const [provider, setProvider] = useState(
     itemToUpdate && typevalue === "View" ? itemToUpdate.provider : ""
   );
-
   const [paymentBuy, setPaymentBuy] = useState(
     itemToUpdate && typevalue === "View" ? itemToUpdate.paymentBuy : ""
   );
 
   const paymentSellOptions = ['efectivo', 'tarjeta de crédito', 'tarjeta de débito', 'cheque', 'pago en línea'];
+  const [invoiceId, setInvoiceId] = useState(
+    itemToUpdate && typevalue === "View" ? itemToUpdate.invoiceID : ""
+  );
+
+  //search
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState<Array<{
+    invoiceID: number;
+    invoiceType: string;
+    productId: number;
+    name: string;
+    description: string;
+    utility: number;
+    price: number;
+    amount: number;
+    dateIssue: string;
+  }>>([]);
+  const [selectedProduct, setSelectedProduct] = useState<{
+    invoiceID: number;
+    invoiceType: string;
+    productId: number;
+    name: string;
+    description: string;
+    utility: number;
+    price: number;
+    amount: number;
+    dateIssue: string;
+  } | null>(null);
+  const [confirmAddDialogOpen, setConfirmAddDialogOpen] = useState(false);
+  // filtro invoiceId y productsinvoices
+  const [filteredData, setFilteredData] = useState<Product[]>([]);
+  const [invalidationKey, setInvalidationKey] = useState<number>(0); // Estado para la clave de invalidación
+
+
+  console.log("typevalue despues de generateIdData");
+  console.log(typevalue);
+  console.log("invoiceId despues de generateIdData");
+  console.log(invoiceId);
+  console.log("data");
+  console.log(data);
 
   const [editableAmount, setEditableAmount] = useState('');
   const [productAmounts, setProductAmounts] = useState<{ [productId: number]: number }>({});
@@ -172,62 +190,23 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     amount: number;
   }>>([]);
 
-  // useEffect(() => {
-  //   // Calculate total sum when searchResultsUpdated changes
-  //   calculateTotal();
-  // }, [searchResultsUpdated]);
+  const { data: dataResponseRegisters, isLoading } = useGetProductsByUserIdQuery({
+    data: {
+      idUsuario: userId
+    },
+    token: token,
+  });
+  const { data: dataProductsInvoicesRegisters, refetch: customRefetch } = useGetProductsByUserIdInvoiceQuery({
+    data: {
+      idUsuario: userId
+    },
+    token: token,
+  });
 
-  const calculateTotal = async () => {
-    try {
-      let totalSum = 0;
-
-      for (const product of searchResultsUpdated) {
-        console.log('FOR - product:');
-        console.log(product);
-
-        // const multiplicationResult = product.price * product.amount;
-        let multiplicationResult = 0;
-
-        if (typevalue === 'Sales') {
-          multiplicationResult = (product.price + (product.price * (product.utility / 100))) * product.amount;
-        } else if (typevalue === 'Purchase') {
-          multiplicationResult = product.price * product.amount;
-        } else {
-          // Manejar otros casos si es necesario
-          console.error('Tipo de valor no reconocido');
-        }
-
-
-        // Verifica si el resultado es un número válido
-        if (!isNaN(multiplicationResult)) {
-          totalSum += multiplicationResult;
-        }
-      }
-
-      return totalSum;
-    } catch (error) {
-      console.error('Error al calcular el total:', error);
-      throw error; // Puedes manejar el error según tus necesidades
-    }
-  };
-
-
-
-
-
-
-  // useEffect(() => {
-  //   if (itemToUpdate && typevalue === "View") {
-  //     setDescRegistro(itemToUpdate.descRegistro);
-  //     setSubTotal(itemToUpdate.subTotal);
-  //     setDateIssue(formatDate(itemToUpdate.dateIssue));
-  //   } else {
-  //     // En caso de que itemToUpdate sea null u otra condición, puedes establecer los estados en un valor predeterminado
-  //     setDescRegistro("");
-  //     setSubTotal("");
-  //     setDateIssue("");
-  //   }
-  // }, [itemToUpdate, typevalue]);
+  const { data: generateIdData, error: generateIdError, refetch: generateIdRefetch } = useGetGenerateIdInvoiceQuery({
+    data: { invoiceId: typevalue },
+    token: token
+  });
 
   useEffect(() => {
     if (itemToUpdate && typevalue === "View") {
@@ -243,7 +222,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       setProvider(provider || "");
       setPaymentBuy(paymentBuy || "");
     } else {
-      // Establecer valores predeterminados si itemToUpdate es null o la operación no es de edición
       setDescRegistro("");
       setSubTotal("");
       setDateIssue("");
@@ -256,6 +234,63 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     }
   }, [itemToUpdate, typevalue]);
 
+  useEffect(() => {
+    console.log("itemToUpdate ha cambiado en TableAddRegister:", itemToUpdate);
+  }, [itemToUpdate]);
+
+  useEffect(() => {
+    if (!editingId) {
+      setAddNewSubtype("");
+    }
+  }, [editingId]);
+
+  useEffect(() => {
+    if (editingId && tableRef.current) {
+      const rowElement = tableRef.current.querySelector(`#row-${editingId}`);
+      if (rowElement) {
+        rowElement.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  }, [editingId, tableRef]);
+
+  useEffect(() => {
+    console.log("dataResponseRegisters");
+    console.log(dataResponseRegisters)
+    if (dataResponseRegisters) {
+    }
+  }, [dataResponseRegisters]);
+
+  useEffect(() => {
+    console.log(generateIdData);
+    if (generateIdData) {
+      console.log("InvoiceId");
+      console.log(typeof invoiceId);
+      console.log("generateIdData.sequence_value:");
+      console.log(typeof generateIdData.sequence_value);
+      setInvoiceId(generateIdData.sequence_value);
+      console.log("valor de InvoiceId:");
+      console.log(invoiceId);
+    }
+  }, [generateIdData]);
+
+  if (generateIdError) {
+    console.error('Error obteniendo el ID generado:', generateIdError);
+  }
+
+  useEffect(() => {
+    if (typevalue === 'View') {
+      console.log("en useEffect");
+      if (dataProductsInvoicesRegisters) {
+        console.log("invoiceID en dataProductsInvoicesRegisters");
+        console.log(invoiceID);
+        const dataInvoiceIdProducts = dataProductsInvoicesRegisters.filter((item: { invoiceID: any; }) => item.invoiceID === invoiceID);
+        setFilteredData(dataInvoiceIdProducts);
+      }
+    } else {
+      setFilteredData([]);
+    }
+  }, [typevalue, invoiceID, dataProductsInvoicesRegisters, searchResults, refetch]);
+
   function formatDate(dateString: string | number | Date) {
     const date = new Date(dateString);
     date.setUTCHours(0, 0, 0, 0); // Forzar la zona horaria a UTC
@@ -263,58 +298,53 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
     const day = date.getUTCDate().toString().padStart(2, "0");
     return `${year}-${month}-${day}`;
-    // return `${day}/${month}/${year}`;
   }
 
-  // const handleEdit = (id: string) => {
-  //   setEditingId(id);
-  //   const currentItem = data.find((item) => item._id === id);
-  //   if (currentItem) {
-  //     setNewSubtype(currentItem.subtype);
-  //     setOriginalSubtype(currentItem.subtype);
-  //   }
-  // };
-
-  const { data: dataResponseRegisters, isLoading } = useGetProductsByUserIdQuery({
-    data: {
-      idUsuario: userId
-    },
-    token: token,
-  });
-
-  useEffect(() => {
-    // Este efecto se ejecutará cuando dataResponseRegisters cambie
-    // Aquí puedes realizar acciones adicionales si es necesario
-    // Puedes acceder a dataResponseRegisters directamente
-    console.log("dataResponseRegisters");
-    console.log(dataResponseRegisters)
-    if (dataResponseRegisters) {
-      // Realizar acciones adicionales si es necesario
-      // Por ejemplo, actualizar algún estado o realizar operaciones con los datos
+  const calculateTotal = async () => {
+    try {
+      let totalSum = 0;
+      for (const product of searchResultsUpdated) {
+        console.log('FOR - product:');
+        console.log(product);
+        let multiplicationResult = 0;
+        if (typevalue === 'Sales') {
+          multiplicationResult = (product.price + (product.price * (product.utility / 100))) * product.amount;
+        } else if (typevalue === 'Purchase') {
+          multiplicationResult = product.price * product.amount;
+        } else {
+          console.error('Tipo de valor no reconocido');
+        }
+        if (!isNaN(multiplicationResult)) {
+          totalSum += multiplicationResult;
+        }
+      }
+      return totalSum;
+    } catch (error) {
+      console.error('Error al calcular el total:', error);
+      throw error;
     }
-  }, [dataResponseRegisters]);
-
-  //const [totalSum, setTotalSum] = useState(0);
-
+  };
 
   const handleAdd = async () => {
     if (!dateIssue) {
       if (!dateIssue) {
         toast.error("Debes seleccionar una dateIssue válida.");
       }
-      // if (!descRegistro) {
-      //   toast.error("Debes seleccionar un tipo.");
-      // }
       return;
     }
-    //console.log('Total Sum:', totalSum);
     try {
       //await handleConfirmAll();      
       const totalSum = await calculateTotal();
+
+      setInvoiceId(generateIdData.sequence_value);
+      console.log("en addInvoiceMutation invoiceID"); // prioblema asíncrono!!
+      console.log(invoiceID);
+
       const response = await addInvoiceMutation({
         registro: {
           //Mandatory fields
-          invoiceID: invoiceID,
+          // invoiceID: invoiceID,
+          invoiceID: generateIdData.sequence_value,
           invoiceType: typevalue,
           dateIssue: dateIssue,
           // subTotal: subTotal,
@@ -333,12 +363,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
       console.log("data:");
       console.log(data);
-
-      // const newId = response.data._id;
-      // const newItem = { _id: newId, subtype: addNewSubtype, typevalue: typevalue };
-      // const updatedData = [...data, newItem];
-      // setAddNewSubtype("");
-      // updateData(updatedData, typevalue);
 
       generateIdRefetch(); //test
       refetch();
@@ -364,51 +388,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setSubTotal((prevValue: string) => prevValue + number.toString());
   };
 
-  const [invoiceId, setInvoiceId] = useState(
-    itemToUpdate && typevalue === "View" ? itemToUpdate.invoiceID : ""
-  );
 
-  // const { data: generateIdData, error: generateIdError } = useGetGenerateIdInvoiceQuery({
-  //   data: { invoiceId: typevalue },
-  //   token: token
-  // });
-
-  const { data: generateIdData, error: generateIdError, refetch: generateIdRefetch } = useGetGenerateIdInvoiceQuery({
-    data: { invoiceId: typevalue },
-    token: token
-  });
-
-  useEffect(() => {
-
-    // console.log("generateIdData");
-    console.log(generateIdData);
-
-
-    if (generateIdData) {
-      setInvoiceId(generateIdData.sequence_value);  // Hay que hacer que esto no se setee sin que lo vaya a buscar al servicio!
-    }
-  }, [generateIdData]);
-
-  // Manejar errores si es necesario
-  if (generateIdError) {
-    console.error('Error obteniendo el ID generado:', generateIdError);
-  }
-
-
-  useEffect(() => {
-    if (!editingId) {
-      setAddNewSubtype("");
-    }
-  }, [editingId]);
-
-  useEffect(() => {
-    if (editingId && tableRef.current) {
-      const rowElement = tableRef.current.querySelector(`#row-${editingId}`);
-      if (rowElement) {
-        rowElement.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    }
-  }, [editingId, tableRef]);
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -455,6 +435,10 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         console.error("Elemento no encontrado para actualizar");
         return;
       }
+
+      console.log("en handle edit invoiceID");
+      console.log(invoiceID);
+
       const updatedItem = {
         invoiceID: invoiceID,
         invoiceType: typevalue,
@@ -485,39 +469,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
 
 
-  let addButton = null;
-  if (typevalue === "Purchase" || typevalue === "Sales") {
-    addButton = (
-      <Button
-        variant="contained"
-        name="iniciar"
-        id="idIniciar"
-        color="primary"
-        onClick={handleAdd}
-        fullWidth
-        sx={{ marginTop: 2 }}
-      >
-        Add
-      </Button>
-    );
-  } else if (typevalue === "View") {
-    addButton = (
-      <Button
-        variant="contained"
-        name="iniciar"
-        id="idIniciar"
-        color="primary"
-        onClick={handleEdit}
-        fullWidth
-        sx={{ marginTop: 2 }}
-      >
-        Edit
-      </Button>
-    );
-
-
-  }
-
   const handlePaymentSellChange = (event: { target: { value: any; }; }) => {
     setPaymentSell(event.target.value);
   };
@@ -526,42 +477,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setPaymentBuy(event.target.value);
   };
 
-  //search
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<Array<{
-    invoiceID: number;
-    invoiceType: string;
-    productId: number;
-    name: string;
-    description: string;
-    utility: number;
-    price: number;
-    amount: number;
-    dateIssue: string;
-  }>>([]);
-  const [selectedProduct, setSelectedProduct] = useState<{
-    invoiceID: number;
-    invoiceType: string;
-    productId: number;
-    name: string;
-    description: string;
-    utility: number;
-    price: number;
-    amount: number;
-    dateIssue: string;
-  } | null>(null);
-  const [confirmAddDialogOpen, setConfirmAddDialogOpen] = useState(false);
 
-
-  // const handleSearch = () => {
-  //   const filteredResults = dataResponseRegisters.filter(
-  //     (product: { name: string; productId: number; }) =>
-  //       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //       product.productId.toLowerCase().includes(searchTerm.toLowerCase())
-  //   );
-
-  //   setSearchResults(filteredResults);
-  // };
 
   const handleSearch = () => {
     const filteredResults = dataResponseRegisters.filter(
@@ -573,54 +489,10 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setSearchResults(filteredResults);
   };
 
-
-
-
-
-  // const handleAddToList = () => {
-  //   if (selectedProduct) {
-  //     setConfirmAddDialogOpen(true);
-  //   }
-  // };
-
-  // const handleAddToList = () => {
-  //   if (selectedProduct) {
-  //     setConfirmAddDialogOpen(true);
-  //   }
-  // };
-
   const handleCreateInvoice = () => {
     setConfirmAddDialogOpen(true);
   };
 
-  // const confirmAddToCart = () => {
-  //   console.log('1 selectedProduct:', selectedProduct);
-  //   console.log('1 searchResults:', searchResults);
-  //   setSearchResults([...searchResults, selectedProduct!]);
-  //   setSelectedProduct(null);
-  //   setSearchTerm('');
-  //   setConfirmAddDialogOpen(false);
-  //   console.log('2searchResults:', searchResults);
-  //   console.log('2 selectedProduct:', selectedProduct);
-  // };
-
-
-  // const confirmAddToCart = () => {
-  //   console.log('selectedProduct');
-  //   console.log(selectedProduct);
-
-
-  //   setProductAmounts((prevAmounts) => ({
-  //     ...prevAmounts,
-  //     [selectedProduct!.productId]: editableAmount,
-  //   }));
-
-
-  //   setSearchResults([...searchResults, selectedProduct!]);
-  //   setSelectedProduct(null);
-  //   setSearchTerm('');
-  //   setConfirmAddDialogOpen(false);
-  // };
   const confirmAddToCart = () => {
     console.log('selectedProduct');
     console.log(selectedProduct);
@@ -637,36 +509,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setConfirmAddDialogOpen(false);
   };
 
-
-
-
-
-
-
-
   const cancelAddToCart = () => {
     setConfirmAddDialogOpen(false);
   };
-
-  // const handleDeleteFromList = (productIdToDelete: string) => {
-  //   const updatedList = searchResults.filter((product) => product.productId !== productIdToDelete);
-  //   setSearchResults(updatedList);
-  // };
-
-  // const handleDeleteFromList = (productIdToDelete: string) => {
-  //   setSearchResults((prevResults) =>
-  //     prevResults.filter((product) => product.productId !== productIdToDelete)
-  //   );
-  // };
-
-  // const handleDeleteFromList = (productIdToDelete: string) => {
-  //   console.log('Deleting product with ID:', productIdToDelete);
-  //   setSearchResults((prevResults) => {
-  //     const newResults = prevResults.filter((product) => product.productId !== productIdToDelete);
-  //     console.log('New results:', newResults);
-  //     return newResults;
-  //   });
-  // };
 
   const handleDeleteFromList = (productIdToDelete: number) => {
     console.log('Deleting product with ID:', productIdToDelete);
@@ -679,128 +524,17 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     });
   };
 
-  // const handleConfirmAll = async () => {
-  //   try {
-  //     // Itera sobre los resultados y realiza la inserción para cada registro
-  //     for (const product of searchResults) {
-  //       product.invoiceID = generateIdData; 
-  //      product.invoiceType = typevalue;     
-
-  //       const response = await addProductInvoiceMutation({
-  //         registro: product,
-  //         token: token,
-  //       });
-
-  //       // Puedes imprimir en la consola la respuesta si lo necesitas
-  //       console.log('Respuesta de la inserción:', response);
-  //     }
-
-  //     // Limpia la lista después de confirmar todos los productos
-  //     setSearchResults([]);
-  //     // Puedes agregar aquí cualquier lógica adicional después de la confirmación de todos los productos
-
-  //     // Notifica al usuario que todos los productos han sido confirmados
-  //     toast.success('Todos los productos han sido confirmados exitosamente');
-  //   } catch (error) {
-  //     console.error('Error al confirmar los productos:', error);
-  //     // Maneja el error según sea necesario
-  //     toast.error('Hubo un error al confirmar los productos');
-  //   }
-  // };
-
-  // const handleConfirmAll = async () => {
-  //   try {
-  //     // Itera sobre los resultados y realiza la inserción para cada registro
-  //     for (const originalProduct of searchResults) {
-  //       // Crea un nuevo objeto extendiendo el original
-  //       const product = { ...originalProduct };
-
-  //       // Agrega las propiedades invoiceID e invoiceType
-  //       product.invoiceID = generateIdData.sequence_value;
-  //       product.invoiceType = typevalue;
-  //       product.amount = editableAmount;
-
-  //       const response = await addProductInvoiceMutation({
-  //         registro: product,
-  //         token: token,
-  //       });
-
-  //       // Puedes imprimir en la consola la respuesta si lo necesitas
-  //       console.log('Respuesta de la inserción:', response);
-  //     }
-
-  //     // Limpia la lista después de confirmar todos los productos
-  //     setSearchResults([]);
-  //     // Puedes agregar aquí cualquier lógica adicional después de la confirmación de todos los productos
-
-  //     // Notifica al usuario que todos los productos han sido confirmados
-  //     toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
-  //   } catch (error) {
-  //     console.error('Error al confirmar los productos:', error);
-  //     // Maneja el error según sea necesario
-  //     toast.error('Hubo un error al confirmar los productos');
-  //   }
-  // };
-
-  // const handleConfirmAll = async () => {
-  //   try {
-  //     for (const originalProduct of searchResults) {
-  //       const product = { ...originalProduct };
-
-  //       product.invoiceID = generateIdData.sequence_value;
-  //       product.invoiceType = typevalue;
-  //       product.amount = productAmounts[product.productId]; // Ensure amount is provided
-
-  //       console.log('productAmounts[product.productId]: ');
-  //       console.log(productAmounts[product.productId]);
-  //       console.log('productAmounts[product.productId]: ');
-  //       console.log(productAmounts[product.productId]);
-
-  //       // registro productinvoice
-  //       const response = await addProductInvoiceMutation({
-  //         registro: product,
-  //         token: token,
-  //       });
-  //       console.log('Respuesta de la inserción:', response);
-  //       handleForceReload();
-  //       generateIdRefetch();
-  //       const responseUpdate = await updateProductAmount({
-  //         registro: {
-  //           amount: product.amount,
-  //           typevalue: typevalue
-  //         },
-  //         productId: product.productId,
-  //         token: token,
-  //       });
-  //     }
-  //     setSearchResults([]);
-  //     toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
-  //   } catch (error) {
-  //     console.error('Error al confirmar los productos:', error);
-  //     toast.error('Hubo un error al confirmar los productos');
-  //   }
-  // };
-
   const handleConfirmAll = async () => {
     try {
-
-
-
       for (const originalProduct of searchResults) {
         const product = { ...originalProduct };
-
         product.invoiceID = generateIdData.sequence_value;
         product.invoiceType = typevalue;
         product.amount = productAmounts[product.productId]; // Ensure amount is provided
         product.dateIssue = dateIssue;
         // product.utility = product.utility;
-
         console.log("product");
-
         console.log(product);
-
-
-
         // registro productinvoice
         const response = await addProductInvoiceMutation({
           registro: product,
@@ -808,59 +542,18 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         });
         console.log('Respuesta de la inserción:', response);
         handleForceReload();
-
-        //generateIdRefetch();
-
-        // const responseUpdate = await updateProductAmount({
-        //   registro: {
-        //     amount: product.amount,
-        //     typevalue: typevalue
-        //   },
-        //   productId: product.productId,
-        //   token: token,
-        // });
         searchResultsUpdated.push(product);
         //generateIdRefetch();
-
       }
-
       console.log('searchResultsUpdated');
       console.log(searchResultsUpdated);
-      // let updatedTotalSum = 0;
-
-      // for (const product of searchResultsUpdated) {
-      //   updatedTotalSum += product.amount * product.price;
-      // }
-
-      // setTotalSum(updatedTotalSum);
-
-      // console.log('totalSum');
-      // console.log(totalSum);
-
       setSearchResults([]);
       toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
-
     } catch (error) {
       console.error('Error al confirmar los productos:', error);
       toast.error('Hubo un error al confirmar los productos');
     }
   };
-
-
-
-
-
-
-
-  // const handleEditAmount = (productId: string, newValue: string) => {
-  //   // Actualiza el valor de product.amount en tu estado o en la lista de búsqueda
-  //   const updatedSearchResults = searchResults.map((product) =>
-  //     product.productId === productId ? { ...product, amount: newValue } : product
-  //   );
-
-  //   setSearchResults(updatedSearchResults);
-  // };
-
 
   const handleAmountChange = (productId: number, newValue: number) => {
     setProductAmounts((prevAmounts) => ({
@@ -869,39 +562,10 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     }));
   };
 
-  // Function to handle the onBlur event for the amount input
   const handleEditAmount = (productId: number) => {
-    // Use the updated amount value for the specific product
     const updatedAmount = productAmounts[productId];
-
-    // Now you can perform any additional logic with the updated amount
     console.log(`Product ${productId} amount updated to ${updatedAmount}`);
   };
-
-  // filtro invoiceId y productsinvoices
-  const [filteredData, setFilteredData] = useState<Product[]>([]);
-  const [invalidationKey, setInvalidationKey] = useState<number>(0); // Estado para la clave de invalidación
-
-  const { data: dataProductsInvoicesRegisters, refetch: customRefetch } = useGetProductsByUserIdInvoiceQuery({
-    data: {
-      idUsuario: userId
-    },
-    token: token,
-  });
-
-
-  useEffect(() => {
-    if (typevalue === 'View') {
-      console.log("en useEffect");
-
-      if (dataProductsInvoicesRegisters) {
-        const dataInvoiceIdProducts = dataProductsInvoicesRegisters.filter((item: { invoiceID: any; }) => item.invoiceID === invoiceID);
-        setFilteredData(dataInvoiceIdProducts);
-      }
-    } else {
-      setFilteredData([]);
-    }
-  }, [typevalue, invoiceID, dataProductsInvoicesRegisters, searchResults, refetch]);
 
   // Función para forzar la recarga de datos
   const handleForceReload = () => {
@@ -910,12 +574,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   };
 
   const isAutocompleteDisabled = typevalue === 'View';
-
   //
   const [loading, setLoading] = useState(false);
-
   const handleClick = async () => {
-
     //if (!dateIssue || !provider || !paymentBuy || !customer || !paymentSell) {
     if (!dateIssue || (!provider && !paymentBuy) || (!customer && !paymentSell)) {
       if (!dateIssue) {
@@ -950,9 +611,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       }
     }
 
-
-
-
     try {
       // Iniciar el estado de carga
       setLoading(true);
@@ -970,8 +628,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       // Manejar el error aquí y desactivar el estado de carga
       setLoading(false);
     }
-
-
   };
 
   const isReadOnly = typevalue === 'View';
@@ -998,7 +654,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid> */}
 
           <Grid item xs={6} style={{ width: '50%' }}>
-            <TextField
+            {/* <TextField
               label="Invoice ID"
               variant="outlined"
               type="text"
@@ -1008,9 +664,19 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               InputProps={{
                 readOnly: true, // Hace que el campo sea de solo lectura
               }}
+            /> */}
+
+            <TextField
+              label="Invoice ID"
+              variant="outlined"
+              type="text"
+              value={invoiceId}
+              fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </Grid>
-
           {/* DatePicker */}
           <Grid item xs={6} >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1025,15 +691,10 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                 }}
                 disabled={isReadOnly}
               />
-
             </LocalizationProvider>
           </Grid>
-
-
-
           <Grid item xs={6}>
             {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Purchase'))) && (
-
               <TextField
                 label="Provider"
                 variant="outlined"
@@ -1050,7 +711,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
           <Grid item xs={6}>
             {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Purchase'))) && (
-
               <FormControl fullWidth>
                 <InputLabel id="paymentSell-label">Payment Buy</InputLabel>
                 <Select
@@ -1075,7 +735,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
           <Grid item xs={6}>
             {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Sales'))) && (
-
               <TextField
                 label="Customer"
                 variant="outlined"
@@ -1223,51 +882,10 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         Add to List
       </Button>
       <br />
-
       <div style={{ marginTop: '20px' }}>
-        {/* <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Product ID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Price</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {searchResults.map((product) => (
-                <TableRow key={product.productId}>
-                  <TableCell>{product.productId}</TableCell>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.price}</TableCell>
-
-                  <TableCell>
-                    <TextField
-                      type="number"
-                      value={productAmounts[product.productId] || ""}
-                      onChange={(e) => handleAmountChange(product.productId, e.target.value)}
-                      onBlur={() => handleEditAmount(product.productId)}
-                      inputProps={{ min: 1 }}
-                    />
-                  </TableCell>
-
-                  <TableCell>
-                    <IconButton onClick={() => handleDeleteFromList(product.productId)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer> */}
-
         <Typography variant="h6" gutterBottom>
           Product list
         </Typography>
-
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -1296,33 +914,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                     <TableCell>{product.description}</TableCell>
                     <TableCell>{product.price}</TableCell>
                     <TableCell>
-                      {/* <TextField
-                        type="number"
-                        value={productAmounts[product.productId] || ""}
-                        onChange={(e) => handleAmountChange(product.productId, e.target.value)}
-                        onBlur={() => handleEditAmount(product.productId)}
-                        inputProps={{ min: 1 }}
-                      /> */}
-
-                      {/* <TextField
-                        type="number"
-                        value={productAmounts[Number(product.productId)] || 0}
-                        onChange={(e) => handleAmountChange(product.productId, e.target.value)}
-                        onBlur={() => handleEditAmount(product.productId)}
-                        inputProps={{ min: 1 }}
-                      /> */}
-
-                      {/* <TextField
-                        type="number"
-                        value={productAmounts[Number(product.productId)] || 0}
-                        onChange={(e) => {
-                          const newValue = e.target.value;
-                          handleAmountChange(product.productId, newValue);
-                        }}
-                        onBlur={() => handleEditAmount(product.productId)}
-                        inputProps={{ min: 1 }}
-                      /> */}
-
                       <TextField
                         type="number"
                         value={productAmounts[Number(product.productId)] || 0}
@@ -1335,9 +926,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                         onBlur={() => handleEditAmount(product.productId)}
                         inputProps={{ min: 1 }}
                       />
-
-
-
                     </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleDeleteFromList(product.productId)}>
@@ -1350,20 +938,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Table>
         </TableContainer>
       </div>
-
-
-
-
-      {/* <Button
-        variant="contained"
-        color="primary"
-        onClick={handleConfirmAll}
-        fullWidth
-        sx={{ marginTop: 2 }}
-        disabled={searchResults.length === 0} // Deshabilita el botón si no hay productos para confirmar
-      >
-        Confirmar Todo
-      </Button> */}
 
       <Button
         variant="contained"
@@ -1395,35 +969,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           <Button onClick={cancelAddToCart} color="primary">
             Cancel
           </Button>
-          {/* <Button onClick={confirmAddToCart} color="primary">
-           */}
-          {/* <Button onClick={() => {
-            // handleAdd();
-            handleConfirmAll();
-            handleAdd();
-
-            setOpenDialog(false);
-            setConfirmAddDialogOpen(false);
-            //handleForceReload();
-          }} color="primary">
-            Confirm
-          </Button> */}
-
-          {/* <Button onClick={async () => {
-            try {
-              // Primero ejecuta handleConfirmAll
-              await handleConfirmAll();
-              //const totalSum = await calculateTotal();
-              await handleAdd();
-              setOpenDialog(false);
-              setConfirmAddDialogOpen(false);
-            } catch (error) {
-              console.error("Error:", error);
-            }
-          }} color="primary">
-            Confirm
-          </Button> */}
-
           <Button onClick={handleClick} color="primary" disabled={loading}>
             {loading ? <CircularProgress size={24} /> : 'Confirm'}
           </Button>
