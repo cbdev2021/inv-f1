@@ -179,8 +179,8 @@ const Billing: FunctionComponent = () => {
     const handleDelete = async (id: string, invoiceID: number) => {
         try {
 
-            console.log("invoiceID");
-            console.log(invoiceID);
+            console.log("id");
+            console.log(id);
 
 
             //await deleteProductsByInvoiceMutation(id);
@@ -196,9 +196,8 @@ const Billing: FunctionComponent = () => {
             await deleteInvoiceMutation(
                 {
                     registro: {
-                        // id: id
-                        // id: id
-                        invoiceID: invoiceID
+                        id: id
+                        //invoiceID: invoiceID
                     },
                     token: token
                 }
@@ -446,9 +445,9 @@ const Billing: FunctionComponent = () => {
                                     {/* <TableCell sx={{ fontWeight: 'bold' }}>Provider/Customer</TableCell> */}
 
                                     {/* <TableCell sx={{ fontWeight: 'bold' }}> {activeTab}</TableCell> */}
-                                    
+
                                     <TableCell sx={{ fontWeight: 'bold' }}>
-                                        {activeTab === 0 ? "Provider"   : activeTab === 1  ? "Customer" : ""}
+                                        {activeTab === 0 ? "Provider" : activeTab === 1 ? "Customer" : ""}
                                     </TableCell>
 
                                     <TableCell sx={{ fontWeight: 'bold' }}>Payment</TableCell>
@@ -513,7 +512,8 @@ const Billing: FunctionComponent = () => {
                                                 </IconButton>
                                                 <IconButton
                                                     aria-label="delete"
-                                                    onClick={() => handleDelete(row._id, row.invoiceID)}
+                                                    onClick={() => handleDelete(row._id, row.invoiceID)} //nodejs
+                                                    // onClick={() => handleDelete(row._id, row.invoiceID)} //spring boot
                                                 >
                                                     <DeleteIcon color="secondary" />
                                                 </IconButton>
