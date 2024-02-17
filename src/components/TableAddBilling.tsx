@@ -169,14 +169,6 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const [filteredData, setFilteredData] = useState<Product[]>([]);
   const [invalidationKey, setInvalidationKey] = useState<number>(0); // Estado para la clave de invalidación
 
-
-  console.log("typevalue despues de generateIdData");
-  console.log(typevalue);
-  console.log("invoiceId despues de generateIdData");
-  console.log(invoiceId);
-  console.log("data");
-  console.log(data);
-
   const [editableAmount, setEditableAmount] = useState('');
   const [productAmounts, setProductAmounts] = useState<{ [productId: number]: number }>({});
   const [searchResultsUpdated, setSearchResultsUpdated] = useState<Array<{
@@ -357,6 +349,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           //venta
           provider: provider,
           paymentBuy: paymentBuy,
+          idUsuario: userId
         },
         token: token,
       });
