@@ -196,7 +196,9 @@ const Billing: FunctionComponent = () => {
             await deleteInvoiceMutation(
                 {
                     registro: {
-                        id: id
+                        // id: id
+                        // id: id
+                        invoiceID: invoiceID
                     },
                     token: token
                 }
