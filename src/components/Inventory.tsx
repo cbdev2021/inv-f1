@@ -429,7 +429,8 @@ const Inventory: FunctionComponent = () => {
                                                 </IconButton>
                                                 <IconButton
                                                     aria-label="delete"
-                                                    onClick={() => handleDelete(row._id)}
+                                                     onClick={() => handleDelete(row._id)} //node js
+                                                    // onClick={() => handleDelete(row.id)} //spring boot
                                                 >
                                                     <DeleteIcon color="secondary" />
                                                 </IconButton>

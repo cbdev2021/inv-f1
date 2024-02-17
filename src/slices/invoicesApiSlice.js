@@ -46,8 +46,8 @@ export const invoicesApiSlice = apiSlice.injectEndpoints({
 
     deleteInvoice: builder.mutation({
       query: (object) => ({
-        // url: `${INVOICES_URL}/delete-invoice/${object.registro.id}`,
-        url: `${INVOICES_URL}/delete-invoice/${object.registro.invoiceID}`,
+        url: `${INVOICES_URL}/delete-invoice/${object.registro.id}`,   //
+        //url: `${INVOICES_URL}/delete-invoice/${object.registro.invoiceID}`,
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${object.token}`,
