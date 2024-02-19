@@ -8,7 +8,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://inv-b1.vercel.app', // funciona react local hacia vercel
+        target: 'https://inv-b1.vercel.app', //  funciona react local hacia vercel
         //target: 'http://localhost:10000',       // aputando a server local
         //target: process.env.REACT_APP_API_URL, // no funciona en local
         changeOrigin: true,
