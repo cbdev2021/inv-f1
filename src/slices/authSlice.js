@@ -1,3 +1,39 @@
+//vs 3
+import { createSlice } from '@reduxjs/toolkit';
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: {
+    userInfo: JSON.parse(localStorage.getItem('userInfo')) || null,
+    token: localStorage.getItem('token') || '',
+  },
+  reducers: {
+    setCredentials: (state, action) => {
+      state.userInfo = action.payload.userInfo;
+      state.token = action.payload.token;
+      localStorage.setItem('userInfo', JSON.stringify(action.payload.userInfo));
+      localStorage.setItem('token', action.payload.token);
+    },
+    setToken: (state, action) => {
+      state.token = action.payload;
+      localStorage.setItem('token', action.payload);
+    },
+    logout: (state) => {
+      state.userInfo = null;
+      state.token = '';
+      localStorage.removeItem('userInfo');
+      localStorage.removeItem('token');
+    },
+  },
+});
+
+export const { setCredentials, setToken, logout } = authSlice.actions;
+export default authSlice.reducer;
+
+
+
+
+
 // import { createSlice } from '@reduxjs/toolkit';
 
 // const authSlice = createSlice({
@@ -26,48 +62,52 @@
 // export const { setCredentials, setToken, logout } = authSlice.actions;
 // export default authSlice.reducer;
 
-import { createSlice } from '@reduxjs/toolkit';
 
-const authSlice = createSlice({
-  name: 'auth',
-  initialState: {
-    // userInfo: JSON.parse(localStorage.getItem('userInfo')) || null,
-    // token: localStorage.getItem('token') || '',
-    userInfo:  null,
-    token: null,
-  },
-  reducers: {
-    setCredentials: (state, action) => {
-      state.userInfo = action.payload.userInfo;
-      // state.userInfo = {
-      //   _id: action.payload._id,
-      //   name: action.payload.name,
-      //   email: action.payload.email,
-      // };
 
-      state.token = action.payload.token;
+//vs 2
 
-      state.aaaa = action.payload.token;
-      //localStorage.setItem('userInfo', JSON.stringify(action.payload.userInfo));
+// import { createSlice } from '@reduxjs/toolkit';
+
+// const authSlice = createSlice({
+//   name: 'auth',
+//   initialState: {
+//     // userInfo: JSON.parse(localStorage.getItem('userInfo')) || null,
+//     // token: localStorage.getItem('token') || '',
+//     userInfo:  null,
+//     token: null,
+//   },
+//   reducers: {
+//     setCredentials: (state, action) => {
+//       state.userInfo = action.payload.userInfo;
+//       // state.userInfo = {
+//       //   _id: action.payload._id,
+//       //   name: action.payload.name,
+//       //   email: action.payload.email,
+//       // };
+
+//       state.token = action.payload.token;
+
+//       state.aaaa = action.payload.token;
+//       //localStorage.setItem('userInfo', JSON.stringify(action.payload.userInfo));
       
-      //localStorage.setItem('userInfo', JSON.stringify(state.userInfo));
-      //localStorage.setItem('token', action.payload.token);
+//       //localStorage.setItem('userInfo', JSON.stringify(state.userInfo));
+//       //localStorage.setItem('token', action.payload.token);
 
-      console.log("authslice state");
-      console.log(state.userInfo);
-    },
-    setToken: (state, action) => {
-      state.token = action.payload;
-      localStorage.setItem('token', action.payload);
-    },
-    logout: (state) => {
-      state.userInfo = null;
-      state.token = '';
-      localStorage.removeItem('userInfo');
-      localStorage.removeItem('token');
-    },
-  },
-});
+//       console.log("authslice state");
+//       console.log(state.userInfo);
+//     },
+//     setToken: (state, action) => {
+//       state.token = action.payload;
+//       localStorage.setItem('token', action.payload);
+//     },
+//     logout: (state) => {
+//       state.userInfo = null;
+//       state.token = '';
+//       localStorage.removeItem('userInfo');
+//       localStorage.removeItem('token');
+//     },
+//   },
+// });
 
-export const { setCredentials, setToken, logout } = authSlice.actions;
-export default authSlice.reducer;
+// export const { setCredentials, setToken, logout } = authSlice.actions;
+// export default authSlice.reducer;
