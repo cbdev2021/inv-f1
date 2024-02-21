@@ -18,6 +18,15 @@ const Login: FunctionComponent = () => {
   //const { userInfo } = useSelector((state: any) => state.auth);
   const userInfo = useSelector((state: any) => state);
 
+  console.log("userInfo");
+  console.log(userInfo);
+
+  useEffect(() => {
+    if (userInfo.auth.token) {
+      navigate('/home'); 
+    }
+  }, [userInfo.token, navigate]);
+
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -76,7 +85,7 @@ const Login: FunctionComponent = () => {
           }}>
             Inv
           </Typography>
-   
+
 
           <Typography variant="h5" align="center" gutterBottom>
             Log In
