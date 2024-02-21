@@ -49,6 +49,11 @@ const App: FunctionComponent = () => {
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/profile" element={<Profile />} />
                 </Route>
+
+                 {/* Ruta para capturar todas las rutas no coincidentes */}
+                 <Route path="*" element={<Navigate to="/home" replace />} />
+                {/* También puedes mostrar un mensaje personalizado */}
+                {/* <Route path="*" element={<div>La página que buscas no existe.</div>} /> */}            
             </Routes>
         </div>
     );
