@@ -112,9 +112,11 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
 
   useEffect(() => {
     if (itemToUpdate && typevalue === "Edit Register") {
+      setName(itemToUpdate.name);
       setDescription(itemToUpdate.description);
+      setUtility(itemToUpdate.utility);
+      setPrice(itemToUpdate.price);
       setAmount(itemToUpdate.amount);
-
       // setDescRegistro(itemToUpdate.descRegistro);
       // setMonto(itemToUpdate.monto);
       // setFecha(formatDate(itemToUpdate.fecha));
