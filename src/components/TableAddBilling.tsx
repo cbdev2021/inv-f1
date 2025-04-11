@@ -135,7 +135,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     itemToUpdate && typevalue === "View" ? itemToUpdate.paymentBuy : ""
   );
 
-  const paymentSellOptions = ['efectivo', 'tarjeta de crédito', 'tarjeta de débito', 'cheque', 'pago en línea'];
+  // const paymentSellOptions = ['efectivo', 'tarjeta de crédito', 'tarjeta de débito', 'cheque', 'pago en línea'];
+  const paymentSellOptions = ['💵 Cash', '💳 Credit Card', '💳 Debit Card', '📝 Check', '🖥️ Online Payment'];
+
   const [invoiceId, setInvoiceId] = useState(
     itemToUpdate && typevalue === "View" ? itemToUpdate.invoiceID : ""
   );
@@ -630,7 +632,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       <div>
         <Typography variant="h6" gutterBottom>
           {/* Add {title}   {title} Invoice      {/* {itemToUpdate.invoiceType} Invoice //new invoice */}
-          {itemToUpdate ? itemToUpdate.invoiceType + ' Invoice' : `${title} Invoice`}
+          {itemToUpdate ? "📋" + itemToUpdate.invoiceType + ' Invoice' : `${title} Invoice`}
         </Typography>
         <br />
 
@@ -661,7 +663,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
             <TextField
               label="Invoice ID"
-              variant="outlined"
+              // variant="outlined"
+              variant="standard"
               type="text"
               value={invoiceId}
               fullWidth
@@ -672,7 +675,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           </Grid>
           {/* DatePicker */}
           <Grid item xs={6} >
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Select Date"
                 value={dayjs(dateIssue)}
@@ -684,13 +687,35 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                 }}
                 disabled={isReadOnly}
               />
+            </LocalizationProvider> */}
+
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Select Date"
+                value={dayjs(dateIssue)}
+                onChange={(newValue) => {
+                  if (newValue !== null) {
+                    setDateIssue(newValue.format('MM-DD-YYYY'));
+                  }
+                }}
+                disabled={isReadOnly}
+                // inputFormat="MM-DD-YYYY" // Formato del input
+                components={{
+                  TextField: (props) => <TextField {...props} variant="standard" /> // Forzamos el estilo standard
+                }}
+              />
             </LocalizationProvider>
+
+
+
+
           </Grid>
           <Grid item xs={6}>
             {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Purchase'))) && (
               <TextField
                 label="Provider"
-                variant="outlined"
+                // variant="outlined"
+                variant="standard"
                 type="text"
                 value={provider || ""}
                 fullWidth
@@ -704,7 +729,27 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
           <Grid item xs={6}>
             {(typevalue === 'Purchase' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Purchase'))) && (
-              <FormControl fullWidth>
+              // <FormControl fullWidth>
+              //   <InputLabel id="paymentSell-label">Payment Buy</InputLabel>
+              //   <Select
+              //     labelId="paymentSell-label"
+              //     id="paymentSell"
+              //     value={paymentBuy}
+              //     onChange={handlePaymentBuyChange}
+              //     label="Payment Buy"
+              //     inputProps={{
+              //       readOnly: isReadOnly, // Utiliza inputProps para aplicar readOnly
+              //     }}
+              //   >
+              //     {paymentSellOptions.map((option) => (
+              //       <MenuItem key={option} value={option}>
+              //         {option}
+              //       </MenuItem>
+              //     ))}
+              //   </Select>
+              // </FormControl>
+
+              <FormControl fullWidth variant="standard">
                 <InputLabel id="paymentSell-label">Payment Buy</InputLabel>
                 <Select
                   labelId="paymentSell-label"
@@ -712,8 +757,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   value={paymentBuy}
                   onChange={handlePaymentBuyChange}
                   label="Payment Buy"
+                  variant="standard"
                   inputProps={{
-                    readOnly: isReadOnly, // Utiliza inputProps para aplicar readOnly
+                    readOnly: isReadOnly, // Usa inputProps para aplicar readOnly
                   }}
                 >
                   {paymentSellOptions.map((option) => (
@@ -723,6 +769,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   ))}
                 </Select>
               </FormControl>
+
             )}
           </Grid>
 
@@ -730,7 +777,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Sales'))) && (
               <TextField
                 label="Customer"
-                variant="outlined"
+                // variant="outlined"
+                variant="standard"
                 type="text"
                 value={customer || ""}
                 fullWidth
@@ -744,7 +792,27 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
           <Grid item xs={6}>
             {(typevalue === 'Sales' || (itemToUpdate && (typevalue === 'View' && itemToUpdate.invoiceType === 'Sales'))) && (
-              <FormControl fullWidth>
+              // <FormControl fullWidth>
+              //   <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
+              //   <Select
+              //     labelId="paymentSell-label"
+              //     id="paymentSell"
+              //     value={paymentSell}
+              //     onChange={handlePaymentSellChange}
+              //     label="Payment Sell"
+              //     inputProps={{
+              //       readOnly: isReadOnly, // Utiliza inputProps para aplicar readOnly
+              //     }}
+              //   >
+              //     {paymentSellOptions.map((option) => (
+              //       <MenuItem key={option} value={option}>
+              //         {option}
+              //       </MenuItem>
+              //     ))}
+              //   </Select>
+              // </FormControl>
+
+              <FormControl fullWidth variant="standard">
                 <InputLabel id="paymentSell-label">Payment Sell</InputLabel>
                 <Select
                   labelId="paymentSell-label"
@@ -752,8 +820,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   value={paymentSell}
                   onChange={handlePaymentSellChange}
                   label="Payment Sell"
+                  variant="standard"
                   inputProps={{
-                    readOnly: isReadOnly, // Utiliza inputProps para aplicar readOnly
+                    readOnly: isReadOnly, // Usa inputProps para aplicar readOnly
                   }}
                 >
                   {paymentSellOptions.map((option) => (
@@ -763,6 +832,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
                   ))}
                 </Select>
               </FormControl>
+
+
             )}
           </Grid>
 
@@ -842,7 +913,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
 
       <br />
 
-      <Autocomplete
+      {/* <Autocomplete
         options={dataResponseRegisters}
         getOptionLabel={(option) => option.description}
         value={selectedProduct}
@@ -861,7 +932,31 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             style={{ display: isAutocompleteDisabled ? 'none' : 'block' }}
           />
         )}
-      />
+      /> */}
+
+      <Grid item xs={6} style={{ width: '50%' }}>
+        <Autocomplete
+          options={dataResponseRegisters}
+          getOptionLabel={(option) => option.description}
+          value={selectedProduct}
+          onChange={(_, newValue) => setSelectedProduct(newValue)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="🧺 Search product by description"
+              variant="standard"
+              fullWidth
+              //value={searchTerm}
+              value={typevalue === 'View' ? null : selectedProduct}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              //onChange={(e) => setSearchResults(e.target.value)}
+              //disabled={isAutocompleteDisabled}
+              style={{ display: isAutocompleteDisabled ? 'none' : 'block' }}
+            />
+          )}
+        />
+      </Grid>
+
       {/* <Button variant="contained" color="primary" onClick={handleSearch}>
         Search
       </Button> */}
