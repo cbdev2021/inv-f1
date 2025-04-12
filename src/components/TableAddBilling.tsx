@@ -184,12 +184,24 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     amount: number;
   }>>([]);
 
-  const { data: dataResponseRegisters, isLoading } = useGetProductsByUserIdQuery({
+  // const { data: dataResponseRegisters, isLoading } = useGetProductsByUserIdQuery({
+  //   data: {
+  //     idUsuario: userId
+  //   },
+  //   token: token,
+  // });
+
+  const { data: dataResponseRegisters, isLoading, refetch: refetchProducts } =
+  useGetProductsByUserIdQuery({
     data: {
-      idUsuario: userId
+      idUsuario: userId,
     },
     token: token,
   });
+
+
+
+
   const { data: dataProductsInvoicesRegisters, refetch: customRefetch } = useGetProductsByUserIdInvoiceQuery({
     data: {
       idUsuario: userId
@@ -488,20 +500,59 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     setConfirmAddDialogOpen(true);
   };
 
-  const confirmAddToCart = () => {
-    console.log('selectedProduct');
-    console.log(selectedProduct);
+  // const confirmAddToCart = () => {
+  //   console.log('selectedProduct');
+  //   console.log(selectedProduct);
 
-    setProductAmounts((prevAmounts) => {
-      const updatedAmounts = { ...prevAmounts };
-      updatedAmounts[selectedProduct!.productId] = Number(editableAmount);
-      return updatedAmounts;
-    });
+  //   setProductAmounts((prevAmounts) => {
+  //     const updatedAmounts = { ...prevAmounts };
+  //     updatedAmounts[selectedProduct!.productId] = Number(editableAmount);
+  //     return updatedAmounts;
+  //   });
 
-    setSearchResults([...searchResults, selectedProduct!]);
-    setSelectedProduct(null);
-    setSearchTerm('');
-    setConfirmAddDialogOpen(false);
+  //   setSearchResults([...searchResults, selectedProduct!]);
+  //   setSelectedProduct(null);
+  //   setSearchTerm('');
+  //   setConfirmAddDialogOpen(false);
+  // };
+
+  const confirmAddToCart = async () => {
+    try {
+      // 1. Guardar la cantidad ingresada
+      setProductAmounts((prevAmounts) => {
+        const updated = { ...prevAmounts };
+        updated[selectedProduct!.productId] = Number(editableAmount);
+        return updated;
+      });
+  
+      // 2. Agregar producto seleccionado a la lista
+      setSearchResults((prev) => [...prev, selectedProduct!]);
+  
+      // 3. Limpiar campos
+      setSelectedProduct(null);
+      setSearchTerm('');
+      setConfirmAddDialogOpen(false);
+  
+      // 4. Traer productos actualizados
+      await refetchProducts();
+  
+      // 5. Sincronizar amounts actualizados de productos en el carrito
+      setSearchResults((prevResults) =>
+        prevResults.map((product) => {
+          const updated = dataResponseRegisters.find(
+            (p: { productId: number; }) => p.productId === product.productId
+          );
+          return updated
+            ? { ...product, amount: updated.amount }
+            : product;
+        })
+      );
+  
+      toast.success('Producto agregado correctamente con los datos actualizados');
+    } catch (err) {
+      console.error('Error en confirmAddToCart:', err);
+      toast.error('Hubo un error al agregar el producto');
+    }
   };
 
   const cancelAddToCart = () => {
@@ -519,36 +570,96 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     });
   };
 
+  // const handleConfirmAll = async () => {
+  //   try {
+  //     for (const originalProduct of searchResults) {
+  //       const product = { ...originalProduct };
+  //       product.invoiceID = generateIdData.sequence_value;
+  //       product.invoiceType = typevalue;
+  //       product.amount = productAmounts[product.productId]; // Ensure amount is provided
+  //       product.dateIssue = dateIssue;
+  //       // product.utility = product.utility;
+  //       console.log("product");
+  //       console.log(product);
+  //       // registro productinvoice
+  //       const response = await addProductInvoiceMutation({
+  //         registro: product,
+  //         token: token,
+  //       });
+  //       console.log('Respuesta de la inserción:', response);
+  //       handleForceReload();
+  //       searchResultsUpdated.push(product);
+  //       //generateIdRefetch();
+  //     }
+  //     console.log('searchResultsUpdated');
+  //     console.log(searchResultsUpdated);
+  //     setSearchResults([]);
+  //     toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
+  //   } catch (error) {
+  //     console.error('Error al confirmar los productos:', error);
+  //     toast.error('Hubo un error al confirmar los productos');
+  //   }
+  // };
+
   const handleConfirmAll = async () => {
     try {
+      // 1. Si necesitas productos frescos antes de operar (opcional)
+      await refetchProducts();
+  
       for (const originalProduct of searchResults) {
-        const product = { ...originalProduct };
-        product.invoiceID = generateIdData.sequence_value;
-        product.invoiceType = typevalue;
-        product.amount = productAmounts[product.productId]; // Ensure amount is provided
-        product.dateIssue = dateIssue;
-        // product.utility = product.utility;
-        console.log("product");
-        console.log(product);
-        // registro productinvoice
-        const response = await addProductInvoiceMutation({
-          registro: product,
+        const amountIngresado = productAmounts[originalProduct.productId];
+        const invoiceID = generateIdData.sequence_value;
+  
+        const productToSendToInvoice = {
+          ...originalProduct,
+          invoiceID,
+          invoiceType: typevalue,
+          amount: amountIngresado,
+          dateIssue: dateIssue,
+          idUsuario: userId
+        };
+  
+        const updatedAmount =
+          typevalue === 'Purchase'
+            ? originalProduct.amount + amountIngresado
+            : originalProduct.amount - amountIngresado;
+  
+        const productToUpdate = {
+          productId: originalProduct.productId,
+          // idUsuario: originalProduct.idUsuario,
+          name: originalProduct.name,
+          description: originalProduct.description,
+          price: originalProduct.price,
+          amount: updatedAmount,
+          utility: originalProduct.utility,
+        };
+  
+        // 2. Actualizar producto en BD
+        await updateProductAmount({
+          registro: productToUpdate,
           token: token,
         });
-        console.log('Respuesta de la inserción:', response);
-        handleForceReload();
-        searchResultsUpdated.push(product);
-        //generateIdRefetch();
+  
+        // 3. Registrar producto en la factura
+        const response = await addProductInvoiceMutation({
+          registro: productToSendToInvoice,
+          token: token,
+        });
+  
+        console.log('Factura registrada:', response);
+        searchResultsUpdated.push(productToSendToInvoice);
       }
-      console.log('searchResultsUpdated');
-      console.log(searchResultsUpdated);
+  
+      // 4. Limpiar el carrito
+      handleForceReload();
       setSearchResults([]);
-      toast.success('Se ha emitido la factura correctamente con los datos proporcionados');
+      toast.success('Se ha emitido la factura correctamente');
     } catch (error) {
-      console.error('Error al confirmar los productos:', error);
+      console.error('Error al confirmar productos:', error);
       toast.error('Hubo un error al confirmar los productos');
     }
   };
+  
 
   const handleAmountChange = (productId: number, newValue: number) => {
     setProductAmounts((prevAmounts) => ({
@@ -972,7 +1083,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       <br />
       <div style={{ marginTop: '20px' }}>
         <Typography variant="h6" gutterBottom>
-          Product list
+          🛒 Product list
         </Typography>
         <TableContainer component={Paper}>
           <Table>
@@ -1042,10 +1153,14 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         }}
 
         fullWidth
-        sx={{ marginTop: 2 }}
-      //disabled={!selectedProduct}
+        // sx={{ marginTop: 2 }}
+        //disabled={!selectedProduct}
+        style={{
+          marginTop: 2,
+          display: isReadOnly ? 'none' : 'block'  // Ocultar si isReadOnly es true
+        }}
       >
-        Generar Factura
+        Generate Invoice
       </Button>
 
       <Dialog open={confirmAddDialogOpen} onClose={cancelAddToCart}>
