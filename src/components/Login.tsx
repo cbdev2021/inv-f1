@@ -58,7 +58,8 @@ const Login: FunctionComponent = () => {
       console.error(err);
 
       if (err.data && err.data.message === "Invalid email or password") {
-        toast.error('Correo o contraseña incorrectos');
+        // toast.error('Correo o contraseña incorrectos');
+        toast.error('Incorrect email or password.');
       } else {
         toast.error('Hubo un error al iniciar sesión');
       }

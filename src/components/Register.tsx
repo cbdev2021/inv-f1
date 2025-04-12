@@ -37,17 +37,20 @@ const Register: FunctionComponent = () => {
     try {
       // Verificar si los términos y condiciones han sido aceptados
       if (!acceptTerms) {
-        toast.warning('Por favor, acepta nuestros términos y condiciones.');
+        // toast.warning('Por favor, acepta nuestros términos y condiciones.');
+        toast.warning('Please accept our terms and conditions.');
         return;
       }
 
       if (!name || !email || !password) {
-        toast.error('Por favor, completa todos los campos.');
+        // toast.error('Por favor, completa todos los campos.');
+        toast.error('Please fill in all fields.');
         return;
       }
 
       if (!handleEmailValidation(email)) {
-        toast.error('Por favor, ingresa un email válido.');
+        // toast.error('Por favor, ingresa un email válido.');
+        toast.error('Please enter a valid email address.');
         return;
       }
 
@@ -56,7 +59,8 @@ const Register: FunctionComponent = () => {
       console.log('Usuario registrado:', userData);
       //dispatch(setCredentials({ ...userData }));
       navigate('/login');
-      toast.info('Usuario registrado exitosamente');
+      // toast.info('Usuario registrado exitosamente');
+      toast.info('User successfully registered.');
 
     } catch (err) {
       console.error('Error de registro:', err);
