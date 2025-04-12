@@ -192,12 +192,12 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   // });
 
   const { data: dataResponseRegisters, isLoading, refetch: refetchProducts } =
-  useGetProductsByUserIdQuery({
-    data: {
-      idUsuario: userId,
-    },
-    token: token,
-  });
+    useGetProductsByUserIdQuery({
+      data: {
+        idUsuario: userId,
+      },
+      token: token,
+    });
 
 
 
@@ -524,18 +524,18 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         updated[selectedProduct!.productId] = Number(editableAmount);
         return updated;
       });
-  
+
       // 2. Agregar producto seleccionado a la lista
       setSearchResults((prev) => [...prev, selectedProduct!]);
-  
+
       // 3. Limpiar campos
       setSelectedProduct(null);
       setSearchTerm('');
       setConfirmAddDialogOpen(false);
-  
+
       // 4. Traer productos actualizados
       await refetchProducts();
-  
+
       // 5. Sincronizar amounts actualizados de productos en el carrito
       setSearchResults((prevResults) =>
         prevResults.map((product) => {
@@ -547,7 +547,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
             : product;
         })
       );
-  
+
       toast.success('Producto agregado correctamente con los datos actualizados');
     } catch (err) {
       console.error('Error en confirmAddToCart:', err);
@@ -605,11 +605,11 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     try {
       // 1. Si necesitas productos frescos antes de operar (opcional)
       await refetchProducts();
-  
+
       for (const originalProduct of searchResults) {
         const amountIngresado = productAmounts[originalProduct.productId];
         const invoiceID = generateIdData.sequence_value;
-  
+
         const productToSendToInvoice = {
           ...originalProduct,
           invoiceID,
@@ -618,12 +618,12 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           dateIssue: dateIssue,
           idUsuario: userId
         };
-  
+
         const updatedAmount =
           typevalue === 'Purchase'
             ? originalProduct.amount + amountIngresado
             : originalProduct.amount - amountIngresado;
-  
+
         const productToUpdate = {
           productId: originalProduct.productId,
           // idUsuario: originalProduct.idUsuario,
@@ -633,23 +633,23 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
           amount: updatedAmount,
           utility: originalProduct.utility,
         };
-  
+
         // 2. Actualizar producto en BD
         await updateProductAmount({
           registro: productToUpdate,
           token: token,
         });
-  
+
         // 3. Registrar producto en la factura
         const response = await addProductInvoiceMutation({
           registro: productToSendToInvoice,
           token: token,
         });
-  
+
         console.log('Factura registrada:', response);
         searchResultsUpdated.push(productToSendToInvoice);
       }
-  
+
       // 4. Limpiar el carrito
       handleForceReload();
       setSearchResults([]);
@@ -659,7 +659,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       toast.error('Hubo un error al confirmar los productos');
     }
   };
-  
+
 
   const handleAmountChange = (productId: number, newValue: number) => {
     setProductAmounts((prevAmounts) => ({
@@ -1166,7 +1166,7 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       <Dialog open={confirmAddDialogOpen} onClose={cancelAddToCart}>
         <DialogTitle>Confirm Add to List</DialogTitle>
         <DialogContent>
-          Confirmas que todos los datos son correctos, para la Nueva Factura?
+          Do you confirm that all the data is correct for the new invoice?
         </DialogContent>
         <DialogActions>
           <Button onClick={cancelAddToCart} color="primary">
