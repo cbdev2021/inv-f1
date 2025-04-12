@@ -149,34 +149,71 @@ const TableAddRegister: FunctionComponent<TableConfigProps> = ({
   //   }
   // };
 
+  // const handleAdd = async () => {
+  //   if (!description || !amount) {
+  //     if (!description || !amount) {
+  //       toast.error("El campo de valor numérico es obligatorio.");
+  //     }
+  //     if (!amount) {
+  //       toast.error("El campo de valor numérico es obligatorio.");
+  //     }
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await addTypeValueMutation({
+  //       registro: {
+  //         name: name,
+  //         description: description,
+  //         price: price,
+  //         amount: amount,
+  //         utility: utility,
+  //         idUsuario: userId
+  //       },
+  //       token: token,
+  //     });
+
+  //     const newId = response.data._id;
+  //     const newItem = { _id: newId, subtype: addNewSubtype, typevalue: typevalue };
+  //     const updatedData = [...data, newItem];
+  //     setAddNewSubtype("");
+  //     updateData(updatedData, typevalue);
+  //     refetch();
+  //   } catch (error) {
+  //     console.error("Error al agregar el nuevo valor:", error);
+  //   }
+  // };
+
   const handleAdd = async () => {
-    if (!description || !amount) {
-      if (!description || !amount) {
-        toast.error("El campo de valor numérico es obligatorio.");
-      }
-      if (!amount) {
-        toast.error("El campo de valor numérico es obligatorio.");
-      }
+    if (!description || !amount || !name || !price || !utility) {
+      toast.error("Todos los campos son obligatorios.");
       return;
     }
 
     try {
       const response = await addTypeValueMutation({
         registro: {
-          name: name,
-          description: description,
-          price: price,
-          amount: amount,
-          utility: utility,
-          idUsuario: userId
+          name,
+          description,
+          price,
+          amount,
+          utility,
+          idUsuario: userId,
         },
-        token: token,
+        token,
       });
 
       const newId = response.data._id;
-      const newItem = { _id: newId, subtype: addNewSubtype, typevalue: typevalue };
+      const newItem = { _id: newId, subtype: addNewSubtype, typevalue };
       const updatedData = [...data, newItem];
+
       setAddNewSubtype("");
+      setName("");
+      setDescription("");
+      setPrice("");
+      setAmount("");
+      setUtility("");
+
       updateData(updatedData, typevalue);
       refetch();
     } catch (error) {
