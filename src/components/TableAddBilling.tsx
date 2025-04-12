@@ -334,7 +334,8 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
   const handleAdd = async () => {
     if (!dateIssue) {
       if (!dateIssue) {
-        toast.error("Debes seleccionar una dateIssue válida.");
+        // toast.error("Debes seleccionar una dateIssue válida.");
+        toast.error("You must select a valid dateIssue.");
       }
       return;
     }
@@ -419,10 +420,13 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     if (!dateIssue || !descRegistro) {
 
       if (!dateIssue) {
+        // toast.error("Debes seleccionar una dateIssue válida.");
         toast.error("Debes seleccionar una dateIssue válida.");
       }
       if (!descRegistro) {
-        toast.error("Debes seleccionar un tipo.");
+        // toast.error("Debes seleccionar un tipo.");
+        toast.error("You must select a type.");
+
       }
       return;
     }
@@ -548,7 +552,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
         })
       );
 
-      toast.success('Producto agregado correctamente con los datos actualizados');
+      // toast.success('Producto agregado correctamente con los datos actualizados');
+      toast.success('Product successfully added with updated information.');
+
     } catch (err) {
       console.error('Error en confirmAddToCart:', err);
       toast.error('Hubo un error al agregar el producto');
@@ -653,7 +659,9 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
       // 4. Limpiar el carrito
       handleForceReload();
       setSearchResults([]);
-      toast.success('Se ha emitido la factura correctamente');
+      // toast.success('Se ha emitido la factura correctamente');
+      toast.success('The invoice has been successfully issued.');
+
     } catch (error) {
       console.error('Error al confirmar productos:', error);
       toast.error('Hubo un error al confirmar los productos');
@@ -686,33 +694,39 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
     //if (!dateIssue || !provider || !paymentBuy || !customer || !paymentSell) {
     if (!dateIssue || (!provider && !paymentBuy) || (!customer && !paymentSell)) {
       if (!dateIssue) {
-        toast.error("Debes seleccionar una dateIssue válida.");
+        // toast.error("Debes seleccionar una dateIssue válida.");
+        toast.error("You must select a valid dateIssue.");
         return;
       }
 
       if (typevalue == "Purchase") {
         if (!provider) {
-          toast.error("Debes ingresar una provider válido.");
+          // toast.error("Debes ingresar una provider válido.");
+          toast.error("You must enter a valid provider.");
           return;
         }
         if (!paymentBuy) {
-          toast.error("Debes ingresar una paymentBuy válida.");
+          // toast.error("Debes ingresar una paymentBuy válida.");
+          toast.error("You must enter a valid paymentBuy.");
           return;
         }
       }
       if (typevalue == "Sales") {
         if (!customer) {
-          toast.error("Debes ingresar una customer válido.");
+          // toast.error("Debes ingresar una customer válido.");
+          toast.error("You must enter a valid customer.");
           return;
         }
         if (!paymentSell) {
-          toast.error("Debes ingresar una paymentSell válida.");
+          // toast.error("Debes ingresar una paymentSell válida.");
+          toast.error("You must enter a valid paymentSell.");
           return;
         }
       }
 
       if (searchResults.length === 0) {
-        toast.error("Debes agregar productos a la lista.");
+        // toast.error("Debes agregar productos a la lista.");
+        toast.error("You must add products to the list.");
         return;
       }
     }
@@ -975,9 +989,10 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               <Grid item xs={6}>
                 <TextField
                   label="Taxes"
-                  variant="outlined"
+                  // variant="outlined"
+                  variant="standard"
                   type="text"
-                  value={taxes || ""}
+                  value={"$"+taxes || ""}
                   fullWidth
                   onChange={(e) => setTaxes(e.target.value)}
                   InputProps={{
@@ -989,9 +1004,10 @@ const TableAddBilling: FunctionComponent<TableConfigProps> = ({
               <Grid item xs={6}>
                 <TextField
                   label="Sub Total"
-                  variant="outlined"
+                  // variant="outlined"
+                  variant="standard"
                   type="text"
-                  value={subTotal || ""}
+                  value={"$"+subTotal || ""}
                   fullWidth
                   onChange={(e) => setSubTotal(e.target.value)}
                   InputProps={{
